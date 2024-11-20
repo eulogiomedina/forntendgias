@@ -7,7 +7,7 @@ import SocialLinksManager from '../components/SocialLinksManager';
 import LegalBoundaryCrud from '../components/LegalBoundaryCrud';
 import SloganManager from '../components/SloganAdmin';
 import LogoManager from '../components/LogoAdmin'; //corrigiendo
-import TitleManager from '../components/TitleAdmin';
+import  TitleAdmin from '../components/TitleAdmin';
 import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = ({ onLogout, toggleDarkMode, isDarkMode }) => {
