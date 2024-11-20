@@ -18,8 +18,8 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
                 setLogoUrl(logoResponse.data[0].url);
             }
 
-            const titleResponse = await axios.get('https://backendgias.onrender.com/api/title'); // Obtener el título
-            setTitle(titleResponse.data.title); // Guardar el título en el estado
+          //  const titleResponse = await axios.get('https://backendgias.onrender.com/api/title'); // Obtener el título
+           // setTitle(titleResponse.data.title); // Guardar el título en el estado
         } catch (error) {
             console.error('Error al obtener los datos del header:', error);
         }
@@ -51,7 +51,7 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
                         )}
                         {isAuthenticated && (
                             <>
-                                <li><Link to="/profile">Perfil</Link></li>
+                                
                                 {isAdmin && <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>}
                                 {!isAdmin && <li><Link to="/dashboard">Dashboard</Link></li>}
                                 <li><button onClick={onLogout}>Cerrar Sesión</button></li>
