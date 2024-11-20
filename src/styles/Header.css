@@ -6,6 +6,7 @@
   color: white;
   z-index: 1000;
   padding: 1rem 0;
+  height: 100px;
 }
 
 .container {
@@ -18,7 +19,7 @@
 }
 
 .logo {
-  width: 120px;  /* Ajusta el tamaño del logo */
+  width: 110px;  /* Ajusta el tamaño del logo */
   height: auto;
 }
 
