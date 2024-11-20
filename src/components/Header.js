@@ -6,6 +6,7 @@ import '../styles/Header.css';
 const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout }) => {
     const [logoUrl, setLogoUrl] = useState('');
     const [slogan, setSlogan] = useState('');
+    const [title, setTitle] = useState(''); // Agregado el estado para el título
 
     const fetchHeaderData = async () => {
         try {
@@ -16,6 +17,7 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
             if (logoResponse.data.length > 0) {
                 setLogoUrl(logoResponse.data[0].url);
             }
+
             const titleResponse = await axios.get('https://backendgias.onrender.com/api/title'); // Obtener el título
             setTitle(titleResponse.data.title); // Guardar el título en el estado
         } catch (error) {
