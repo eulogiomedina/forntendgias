@@ -9,7 +9,7 @@ const TitleAdmin = () => {
 
   const fetchTitle = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/title');
+      const response = await axios.get('https://backendgias.onrender.com/api/title');
       if (response.data && response.data.title) {
         setTitle(response.data.title); // Muestra el título si existe
         setIsEditing(true); // Cambia a modo de edición si ya hay un título
@@ -37,7 +37,7 @@ const TitleAdmin = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/title', { title });
+      const response = await axios.post('https://backendgias.onrender.com/api/title', { title });
       setSuccessMessage(isEditing ? 'Título actualizado exitosamente.' : 'Título registrado exitosamente.');
       setIsEditing(true); // Ahora está en modo de edición
     } catch (error) {

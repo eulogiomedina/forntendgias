@@ -6,7 +6,7 @@ import TermsCrud from '../components/TermsCrud';
 import SocialLinksManager from '../components/SocialLinksManager';
 import LegalBoundaryCrud from '../components/LegalBoundaryCrud';
 import SloganManager from '../components/SloganAdmin';
-import LogoManager from '../components/LogoAdmin'; // Importa el nuevo componente para la gestión de logos
+import LogoManager from '../components/LogoAdmin'; //corrigiendo
 import TitleManager from '../components/TitleAdmin';
 import { useNavigate } from 'react-router-dom';
 

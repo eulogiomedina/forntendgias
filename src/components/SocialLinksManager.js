@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios';//corrigiendo
 
 const SocialLinksManager = () => {
     const [links, setLinks] = useState([]);
