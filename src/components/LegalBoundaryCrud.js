@@ -17,7 +17,7 @@ const LegalBoundaryCrud = () => {
   // Obtener todos los deslindes legales
   const fetchLegalBoundaries = async () => {
     try {
-      const response = await axios.get(`${API_URL}/legal-boundaries`);
+      const response = await axios.get(`${API_URL}/api/legal-boundaries`);
       const sortedLegalBoundaries = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       if (sortedLegalBoundaries.length > 0) {
@@ -42,7 +42,7 @@ const LegalBoundaryCrud = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/legal-boundaries`, newLegalBoundary); // Crear deslinde en el backend
+      await axios.post(`${API_URL}/api/legal-boundaries`, newLegalBoundary); // Crear deslinde en el backend
       setNewLegalBoundary({ title: '', content: '' }); // Reiniciar los campos del formulario
       fetchLegalBoundaries(); // Recargar los deslindes
     } catch (error) {
@@ -63,7 +63,7 @@ const LegalBoundaryCrud = () => {
     }
 
     try {
-      await axios.put(`${API_URL}/legal-boundaries/${editingLegalBoundary._id}`, editingLegalBoundary); // Actualizar el deslinde
+      await axios.put(`${API_URL}/api/legal-boundaries/${editingLegalBoundary._id}`, editingLegalBoundary); // Actualizar el deslinde
       setEditingLegalBoundary(null); // Salir del modo de edición
       fetchLegalBoundaries(); // Recargar los deslindes
     } catch (error) {
@@ -74,7 +74,7 @@ const LegalBoundaryCrud = () => {
   // Eliminar un deslinde legal lógicamente
   const handleDeleteLegalBoundary = async (id) => {
     try {
-      await axios.delete(`${API_URL}/legal-boundaries/delete/${id}`); // Eliminar deslinde lógicamente
+      await axios.delete(`${API_URL}/api/legal-boundaries/delete/${id}`); // Eliminar deslinde lógicamente
       fetchLegalBoundaries(); // Recargar los deslindes
     } catch (error) {
       console.error('Error al eliminar el deslinde legal:', error);
@@ -84,7 +84,7 @@ const LegalBoundaryCrud = () => {
   // Restaurar un deslinde legal eliminado
   const handleRestoreLegalBoundary = async (id) => {
     try {
-      await axios.put(`${API_URL}/legal-boundaries/restore/${id}`);
+      await axios.put(`${API_URL}/api/legal-boundaries/restore/${id}`);
       fetchLegalBoundaries(); // Recargar los deslindes
     } catch (error) {
       console.error('Error al restaurar el deslinde legal:', error);
@@ -206,3 +206,4 @@ const LegalBoundaryCrud = () => {
 };
 
 export default LegalBoundaryCrud;
+

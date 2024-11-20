@@ -17,7 +17,7 @@ const TermsCrud = () => {
   // Obtener todos los términos y ordenarlos
   const fetchTerms = async () => {
     try {
-      const response = await axios.get(`${API_URL}/terms`);
+      const response = await axios.get(`${API_URL}/api/terms`);
       const sortedTerms = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       if (sortedTerms.length > 0) {
@@ -42,7 +42,7 @@ const TermsCrud = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/terms`, newTerm); // Crear término en el backend
+      await axios.post(`${API_URL}/api/terms`, newTerm); // Crear término en el backend
       setNewTerm({ title: '', content: '' }); // Reiniciar los campos del formulario
       fetchTerms(); // Recargar los términos
     } catch (error) {
@@ -63,7 +63,7 @@ const TermsCrud = () => {
     }
 
     try {
-      await axios.put(`${API_URL}/terms/${editingTerm._id}`, editingTerm); // Actualizar el término
+      await axios.put(`${API_URL}/api/terms/${editingTerm._id}`, editingTerm); // Actualizar el término
       setEditingTerm(null); // Salir del modo edición
       fetchTerms(); // Recargar los términos
     } catch (error) {
@@ -74,7 +74,7 @@ const TermsCrud = () => {
   // Eliminar un término lógicamente
   const handleDeleteTerm = async (id) => {
     try {
-      await axios.delete(`${API_URL}/terms/delete/${id}`); // Eliminar lógicamente el término
+      await axios.delete(`${API_URL}/api/terms/delete/${id}`); // Eliminar lógicamente el término
       fetchTerms(); // Recargar los términos
     } catch (error) {
       console.error('Error al eliminar el término:', error);
@@ -84,7 +84,7 @@ const TermsCrud = () => {
   // Restaurar un término eliminado
   const handleRestoreTerm = async (id) => {
     try {
-      await axios.put(`${API_URL}/terms/restore/${id}`); // Restaurar el término eliminado
+      await axios.put(`${API_URL}/api/terms/restore/${id}`); // Restaurar el término eliminado
       fetchTerms(); // Recargar los términos
     } catch (error) {
       console.error('Error al restaurar el término:', error);

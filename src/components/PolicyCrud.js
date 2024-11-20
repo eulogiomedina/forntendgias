@@ -18,7 +18,7 @@ const PolicyCrud = () => {
 // Obtener todas las políticas, incluyendo las eliminadas para el historial
   const fetchPolicies = async () => {
     try {
-      const response = await axios.get(`${API_URL}/policies`);
+      const response = await axios.get(`${API_URL}/api/policies`);
       const sortedPolicies = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       if (sortedPolicies.length > 0) {
@@ -44,7 +44,7 @@ const PolicyCrud = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/policies`, newPolicy); // Crear política en el backend
+      await axios.post(`${API_URL}/api/policies`, newPolicy); // Crear política en el backend
       setNewPolicy({ title: '', content: '' }); // Reiniciar los campos del formulario
       fetchPolicies(); // Recargar las políticas
     } catch (error) {
@@ -65,7 +65,7 @@ const PolicyCrud = () => {
     }
 
     try {
-      await axios.put(`${API_URL}/policies/${editingPolicy._id}`, editingPolicy); // Actualizar la política
+      await axios.put(`${API_URL}/api/policies/${editingPolicy._id}`, editingPolicy); // Actualizar la política
       setEditingPolicy(null); // Salir del modo edición
       fetchPolicies(); // Recargar las políticas
     } catch (error) {
@@ -77,7 +77,7 @@ const PolicyCrud = () => {
   const handleDeletePolicy = async (id) => {
     try {
       // Llamar a la API para eliminar lógicamente la política usando DELETE
-      await axios.delete(`${API_URL}/policies/delete/${id}`);
+      await axios.delete(`${API_URL}/api/policies/delete/${id}`);
       fetchPolicies(); // Recargar las políticas
     } catch (error) {
       console.error('Error al eliminar la política:', error);
@@ -88,7 +88,7 @@ const PolicyCrud = () => {
   // Restaurar una política eliminada
   const handleRestorePolicy = async (id) => { 
     try {
-      await axios.put(`${API_URL}/policies/restore/${id}`);
+      await axios.put(`${API_URL}/api/policies/restore/${id}`);
       fetchPolicies(); // Recargar las políticas
     } catch (error) {
       console.error('Error al restaurar la política:', error);
@@ -211,3 +211,6 @@ const PolicyCrud = () => {
 };
 
 export default PolicyCrud;
+
+
+
