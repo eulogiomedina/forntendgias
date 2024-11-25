@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,21 +13,98 @@ const Register = () => {
     correo: '',
     password: '',
     telefono: '',
-    ciudad: '',
+    estado: '',
+    municipio: '',
     colonia: '',
-    calle: '',
   });
 
+  const [estados, setEstados] = useState([]);
+  const [municipios, setMunicipios] = useState([]);
+  const [colonias, setColonias] = useState([]);
   const [passwordStrength, setPasswordStrength] = useState('');
   const [passwordSuggestions, setPasswordSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(null);
   const [isPhoneValid, setIsPhoneValid] = useState(null);
   const [countryCode, setCountryCode] = useState('+52'); // Código de país por defecto (México)
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const commonPatterns = ['123', '123456', 'qwerty', 'password', 'abc123', '111111', 'aaa', 'qqq'];
+
+  // Cargar estados al montar el componente
+  useEffect(() => {
+    const fetchEstados = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/cupomex/estados', {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener los estados.');
+        }
+
+        const data = await response.json();
+        setEstados(data.estados || []);
+      } catch (error) {
+        console.error('Error al cargar estados:', error);
+        toast.error('No se pudieron cargar los estados.');
+      }
+    };
+
+    fetchEstados();
+  }, []);
+
+  // Manejar cambios en estado para cargar municipios
+  const handleEstadoChange = async (estado) => {
+    setFormData({ ...formData, estado, municipio: '', colonia: '' });
+    setMunicipios([]);
+    setColonias([]);
+
+    if (!estado) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/cupomex/municipios?estado=${encodeURIComponent(estado)}`, {
+
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al obtener los municipios.');
+      }
+
+      const data = await response.json();
+      setMunicipios(data.municipios || []);
+    } catch (error) {
+      console.error('Error al cargar municipios:', error);
+      toast.error('No se pudieron cargar los municipios.');
+    }
+  };
+
+  // Manejar cambios en municipio para cargar colonias
+  const handleMunicipioChange = async (municipio) => {
+    setFormData({ ...formData, municipio, colonia: '' });
+    setColonias([]);
+
+    if (!municipio) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/cupomex/colonias?municipio=${encodeURIComponent(municipio)}`, {
+        method: 'GET',
+      });
+      
+
+      if (!response.ok) {
+        throw new Error('Error al obtener las colonias.');
+      }
+
+      const data = await response.json();
+      setColonias(data.colonias || []);
+    } catch (error) {
+      console.error('Error al cargar colonias:', error);
+      toast.error('No se pudieron cargar las colonias.');
+    }
+  };
 
   const handlePasswordChange = (e) => {
     const value = e.target.value;
@@ -60,7 +137,6 @@ const Register = () => {
     if (/[\W]/.test(password)) strength++;
     else suggestions.push('Debe incluir al menos un carácter especial');
 
-    // Verificar patrones secuenciales
     if (commonPatterns.some((pattern) => password.toLowerCase().includes(pattern))) {
       strength = 1;
       suggestions.push('No debe contener patrones secuenciales como "12345" o "qwerty"');
@@ -74,7 +150,7 @@ const Register = () => {
 
   const validateEmail = async () => {
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/validate-email', {
+      const response = await fetch('http://localhost:5000/api/validate-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.correo }),
@@ -97,9 +173,9 @@ const Register = () => {
   };
 
   const validatePhone = async () => {
-    const fullPhoneNumber = `${countryCode}${formData.telefono}`; // Concatenar código de país y número
+    const fullPhoneNumber = `${countryCode}${formData.telefono}`;
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/validate-phone', {
+      const response = await fetch('http://localhost:5000/api/validate-phone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: fullPhoneNumber }),
@@ -124,6 +200,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Datos enviados al backend:", formData);
+
     if (!isEmailValid) {
       toast.error('No puedes registrarte con un correo inválido.');
       return;
@@ -134,17 +212,15 @@ const Register = () => {
       return;
     }
 
-    const fullPhoneNumber = `${countryCode}${formData.telefono}`; // Combina el prefijo y el número
+    const fullPhoneNumber = `${countryCode}${formData.telefono}`;
 
     setLoading(true);
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/users/register', {
+      const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, telefono: fullPhoneNumber }), // Incluye el número completo
+        body: JSON.stringify({ ...formData, telefono: fullPhoneNumber }),
       });
-
-      const result = await response.json();
 
       if (response.ok) {
         toast.success('Usuario registrado exitosamente. Verifica tu correo.');
@@ -154,13 +230,13 @@ const Register = () => {
           correo: '',
           password: '',
           telefono: '',
-          ciudad: '',
+          estado: '',
+          municipio: '',
           colonia: '',
-          calle: '',
         });
         setTimeout(() => navigate('/login'), 2000);
       } else {
-        toast.error(result.message || 'Error al registrar usuario.');
+        toast.error('Error al registrar usuario.');
       }
     } catch (error) {
       toast.error('Error de red al registrar.');
@@ -175,36 +251,31 @@ const Register = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       <h1>Registro</h1>
       <form className="register-form" onSubmit={handleSubmit}>
+        {/* Nombre */}
         <div className="form-group">
           <label>Nombre</label>
           <input
             type="text"
             placeholder="Nombre"
             value={formData.nombre}
-            onChange={(e) => {
-              if (/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]*$/.test(e.target.value)) {
-                setFormData({ ...formData, nombre: e.target.value });
-              }
-            }}
+            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
             required
           />
         </div>
 
+        {/* Apellidos */}
         <div className="form-group">
           <label>Apellidos</label>
           <input
             type="text"
             placeholder="Apellidos"
             value={formData.apellidos}
-            onChange={(e) => {
-              if (/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]*$/.test(e.target.value)) {
-                setFormData({ ...formData, apellidos: e.target.value });
-              }
-            }}
+            onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
             required
           />
         </div>
 
+        {/* Correo */}
         <div className="form-group">
           <label>Correo</label>
           <input
@@ -217,6 +288,7 @@ const Register = () => {
           />
         </div>
 
+        {/* Contraseña */}
         <div className="form-group">
           <label>Contraseña</label>
           <div style={{ position: 'relative' }}>
@@ -252,6 +324,7 @@ const Register = () => {
           )}
         </div>
 
+        {/* Teléfono */}
         <div className="form-group">
           <label>Número Telefónico</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -268,55 +341,71 @@ const Register = () => {
               type="tel"
               placeholder="Número Telefónico"
               value={formData.telefono}
-              onChange={(e) => {
-                if (e.target.value === '' || /^\d{0,15}$/.test(e.target.value)) {
-                  setFormData({ ...formData, telefono: e.target.value });
-                }
-              }}
+              onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
               onBlur={validatePhone}
               required
             />
           </div>
         </div>
 
+        {/* Estado */}
         <div className="form-group">
-          <label>Dirección - Ciudad</label>
-          <input
-            type="text"
-            placeholder="Ciudad"
-            value={formData.ciudad}
-            onChange={(e) => setFormData({ ...formData, ciudad: e.target.value })}
+          <label>Estado</label>
+          <select
+            value={formData.estado}
+            onChange={(e) => handleEstadoChange(e.target.value)}
             required
-          />
+          >
+            <option value="">Selecciona un estado</option>
+            {estados.map((estado, index) => (
+              <option key={index} value={estado}>
+                {estado}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Municipio */}
         <div className="form-group">
-          <label>Dirección - Colonia</label>
-          <input
-            type="text"
-            placeholder="Colonia"
+          <label>Municipio</label>
+          <select
+            value={formData.municipio}
+            onChange={(e) => handleMunicipioChange(e.target.value)}
+            disabled={!formData.estado}
+            required
+          >
+            <option value="">Selecciona un municipio</option>
+            {municipios.map((municipio, index) => (
+              <option key={index} value={municipio}>
+                {municipio}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Colonia */}
+        <div className="form-group">
+          <label>Colonia</label>
+          <select
             value={formData.colonia}
             onChange={(e) => setFormData({ ...formData, colonia: e.target.value })}
+            disabled={!formData.municipio}
             required
-          />
+          >
+            <option value="">Selecciona una colonia</option>
+            {colonias.map((colonia, index) => (
+              <option key={index} value={colonia}>
+                {colonia}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="form-group">
-          <label>Dirección - Calle</label>
-          <input
-            type="text"
-            placeholder="Calle"
-            value={formData.calle}
-            onChange={(e) => setFormData({ ...formData, calle: e.target.value })}
-            required
-          />
-        </div>
-
+        {/* Botón Registrar */}
         <button type="submit" disabled={loading}>
           {loading ? 'Registrando...' : 'Registrar'}
         </button>
       </form>
-      {loading && <div className="loader">Cargando...</div>}
     </div>
   );
 };

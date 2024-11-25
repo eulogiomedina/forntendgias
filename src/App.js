@@ -14,14 +14,21 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TermsDetail from './components/TermsDetail';
 import DisclaimerDetail from './components/DisclaimerDetail';
-import PrivateRoute from './components/PrivateRoute';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import PolicyCrud from './components/PolicyCrud';
+import TermsCrud from './components/TermsCrud';
+import SocialLinksManager from './components/SocialLinksManager';
+import LegalBoundaryCrud from './components/LegalBoundaryCrud';
+import SloganManager from './components/SloganAdmin';
+import LogoManager from './components/LogoAdmin';
+import TitleAdmin from './components/TitleAdmin';
+import ContactEdit from './components/ContactEdit';
 import AuditLogs from './components/AuditLogs';
 import PasswordChangeLogs from './components/PasswordChangeLogs';
-import ContactEdit from './components/ContactEdit';
-import PolicyDetail from './components/PolicyDetail';
+import PrivateRoute from './components/PrivateRoute';
+import BlockedAccounts from './components/BlockedAccounts';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,7 +60,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Utilizar el Header en todas las páginas */}
         <Header
           toggleDarkMode={toggleDarkMode}
           isDarkMode={isDarkMode}
@@ -61,9 +67,7 @@ function App() {
           isAdmin={isAdmin}
           onLogout={handleLogout}
         />
-
         <ToastContainer position="top-right" autoClose={5000} />
-        
         <main>
           <Routes>
             {/* Rutas públicas */}
@@ -87,6 +91,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            
             <Route
               path="/savings"
               element={
@@ -103,6 +108,8 @@ function App() {
                 </PrivateRoute>
               }
             />
+
+            {/* Rutas del AdminDashboard */}
             <Route
               path="/admin-dashboard"
               element={
@@ -111,13 +118,92 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="/audit-logs" element={<AuditLogs />} />
-            <Route path="/password-change-logs" element={<PasswordChangeLogs />} />
-            <Route path="/contact-edit" element={<ContactEdit />} />
-            <Route path="/politicas/:id" element={<PolicyDetail />} />
+            <Route
+              path="/admin-dashboard/policy-crud"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <PolicyCrud />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/terms-crud"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <TermsCrud />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/social-links-manager"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <SocialLinksManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/legal-boundary-crud"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <LegalBoundaryCrud />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/slogan-manager"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <SloganManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/logo-manager"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <LogoManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/title-admin"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <TitleAdmin />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/contact-edit"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <ContactEdit />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/audit-logs"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <AuditLogs />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/password-change-logs"
+              element={
+                <PrivateRoute allowedRoles={['admin']}>
+                  <PasswordChangeLogs />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-dashboard/blocked-accounts"
+              element={<BlockedAccounts />}
+            />
           </Routes>
         </main>
-
         <Footer />
       </div>
     </Router>
