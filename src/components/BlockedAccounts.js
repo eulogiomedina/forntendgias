@@ -7,7 +7,7 @@ const BlockedAccounts = () => {
   useEffect(() => {
     const fetchBlockedAccounts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/accounts/blocked'); // URL del backend ajustada
+        const response = await fetch('https://backendgias.onrender.com/api/accounts/blocked'); // URL del backend ajustada
         if (!response.ok) {
           throw new Error('Error al obtener las cuentas bloqueadas');
         }
