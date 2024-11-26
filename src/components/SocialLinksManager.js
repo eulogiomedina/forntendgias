@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/SocialLinksManager.css'
-
+import '../styles/SocialLinksManager.css';
 const SocialLinksManager = () => {
     const [links, setLinks] = useState([]);
     const [newLink, setNewLink] = useState({ platform: '', url: '', status: 'active' });
@@ -65,43 +64,47 @@ const SocialLinksManager = () => {
     };
 
     return (
-        <div>
-            <h2>Administrar Enlaces de Redes Sociales</h2>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Plataforma"
-                    value={newLink.platform}
-                    onChange={(e) => setNewLink({ ...newLink, platform: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="URL"
-                    value={newLink.url}
-                    onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-                />
-                <select
-                    value={newLink.status}
-                    onChange={(e) => setNewLink({ ...newLink, status: e.target.value })}
-                >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                </select>
-                <button onClick={saveLink}>{editId ? 'Actualizar Enlace' : 'Agregar Enlace'}</button>
-                {editId && <button onClick={resetForm}>Cancelar</button>}
-            </div>
-
-            <ul>
-                {links.map(link => (
-                    <li key={link._id}>
-                        <span>{link.platform}: {link.url} ({link.status})</span>
-                        <button onClick={() => startEditing(link)}>Editar</button>
-                        <button onClick={() => deleteLink(link._id)}>Eliminar</button>
-                    </li>
-                ))}
-            </ul>
+        <div className="social-links-manager">
+        <h2>Administrar Enlaces de Redes Sociales</h2>
+        <div className="form-container">
+            <input
+                type="text"
+                placeholder="Plataforma"
+                value={newLink.platform}
+                onChange={(e) => setNewLink({ ...newLink, platform: e.target.value })}
+                className="input-field"
+            />
+            <input
+                type="text"
+                placeholder="URL"
+                value={newLink.url}
+                onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+                className="input-field"
+            />
+            <select
+                value={newLink.status}
+                onChange={(e) => setNewLink({ ...newLink, status: e.target.value })}
+                className="select-field"
+            >
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+            </select>
+            <button onClick={saveLink} className="submit-button">
+                {editId ? 'Actualizar Enlace' : 'Agregar Enlace'}
+            </button>
+            {editId && <button onClick={resetForm} className="cancel-button">Cancelar</button>}
         </div>
-    );
-};
 
+        <ul className="links-list">
+            {links.map(link => (
+                <li key={link._id} className="link-item">
+                    <span>{link.platform}: {link.url} ({link.status})</span>
+                    <button onClick={() => startEditing(link)} className="edit-button">Editar</button>
+                    <button onClick={() => deleteLink(link._id)} className="delete-button">Eliminar</button>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+};
 export default SocialLinksManager;
