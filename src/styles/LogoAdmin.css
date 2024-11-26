@@ -8,6 +8,7 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     font-family: 'Poppins', sans-serif; /* Tipografía moderna */
     transition: transform 0.3s ease; /* Suavizar la animación */
+    margin-top: 150px;
 }
 
 .logo-container:hover {
