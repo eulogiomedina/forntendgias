@@ -44,16 +44,19 @@ const Footer = () => {
     fetchSocialLinks();
   }, []);
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchLatestPolicies = async () => {
       try {
-        const response = await axios.get('https://backendgias.onrender.com/api/policies');
-        const latestPolicy = response.data.reduce((prev, current) => (prev.version > current.version ? prev : current));
-        setLatestPolicies([latestPolicy]);
+        const response = await axios.get('http://backendgias.onrender.com/api/policies');
+        const latestPolicy = response.data.reduce((prev, current) => {
+          return (prev.version > current.version) ? prev : current;
+        });
+        setLatestPolicies([latestPolicy]); // Solo guardamos la última política
       } catch (error) {
         console.error('Error fetching policies:', error);
       }
     };
+
     fetchLatestPolicies();
   }, []);
 

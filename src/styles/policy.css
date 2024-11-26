@@ -1,5 +1,5 @@
 /* Contenedor de las tarjetas */
-.container {
+.policy-crud-container {
   display: flex;
   flex-direction: column;
   gap: 30px; /* Espaciado entre las tarjetas */
