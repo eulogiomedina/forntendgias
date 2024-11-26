@@ -1,6 +1,6 @@
 /* Contenedor principal */
 .terms-container {
-  margin: 20px auto;
+  
   padding: 25px;
   width: 10px;               /* Fijamos el ancho exacto a 10px */
   max-width: 10px;           /* Limita el ancho máximo a 10px */

@@ -1,12 +1,12 @@
 /* Estilos para el contenedor principal de Deslinde */
 .legal-boundary-container {
-    max-width: 800px; /* Ancho máximo del contenedor */
-    margin: 0 auto; /* Centrar el contenedor en la página */
+    max-width: 700px; /* Ancho máximo del contenedor */
+    
     padding: 20px; /* Espaciado interno */
     background-color: #f9f9f9; /* Fondo claro para el contenedor */
     border-radius: 10px; /* Bordes redondeados */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave para el contenedor */
-    margin-top: 200px;
+    margin-top: 150px;
 }
 
 /* Estilo para los cuadros de texto */
