@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext'; // Proveedor de contexto de autenticación
@@ -37,6 +37,9 @@ function App() {
     const toggleDarkMode = () => {
         setIsDarkMode((prevMode) => !prevMode);
     };
+    useEffect(() => {
+        document.body.classList.toggle('dark-mode', isDarkMode);
+    }, [isDarkMode]);
 
     return (
         <AuthProvider>

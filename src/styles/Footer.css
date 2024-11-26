@@ -5,6 +5,18 @@
   text-align: center; /* Centrar el texto */
   
 }
+.footer h3, .footer p, .footer a {
+  color: white !important;
+}
+.footer a {
+  color: white !important;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+  color: #f1f1f1;
+}
 
 .social-container {
   margin-bottom: 20px; /* Espacio entre redes sociales y enlaces legales */
@@ -19,10 +31,12 @@
 .legal-container ul {
   list-style-type: none; /* Sin viñetas */
   padding: 0; /* Sin relleno */
+  background-color: transparent;
 }
 
 .legal-container li {
   margin: 5px 0; /* Espacio entre enlaces legales */
+  background-color: transparent;
 }
 
 .footer-divider {
