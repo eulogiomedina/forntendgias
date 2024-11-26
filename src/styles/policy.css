@@ -1,5 +1,6 @@
 /* Contenedor de las tarjetas */
 .policy-crud-container {
+  max-width: 700px;
   display: flex;
   flex-direction: column;
   gap: 30px; /* Espaciado entre las tarjetas */
@@ -7,7 +8,7 @@
   background-color: #f0f4f8; /* Fondo claro */
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin-top: 150px;
+  margin-top: 200px;
 }
 
 /* Estilo general de las tarjetas */
@@ -38,6 +39,7 @@
 
 /* Estilo de los botones dentro de la tarjeta */
 .card button {
+  max-width: 50%;
   padding: 12px 20px;
   background-color: #007bff; /* Azul del botón */
   color: white;
