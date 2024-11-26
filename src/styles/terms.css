@@ -16,6 +16,7 @@
   overflow-y: auto;          /* Asegura que el contenido no se desborde */
   max-height: 500px;         /* Limita la altura máxima */
   box-sizing: border-box;    /* Asegura que padding y border no afecten el tamaño total */
+  margin-top: 150px;
 }
 
 /* Contenedor para cuando hay más de un contenedor (por ejemplo, para políticas e historial) */
