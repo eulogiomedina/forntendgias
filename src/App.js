@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext'; // Proveedor de contexto de autenticación
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -31,183 +31,159 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => !prevMode);
-  };
+    const toggleDarkMode = () => {
+        setIsDarkMode((prevMode) => !prevMode);
+    };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-  };
+    return (
+        <AuthProvider>
+            <Router>
+                <div className="App">
+                    <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+                    <ToastContainer position="top-right" autoClose={5000} />
+                    <main>
+                        <Routes>
+                            {/* Rutas públicas */}
+                            <Route path="/" element={<Home />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/reset-password" element={<ResetPassword />} />
+                            <Route path="/terminos/:id" element={<TermsDetail />} />
+                            <Route path="/deslinde/:id" element={<DisclaimerDetail />} />
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    setIsAuthenticated(!!user);
-    setIsAdmin(user?.role === 'admin');
+                            {/* Rutas protegidas para usuarios autenticados */}
+                            <Route
+                                path="/profile"
+                                element={
+                                    <PrivateRoute allowedRoles={['user', 'admin']}>
+                                        <Profile />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/savings"
+                                element={
+                                    <PrivateRoute allowedRoles={['user', 'admin']}>
+                                        <Savings />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    <PrivateRoute allowedRoles={['user']}>
+                                        <Dashboard />
+                                    </PrivateRoute>
+                                }
+                            />
 
-    if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [isDarkMode]);
-
-  return (
-    <Router>
-      <div className="App">
-        <Header
-          toggleDarkMode={toggleDarkMode}
-          isDarkMode={isDarkMode}
-          isAuthenticated={isAuthenticated}
-          isAdmin={isAdmin}
-          onLogout={handleLogout}
-        />
-        <ToastContainer position="top-right" autoClose={5000} />
-        <main>
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/login"
-              element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />}
-            />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/terminos/:id" element={<TermsDetail />} />
-            <Route path="/deslinde/:id" element={<DisclaimerDetail />} />
-
-            {/* Rutas protegidas para usuarios autenticados */}
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute allowedRoles={['user', 'admin']}>
-                  <Profile />
-                </PrivateRoute>
-              }
-            />
-            
-            <Route
-              path="/savings"
-              element={
-                <PrivateRoute allowedRoles={['user', 'admin']}>
-                  <Savings />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute allowedRoles={['user']}>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-
-            {/* Rutas del AdminDashboard */}
-            <Route
-              path="/admin-dashboard"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <AdminDashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/policy-crud"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <PolicyCrud />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/terms-crud"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <TermsCrud />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/social-links-manager"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <SocialLinksManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/legal-boundary-crud"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <LegalBoundaryCrud />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/slogan-manager"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <SloganManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/logo-manager"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <LogoManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/title-admin"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <TitleAdmin />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/contact-edit"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <ContactEdit />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/audit-logs"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <AuditLogs />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/password-change-logs"
-              element={
-                <PrivateRoute allowedRoles={['admin']}>
-                  <PasswordChangeLogs />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/blocked-accounts"
-              element={<BlockedAccounts />}
-            />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
-  );
+                            {/* Rutas protegidas para administradores */}
+                            <Route
+                                path="/admin-dashboard"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <AdminDashboard />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/policy-crud"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <PolicyCrud />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/terms-crud"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <TermsCrud />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/social-links-manager"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <SocialLinksManager />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/legal-boundary-crud"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <LegalBoundaryCrud />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/slogan-manager"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <SloganManager />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/logo-manager"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <LogoManager />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/title-admin"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <TitleAdmin />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/contact-edit"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <ContactEdit />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/audit-logs"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <AuditLogs />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/password-change-logs"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <PasswordChangeLogs />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin-dashboard/blocked-accounts"
+                                element={
+                                    <PrivateRoute allowedRoles={['admin']}>
+                                        <BlockedAccounts />
+                                    </PrivateRoute>
+                                }
+                            />
+                        </Routes>
+                    </main>
+                    <Footer />
+                </div>
+            </Router>
+        </AuthProvider>
+    );
 }
 
 export default App;

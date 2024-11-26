@@ -3,28 +3,31 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Cargar el usuario del localStorage si existe
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      setIsAuthenticated(true);
+      setIsAdmin(user.role === 'admin');
     }
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const login = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    setIsAuthenticated(true);
+    setIsAdmin(user.role === 'admin');
   };
 
   const logout = () => {
-    setUser(null);
     localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

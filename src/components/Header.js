@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';//corrigiendo
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 import '../styles/Header.css';
 
-const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout }) => {
+const Header = ({ toggleDarkMode, isDarkMode }) => {
+    const { isAuthenticated, isAdmin, logout } = useContext(AuthContext);
     const [logoUrl, setLogoUrl] = useState('');
     const [slogan, setSlogan] = useState('');
-    const [title, setTitle] = useState(''); // Agregado el estado para el título
+    const [title, setTitle] = useState('');
+    const navigate = useNavigate(); // Aquí se usa useNavigate para la redirección
 
     const fetchHeaderData = async () => {
         try {
@@ -18,18 +21,23 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
                 setLogoUrl(logoResponse.data[0].url);
             }
 
-          //  const titleResponse = await axios.get('https://backendgias.onrender.com/api/title'); // Obtener el título
-           // setTitle(titleResponse.data.title); // Guardar el título en el estado
+            const titleResponse = await axios.get('https://backendgias.onrender.com/api/title');
+            setTitle(titleResponse.data.title);
         } catch (error) {
             console.error('Error al obtener los datos del header:', error);
         }
     };
 
+    const handleLogout = () => {
+        logout(); // Llama a logout para limpiar el estado
+        navigate('/login'); // Redirige al usuario al login
+    };
+
     useEffect(() => {
         fetchHeaderData();
         const intervalId = setInterval(() => {
-            fetchHeaderData(); // Verifica cada 10 segundos
-        }, 5000); // Cambia el tiempo según tus necesidades
+            fetchHeaderData();
+        }, 5000);
 
         return () => clearInterval(intervalId);
     }, []);
@@ -38,7 +46,7 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
         <header className="header">
             <div className="container">
                 {logoUrl && <img src={logoUrl} alt="Logo de GIAS" className="logo" />}
-                <h1>{title}</h1> {/* Renderiza el título de forma dinámica */}
+                <h1>{title}</h1>
                 <p>{slogan}</p>
                 <nav>
                     <ul>
@@ -51,10 +59,16 @@ const Header = ({ toggleDarkMode, isDarkMode, isAuthenticated, isAdmin, onLogout
                         )}
                         {isAuthenticated && (
                             <>
-                                
-                                {isAdmin && <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>}
-                                {!isAdmin && <li><Link to="/dashboard">Dashboard</Link></li>}
-                                <li><button onClick={onLogout}>Cerrar Sesión</button></li>
+                                {isAdmin ? (
+                                    <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>
+                                ) : (
+                                    <li><Link to="/dashboard">Dashboard</Link></li>
+                                )}
+                                <li>
+                                    <button onClick={handleLogout} className="logout-button">
+                                        Cerrar Sesión
+                                    </button>
+                                </li>
                             </>
                         )}
                         <li>

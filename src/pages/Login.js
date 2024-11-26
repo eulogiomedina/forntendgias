@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext'; // Importar el contexto de autenticación
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Carousel } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify'; // Importar react-toastify
 import 'react-toastify/dist/ReactToastify.css'; // Importar el CSS de react-toastify
@@ -8,11 +10,8 @@ import imagen2 from '../assets/imagen2.png';
 import imagen3 from '../assets/imagen3.jpg';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    correo: '',
-    password: ''
-  });
-
+  const [formData, setFormData] = useState({ correo: '', password: '' });
+  const { login } = useContext(AuthContext); // Usar el método login del contexto
   const navigate = useNavigate();
 
   // Cargar reCAPTCHA cuando el componente se monta
@@ -53,9 +52,8 @@ const Login = () => {
       if (response.ok) {
         toast.success('Inicio de sesión exitoso.', { position: 'top-right' });
 
-        // Guardar los datos del usuario en localStorage
-        localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('userRole', result.user.role);
+        // Actualizar el contexto de autenticación
+        login(result.user);
 
         // Redirigir al dashboard según el rol
         setTimeout(() => {
