@@ -16,6 +16,7 @@ import ResetPassword from './pages/ResetPassword';
 import TermsDetail from './components/TermsDetail';
 import DisclaimerDetail from './components/DisclaimerDetail';
 import PolicyCrud from './components/PolicyCrud';
+import PolicyViewer from './components/PolicyDetail';
 import TermsCrud from './components/TermsCrud';
 import SocialLinksManager from './components/SocialLinksManager';
 import LegalBoundaryCrud from './components/LegalBoundaryCrud';
@@ -57,6 +58,7 @@ function App() {
                             <Route path="/reset-password" element={<ResetPassword />} />
                             <Route path="/terminos/:id" element={<TermsDetail />} />
                             <Route path="/deslinde/:id" element={<DisclaimerDetail />} />
+                            <Route path="/politicas/:id" element={<PolicyViewer />} />
 
                             {/* Rutas protegidas para usuarios autenticados */}
                             <Route
