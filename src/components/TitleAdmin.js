@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import '../styles/TitleAdmin.css'
 
 const TitleAdmin = () => {
   const [title, setTitle] = useState(''); // Estado para manejar el título actual
@@ -47,14 +48,14 @@ const TitleAdmin = () => {
   };
 
   return (
-    <div>
-      <h2>{isEditing ? 'Editar Título' : 'Registrar Título'}</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-      
-      <form onSubmit={handleFormSubmit}>
-        <div>
-          <label htmlFor="title">Título:</label>
+    <div className="title-admin-container">
+      <h2 className="title-admin-header">{isEditing ? 'Editar Título' : 'Registrar Título'}</h2>
+      {error && <p className="error-message">{error}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
+
+      <form className="title-admin-form" onSubmit={handleFormSubmit}>
+        <div className="form-group">
+          <label htmlFor="title" className="form-label">Título:</label>
           <input
             type="text"
             id="title"
@@ -63,11 +64,14 @@ const TitleAdmin = () => {
             maxLength="50"
             placeholder="Ingresa el título"
             required
+            className="form-input"
           />
-          <p>{title.length}/50 caracteres</p> {/* Mostrar número de caracteres */}
+          <p className="character-count">{title.length}/50 caracteres</p>
         </div>
 
-        <button type="submit">{isEditing ? 'Actualizar' : 'Registrar'}</button>
+        <button type="submit" className="form-button">
+          {isEditing ? 'Actualizar' : 'Registrar'}
+        </button>
       </form>
     </div>
   );

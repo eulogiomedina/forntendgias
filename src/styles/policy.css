@@ -1,41 +1,183 @@
-/* Estilos para el contenedor principal */
+/* Contenedor de las tarjetas */
 .policy-crud-container {
-    max-width: 800px; /* Ancho máximo del contenedor */
-    margin: 0 auto; /* Centrar el contenedor en la página */
-    padding: 20px; /* Espaciado interno */
-    background-color: #f9f9f9; /* Fondo claro para el contenedor */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave para el contenedor */
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Espaciado entre las tarjetas */
+  padding: 40px;
+  background-color: #f0f4f8; /* Fondo claro */
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo general de las tarjetas */
+.card {
+  border: 1px solid #e0e0e0;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative; /* Para el efecto de sombra al hacer hover */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Efecto de elevación */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Título de la tarjeta */
+.card h3 {
+  margin-top: 0;
+  font-size: 26px;
+  color: #333;
+  border-bottom: 2px solid #007bff; /* Subrayado */
+  padding-bottom: 10px;
+  font-weight: 600; /* Negrita */
+}
+
+/* Estilo de los botones dentro de la tarjeta */
+.card button {
+  padding: 12px 20px;
+  background-color: #007bff; /* Azul del botón */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.2s;
+  font-weight: 500; /* Negrita */
+}
+
+.card button:hover {
+  background-color: #0056b3; /* Azul más oscuro */
+  transform: scale(1.05); /* Efecto de aumento */
+}
+
+/* Estilo para las listas dentro de la tarjeta */
+.card ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.card li {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0; /* Borde ligero */
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Fondo gris claro */
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.card li:hover {
+  background-color: #e9ecef; /* Fondo más oscuro al pasar el mouse */
+  transform: scale(1.02); /* Efecto de aumento */
+}
+
+/* Títulos dentro de los elementos de la lista */
+.card li h4 {
+  margin: 0;
+  font-size: 22px;
+  color: #444;
+  font-weight: 500; /* Negrita */
+}
+
+/* Párrafos dentro de los elementos de la lista */
+.card li p {
+  margin: 5px 0;
+  color: #666;
+}
+
+/* Resaltar información importante dentro de los elementos de la lista */
+.card li span {
+  font-weight: bold;
+  color: #007bff; /* Color azul para resaltar */
+}
+
+/* Estilo de los botones secundarios (editar, eliminar) dentro de la lista */
+.card li button {
+  margin-right: 10px;
+  background-color: #28a745; /* Verde para botones de acción */
+  transition: background-color 0.3s ease;
+}
+
+.card li button:hover {
+  background-color: #218838; /* Hover para botones secundarios */
+}
+
+/* Estilo del botón "Ir" */
+.card .go-button {
+  padding: 12px 20px;
+  background-color: #17a2b8; /* Azul claro */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+  text-align: center;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  font-weight: 500; /* Negrita */
+}
+
+.card .go-button:hover {
+  background-color: #138496; /* Azul más oscuro en hover */
+  transform: scale(1.05);
+}
+
+/* Mensaje de error */
+.error-message {
+  color: #dc3545; /* Rojo para mensajes de error */
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+  background-color: #f8d7da; /* Fondo claro para errores */
+}
+
+/* Estilo de los iconos */
+.card li .icon {
+  margin-right: 8px;
+  vertical-align: middle; /* Alinear verticalmente */
+}
+
+/* Estilo para el contenedor del formulario de nueva política */
+.new-policy-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Estilo para los campos de entrada */
+.new-policy-form input,
+.new-policy-form textarea {
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.new-policy-form input:focus,
+.new-policy-form textarea:focus {
+  border-color: #007bff; /* Azul en el foco */
+  outline: none; /* Sin borde de enfoque */
+}
+
+/* Responsividad para dispositivos pequeños */
+@media (max-width: 768px) {
+  .policy-crud-container {
+    gap: 20px; /* Reducir el espacio entre las tarjetas en pantallas pequeñas */
+    padding: 20px;
   }
-  
-  /* Estilo para los cuadros de texto */
-  input[type='text'],
-  textarea {
-    width: 100%; /* Ancho completo */
-    padding: 10px; /* Espaciado interno */
-    margin-bottom: 15px; /* Margen inferior */
-    border: 1px solid #ccc; /* Borde ligero */
-    border-radius: 5px; /* Bordes redondeados */
-    resize: vertical; /* Permitir redimensionar verticalmente */
+
+  .card {
+    padding: 20px;
   }
-  
-  /* Estilo para el área de texto (textarea) */
-  textarea {
-    height: 150px; /* Altura inicial */
+
+  .new-policy-form input,
+  .new-policy-form textarea {
+    font-size: 14px; /* Reducir tamaño de fuente en dispositivos pequeños */
   }
-  
-  /* Estilos para los botones */
-  button {
-    background-color: #0047AB; /* Color de fondo */
-    color: white; /* Color del texto */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    padding: 10px 15px; /* Espaciado interno */
-    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
-    transition: background-color 0.3s; /* Transición suave al cambiar de color */
-  }
-  
-  button:hover {
-    background-color: #003699; /* Color al pasar el ratón */
-  }
-  
+}

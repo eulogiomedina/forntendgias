@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/LogoAdmin.css'
+
 
 const LogoAdmin = () => {
     const [file, setFile] = useState(null);
@@ -39,7 +41,7 @@ const LogoAdmin = () => {
     };
 
     return (
-        <div>
+        <div className='logo-container'>
             <form onSubmit={handleFormSubmit}>
                 <input 
                     type="file" 

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import '../styles/SloganAdmin.css'
+
 
 const SloganAdmin = () => {
   const [slogan, setSlogan] = useState(''); // Estado para manejar el eslogan actual
@@ -47,7 +49,7 @@ const SloganAdmin = () => {
   };
 
   return (
-    <div>
+    <div className='slogan-container'>
       <h2>{isEditing ? 'Editar Eslogan' : 'Registrar Eslogan'}</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
