@@ -52,6 +52,7 @@
   list-style: disc;
   padding-left: 20px;
   text-align: left;
+  color: white !important;
 }
 
 .info-block h2 {
