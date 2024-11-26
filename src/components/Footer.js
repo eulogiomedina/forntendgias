@@ -126,16 +126,16 @@ const Footer = () => {
           <ul>
             {latestPolicies.map(policy => (
               <li key={policy._id}>
-                <Link to={`/politicas/${policy._id}`}>{policy.title}</Link>
+                <Link to={`/politicas/${policy.id}`}>{policy.title}</Link>
               </li>
             ))}
             {latestTerms.map(term => (
               <li key={term._id}>
-                <Link to={`/terminos/${term._id}`}>{term.title}</Link>
+                <Link to={`/terminos/${term.id}`}>{term.title}</Link>
               </li>
             ))}
             {latestDisclaimer && (
-              <li key={latestDisclaimer._id}>
+              <li key={latestDisclaimer.id}>
                 <Link to={`/deslinde/${latestDisclaimer._id}`}>{latestDisclaimer.title}</Link>
               </li>
             )}
