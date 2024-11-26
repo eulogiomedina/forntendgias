@@ -45,6 +45,7 @@
 .blue {
   background-color: #0047AB;
   color: white;
+  color: white !important;
 }
 
 /* Estilo para listas en los bloques */
