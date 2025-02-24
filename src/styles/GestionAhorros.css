@@ -1,0 +1,54 @@
+.gestion-ahorros-container {
+    max-width: 900px;
+    margin: 110px auto 20px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .ahorros-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .ahorros-table th, .ahorros-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .action-buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 3px;
+  }
+  
+  .add-ahorro-form {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  

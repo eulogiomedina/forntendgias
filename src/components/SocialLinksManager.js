@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/SocialLinksManager.css';
+import API_URL from '../apiConfig';
+
 const SocialLinksManager = () => {
     const [links, setLinks] = useState([]);
     const [newLink, setNewLink] = useState({ platform: '', url: '', status: 'active' });
@@ -10,7 +12,7 @@ const SocialLinksManager = () => {
     useEffect(() => {
         const fetchLinks = async () => {
             try {
-                const response = await axios.get('https://backendgias.onrender.com/api/social-links');
+                const response = await axios.get(`${API_URL}/api/social-links`);
                 setLinks(response.data);
             } catch (error) {
                 console.error('Error fetching social links:', error);
@@ -25,11 +27,11 @@ const SocialLinksManager = () => {
         try {
             if (editId) {
                 // Edit link
-                const response = await axios.put(`https://backendgias.onrender.com/api/social-links/${editId}`, newLink);
+                const response = await axios.put(`${API_URL}/api/social-links/${editId}`, newLink);
                 setLinks(links.map(link => (link._id === editId ? response.data : link)));
             } else {
                 // Add new link
-                const response = await axios.post('https://backendgias.onrender.com/api/social-links', newLink);
+                const response = await axios.post(`${API_URL}/api/social-links`, newLink);
                 setLinks([...links, response.data]);
             }
             resetForm();
@@ -44,7 +46,7 @@ const SocialLinksManager = () => {
     // Eliminar un enlace
     const deleteLink = async (id) => {
         try {
-            await axios.delete(`https://backendgias.onrender.com/api/social-links/${id}`);
+            await axios.delete(`${API_URL}/api/social-links/${id}`);
             setLinks(links.filter(link => link._id !== id));
         } catch (error) {
             console.error('Error deleting social link:', error);

@@ -1,5 +1,6 @@
 import '../styles/AuditStyles.css';
 import React, { useEffect, useState } from 'react';
+import API_URL from '../apiConfig';
 
 const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -9,7 +10,7 @@ const AuditLogs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch('https://backendgias.onrender.com/api/audit/audit-logs');
+        const response = await fetch(`${API_URL}/api/audit/audit-logs`);
         if (!response.ok) {
           throw new Error('Error al obtener los registros');
         }

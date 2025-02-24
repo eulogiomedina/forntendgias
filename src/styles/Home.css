@@ -1,6 +1,6 @@
 /* Contenedor principal de la página */
 .home-container {
-  padding: 50px 20px; /* Espaciado superior e inferior */
+  padding: 20px 20px; /* Espaciado superior e inferior */
   text-align: center;
   margin-top: 100px;
 }
@@ -58,4 +58,42 @@
 
 .info-block h2 {
   margin-bottom: 10px;
+}
+
+/* Estilos para el mapa del sitio */
+.sitemap {
+  margin-top: 50px;
+  padding: 20px;
+  background-color: #f1f3f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sitemap h2 {
+  font-family: 'Roboto', sans-serif;
+  color: #09090a;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.sitemap ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.sitemap ul li {
+  margin: 8px 0;
+}
+
+.sitemap ul li a {
+  text-decoration: none;
+  color: #0047AB;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.sitemap ul li a:hover {
+  text-decoration: underline;
+  color: #17adf3;
 }

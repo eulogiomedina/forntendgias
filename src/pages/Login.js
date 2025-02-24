@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'; // Importar el CSS de react-toas
 import '../styles/Login.css';
 import imagen2 from '../assets/imagen2.png';
 import imagen3 from '../assets/imagen3.jpg';
+import API_URL from '../apiConfig';
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', password: '' });
@@ -41,7 +42,7 @@ const Login = () => {
 
     try {
       // Enviar los datos al servidor para iniciar sesión
-      const response = await fetch('https://backendgias.onrender.com/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, recaptchaToken: recaptchaResponse }),
@@ -113,7 +114,7 @@ const Login = () => {
             </div>
 
             {/* Aquí se incluye el reCAPTCHA */}
-            <div className="g-recaptcha" data-sitekey="6LevFWwqAAAAAJXo2ezz-8y_u_CLAPnvlsOYLYht"></div>
+            <div className="g-recaptcha" data-sitekey="6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_"></div>
 
             <button type="submit">Iniciar Sesión</button>
           </form>

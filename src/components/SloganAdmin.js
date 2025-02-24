@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import '../styles/SloganAdmin.css'
-
+import API_URL from '../apiConfig';
 
 const SloganAdmin = () => {
   const [slogan, setSlogan] = useState(''); // Estado para manejar el eslogan actual
@@ -11,7 +11,7 @@ const SloganAdmin = () => {
 
   const fetchSlogan = async () => {
     try {
-      const response = await axios.get('https://backendgias.onrender.com/api/slogan');
+      const response = await axios.get(`${API_URL}/api/slogan`);
       if (response.data && response.data.slogan) {
         setSlogan(response.data.slogan); // Muestra el eslogan si existe
         setIsEditing(true); // Cambia a modo de edición si ya hay un eslogan
@@ -39,7 +39,7 @@ const SloganAdmin = () => {
     }
 
     try {
-      const response = await axios.post('https://backendgias.onrender.com/api/slogan', { slogan });
+      const response = await axios.post(`${API_URL}/api/slogan`, { slogan });
       setSuccessMessage(isEditing ? 'Eslogan actualizado exitosamente.' : 'Eslogan registrado exitosamente.');
       setIsEditing(true); // Ahora está en modo de edición
     } catch (error) {

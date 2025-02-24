@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import '../styles/TitleAdmin.css'
+import API_URL from '../apiConfig';
 
 const TitleAdmin = () => {
   const [title, setTitle] = useState(''); // Estado para manejar el título actual
@@ -10,7 +11,7 @@ const TitleAdmin = () => {
 
   const fetchTitle = async () => {
     try {
-      const response = await axios.get('https://backendgias.onrender.com/api/title');
+      const response = await axios.get(`${API_URL}/api/title`);
       if (response.data && response.data.title) {
         setTitle(response.data.title); // Muestra el título si existe
         setIsEditing(true); // Cambia a modo de edición si ya hay un título
@@ -38,7 +39,7 @@ const TitleAdmin = () => {
     }
 
     try {
-      const response = await axios.post('https://backendgias.onrender.com/api/title', { title });
+      const response = await axios.post(`${API_URL}/api/title`, { title });
       setSuccessMessage(isEditing ? 'Título actualizado exitosamente.' : 'Título registrado exitosamente.');
       setIsEditing(true); // Ahora está en modo de edición
     } catch (error) {

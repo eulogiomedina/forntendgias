@@ -1,0 +1,239 @@
+.user-management {
+    padding: 110px;
+    background-color: #f5f7fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: auto;
+    font-family: 'Roboto', sans-serif;
+    color: #2c3e50;
+  }
+  
+  h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-bar input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #2c3e50;
+  }
+  
+  .search-bar .search-icon {
+    color: #3498db;
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  .filters {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .filters label {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .filters select {
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 16px;
+    color: #2c3e50;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-table th,
+  .user-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .user-table th {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .user-table tr:hover {
+    background-color: #f5f7fa;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #2c3e50;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  select:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+  
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .save-btn {
+    background-color: #2ecc71;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .save-btn:hover {
+    background-color: #27ae60;
+  }
+  
+  .edit-btn {
+    background-color: #3498db;
+    color: white;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .delete-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  .cancel-btn {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+    margin-left: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cancel-btn:hover {
+    background-color: #95a5a6;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-content {
+    background-color: white;
+    padding: 15px 25px;       /* Reducir el padding para un diseño más compacto */
+    border-radius: 8px;        /* Bordes más redondeados para un mejor diseño */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 350px;          /* Limitar el ancho máximo del modal */
+    width: 90%;                /* Asegura que sea responsivo en pantallas pequeñas */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .modal-buttons {
+    margin-top: 15px;          /* Menos espacio entre el texto y los botones */
+    display: flex;
+    justify-content: space-around;  /* Espaciado equilibrado entre los botones */
+    gap: 10px;                 /* Espacio entre botones */
+  }
+  
+  .confirm-btn, .cancel-btn {
+    padding: 8px 16px;         /* Botones más pequeños */
+    font-size: 14px;           /* Texto más reducido */
+    border-radius: 4px;
+    min-width: 100px;          /* Asegura un tamaño uniforme para ambos botones */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .confirm-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .confirm-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  .cancel-btn {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #95a5a6;
+  }
+  
+  /* Animación de aparición */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  

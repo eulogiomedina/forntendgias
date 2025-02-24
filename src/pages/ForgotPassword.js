@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/ForgotPassword.css';
+import API_URL from '../apiConfig';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/password/send-code', {
+      const response = await fetch(`${API_URL}/api/password/send-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo: email }),

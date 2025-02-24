@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { faMapMarkedAlt, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
+import API_URL from '../apiConfig';
 import '../styles/Footer.css';
 import axios from 'axios';
 
@@ -20,7 +21,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchContactData = async () => {
       try {
-        const response = await fetch('https://backendgias.onrender.com/api/contact/contact-info');
+        const response = await fetch(`${API_URL}/api/contact/contact-info`);
         if (!response.ok) throw new Error('Error en la respuesta del servidor');
         const data = await response.json();
         setContactData(data);
@@ -34,7 +35,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
-        const response = await axios.get('https://backendgias.onrender.com/api/social-links');
+        const response = await axios.get(`${API_URL}/api/social-links`);
         const activeLinks = response.data.filter(link => link.status === 'active');
         setSocialLinks(activeLinks);
       } catch (error) {
@@ -47,7 +48,7 @@ const Footer = () => {
    useEffect(() => {
     const fetchLatestPolicies = async () => {
       try {
-        const response = await axios.get('https://backendgias.onrender.com/api/policies');
+        const response = await axios.get(`${API_URL}/api/policies`);
         const latestPolicy = response.data.reduce((prev, current) => {
           return (prev.version > current.version) ? prev : current;
         });
@@ -63,7 +64,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchLatestTerms = async () => {
       try {
-        const response = await axios.get('https://backendgias.onrender.com/api/terms');
+        const response = await axios.get(`${API_URL}/api/terms`);
         const latestTerm = response.data.reduce((prev, current) => (prev.version > current.version ? prev : current));
         setLatestTerms([latestTerm]);
       } catch (error) {
@@ -76,7 +77,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchLatestDisclaimer = async () => {
       try {
-        const response = await axios.get('https://backendgias.onrender.com/api/legal-boundaries');
+        const response = await axios.get(`${API_URL}/api/legal-boundaries`);
         const latestDisclaimer = response.data.reduce((prev, current) => (prev.version > current.version ? prev : current));
         setLatestDisclaimer(latestDisclaimer);
       } catch (error) {

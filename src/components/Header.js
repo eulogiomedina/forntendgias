@@ -3,34 +3,32 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import '../styles/Header.css';
+import API_URL from '../apiConfig';
 
 const Header = ({ toggleDarkMode, isDarkMode }) => {
     const { isAuthenticated, isAdmin, logout } = useContext(AuthContext);
     const [logoUrl, setLogoUrl] = useState('');
     const [slogan, setSlogan] = useState('');
     const [title, setTitle] = useState('');
-    const navigate = useNavigate(); // Aquí se usa useNavigate para la redirección
+    const navigate = useNavigate();
 
     const fetchHeaderData = async () => {
         try {
-            const sloganResponse = await axios.get('https://backendgias.onrender.com/api/slogan');
+            const sloganResponse = await axios.get(`${API_URL}/api/slogan`);
             setSlogan(sloganResponse.data.slogan);
 
-            const logoResponse = await axios.get('https://backendgias.onrender.com/api/logo');
+            const logoResponse = await axios.get(`${API_URL}/api/logo`);
             if (logoResponse.data.length > 0) {
                 setLogoUrl(logoResponse.data[0].url);
             }
-
-            const titleResponse = await axios.get('https://backendgias.onrender.com/api/title');
-            setTitle(titleResponse.data.title);
         } catch (error) {
             console.error('Error al obtener los datos del header:', error);
         }
     };
 
     const handleLogout = () => {
-        logout(); // Llama a logout para limpiar el estado
-        navigate('/login'); // Redirige al usuario al login
+        logout();
+        navigate('/login');
     };
 
     useEffect(() => {
@@ -51,26 +49,41 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
                 <nav>
                     <ul>
                         <li><Link to="/">Inicio</Link></li>
+
                         {!isAuthenticated && (
                             <>
                                 <li><Link to="/register">Registro</Link></li>
                                 <li><Link to="/login">Login</Link></li>
                             </>
                         )}
+
                         {isAuthenticated && (
                             <>
                                 {isAdmin ? (
+                                    <>
                                     <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>
+                                    <li><Link to="/admin-panel">Gestión Avanzada del Sistema</Link></li>
+                                   </>
                                 ) : (
+                                    <>
                                     <li><Link to="/dashboard">Dashboard</Link></li>
+                                    <li><Link to="/perfil/:userId">Perfil</Link></li>
+                                    </>
                                 )}
-                                <li>
-                                    <button onClick={handleLogout} className="logout-button">
-                                        Cerrar Sesión
-                                    </button>
-                                </li>
                             </>
                         )}
+
+                        {/* ✅ "Ayuda" siempre visible ANTES de "Cerrar Sesión" y "Modo Oscuro" */}
+                        <li><Link to="/ayuda">Ayuda</Link></li>
+
+                        {isAuthenticated && (
+                            <li>
+                                <button onClick={handleLogout} className="logout-button">
+                                    Cerrar Sesión
+                                </button>
+                            </li>
+                        )}
+
                         <li>
                             <button onClick={toggleDarkMode} className="dark-mode-toggle">
                                 {isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}

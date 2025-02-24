@@ -1,0 +1,74 @@
+.breadcrumbs-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 15px 30px;
+    background: linear-gradient(90deg, #004d66, #007acc); /* Degradado en tonos azules */
+    position: fixed;
+    top: 120px;
+    left: 0;
+    z-index: 999;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+    border-radius: 0; /* Se eliminan las esquinas redondeadas */
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espacio entre elementos */
+    font-size: 16px;
+    color: #ffffff; /* Color de texto blanco */
+}
+
+.breadcrumbs ul {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Espacio entre elementos de la lista */
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumbs li {
+    display: flex;
+    align-items: center;
+    position: relative; /* Para efectos de pseudo-elementos */
+}
+
+.breadcrumbs li::after {
+    content: ">";
+    margin-left: 12px;
+    color: #ffffff;
+    opacity: 0.6; /* Menos opacidad para un efecto sutil */
+    transition: color 0.3s; /* Transición suave para el color */
+}
+
+.breadcrumbs li:last-child::after {
+    content: "";
+}
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    position: relative; /* Para efectos de hover */
+    transition: color 0.3s, transform 0.3s; /* Transiciones suaves */
+}
+
+.breadcrumbs a:hover {
+    color: #e0f7fa; /* Color claro al pasar el mouse */
+    transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
+}
+
+.breadcrumbs a::after {
+    content: "";
+    display: block;
+    height: 2px; /* Grosor de la línea */
+    width: 100%;
+    background: #e0f7fa; /* Color de la línea */
+    transform: scaleX(0); /* Comienza oculto */
+    transition: transform 0.3s; /* Transición suave */
+}
+
+.breadcrumbs a:hover::after {
+    transform: scaleX(1); /* Muestra la línea al pasar el mouse */
+}

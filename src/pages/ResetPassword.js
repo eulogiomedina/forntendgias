@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import '../styles/ResetPassword.css';
 import { checkPasswordStrength } from '../utils/PasswordUtils';
-
+import API_URL from '../apiConfig';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -39,7 +39,7 @@ const ResetPassword = () => {
     const token = searchParams.get('token');
 
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/password/reset-password', {
+      const response = await fetch(`${API_URL}/api/password/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword }),

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/ContactEdit.css'; // Estilos para el componente
+import API_URL from '../apiConfig';
 
 const ContactEdit = () => {
   const [contactData, setContactData] = useState({
@@ -36,7 +37,7 @@ const ContactEdit = () => {
     const fetchContactData = async () => {
       try {
         setIsLoading(true); // Mostrar indicador de carga
-        const response = await fetch('https://backendgias.onrender.com/api/contact/contact-info');
+        const response = await fetch(`${API_URL}/api/contact/contact-info`);
         if (!response.ok) {
           throw new Error('Error en la respuesta del servidor');
         }
@@ -72,7 +73,7 @@ const ContactEdit = () => {
 
     try {
       setIsLoading(true); // Mostrar indicador de carga
-      const response = await fetch('https://backendgias.onrender.com/api/contact/contact-info', {
+      const response = await fetch(`${API_URL}/api/contact/contact-info`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/LogoAdmin.css'
+import API_URL from '../apiConfig';
 
 
 const LogoAdmin = () => {
@@ -26,7 +27,7 @@ const LogoAdmin = () => {
         setMessage(''); // Limpiar el mensaje anterior
 
         try {
-            const response = await axios.post('https://backendgias.onrender.com/api/logo', formData, {
+            const response = await axios.post(`${API_URL}/api/logo`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

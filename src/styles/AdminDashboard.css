@@ -2,76 +2,75 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  padding-top: 100px; /* Espacio suficiente para que el header fijo no cubra el contenido */
-  background-color: #f5f5f5;
+  padding: 110px;
+  background-color: #e3f2fd;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
 }
 
-h1 {
-  color: #0047ab;
+.dashboard-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #0d47a1;
   margin-bottom: 20px;
-}
-
-p {
-  color: #333;
-  margin-bottom: 40px;
-}
-
-.dashboard-tools-container {
-  display: grid; /* Usar grid para un diseño responsivo */
-  grid-template-columns: repeat(3, 1fr); /* 3 columnas */
-  gap: 20px; /* Espaciado entre tarjetas */
-  justify-items: center; /* Centrar las tarjetas dentro de las celdas */
-  margin-bottom: 50px;
-  width: 100%; /* Asegúrate de que el contenedor ocupe el 100% del ancho */
-}
-
-.dashboard-tool {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 2px;
   text-align: center;
-  padding: 20px;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-  width: 100%; /* Hacer que la tarjeta ocupe todo el ancho disponible */
-  max-width: 220px; /* Ancho máximo para las tarjetas */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-tool:hover {
-  transform: translateY(-10px);
-}
-
-.tool-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 15px;
-  border-radius: 50%;
-  background-color: #9acd32; /* Color personalizado para el icono */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.view-button {
-  background-color: #0047ab;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.view-button:hover {
-  background-color: #003b8b;
-}
-
-/* Estilos para el CRUD de Políticas */
-.policy-management {
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
   width: 100%;
-  max-width: 800px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+}
+
+.admin-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  border: 2px solid #2196f3;
+  cursor: pointer;
+}
+
+.admin-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  border-color: #0d47a1;
+  background-color: #c3f3f3;
+}
+
+.card-icon {
+  font-size: 60px;
+  color: #0d47a1;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #0d47a1;
+  margin-bottom: 10px;
+}
+
+.card-description {
+  font-size: 16px;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 20px;
+  }
+
+  .card-container {
+    grid-template-columns: 1fr;
+  }
 }

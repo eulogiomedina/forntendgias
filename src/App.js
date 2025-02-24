@@ -28,9 +28,18 @@ import AuditLogs from './components/AuditLogs';
 import PasswordChangeLogs from './components/PasswordChangeLogs';
 import PrivateRoute from './components/PrivateRoute';
 import BlockedAccounts from './components/BlockedAccounts';
+import NotFound from './pages/NotFound';
+import AxiosInterceptor from './pages/AxiosInterceptor'; // Importa el nuevo componente
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChatbotPage from "./components/Chatbot";
+import Help from "./pages/Help";
+import Breadcrumbs from "./components/Breadcrumbs"; // Importamos las migas de pan
+import AdminSidebar from './components/AdminSidebar';
+import UserManagement from './pages/UserManagement';
+import GestionAhorros from './pages/GestionAhorros';
+import PerfilCliente from './pages/PerfilCliente'
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -45,10 +54,14 @@ function App() {
     return (
         <AuthProvider>
             <Router>
+            <AxiosInterceptor>
                 <div className="App">
                     <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+                    <div className="breadcrumbs-container">
+                            <Breadcrumbs />
+                    </div>
                     <ToastContainer position="top-right" autoClose={5000} />
-                    <main>
+                    <main style={{ paddingTop: "80px" }}>
                         <Routes>
                             {/* Rutas públicas */}
                             <Route path="/" element={<Home />} />
@@ -183,10 +196,20 @@ function App() {
                                     </PrivateRoute>
                                 }
                             />
+                            <Route path="*" element={<NotFound />} />
+                            <Route path="/error" element={<NotFound />} />
+                            <Route path="/chatbot" element={<ChatbotPage />} />
+                            <Route path="/ayuda" element={<Help />} />
+                            <Route path='/admin-panel' element={<AdminSidebar/>} />
+                            <Route path="/admin-panel/users" element={<UserManagement />} />
+                            <Route path="/admin-panel/gestionAhorros" element={<GestionAhorros />} />
+                            <Route path="/perfil/:userId" element={<PerfilCliente />} />
+
                         </Routes>
                     </main>
                     <Footer />
                 </div>
+                </AxiosInterceptor>
             </Router>
         </AuthProvider>
     );

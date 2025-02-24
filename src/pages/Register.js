@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../styles/Register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import API_URL from '../apiConfig';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const Register = () => {
   useEffect(() => {
     const fetchEstados = async () => {
       try {
-        const response = await fetch('https://backendgias.onrender.com/api/cupomex/estados', {
+        const response = await fetch(`${API_URL}/api/cupomex/estados`, {
           method: 'GET',
         });
 
@@ -64,7 +65,7 @@ const Register = () => {
     if (!estado) return;
 
     try {
-      const response = await fetch(`https://backendgias.onrender.com/api/cupomex/municipios?estado=${encodeURIComponent(estado)}`, {
+      const response = await fetch(`${API_URL}/api/cupomex/municipios?estado=${encodeURIComponent(estado)}`, {
 
         method: 'GET',
       });
@@ -89,7 +90,7 @@ const Register = () => {
     if (!municipio) return;
 
     try {
-      const response = await fetch(`https://backendgias.onrender.com/api/cupomex/colonias?municipio=${encodeURIComponent(municipio)}`, {
+      const response = await fetch(`${API_URL}/api/cupomex/colonias?municipio=${encodeURIComponent(municipio)}`, {
         method: 'GET',
       });
       
@@ -150,7 +151,7 @@ const Register = () => {
 
   const validateEmail = async () => {
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/validate-email', {
+      const response = await fetch(`${API_URL}/api/validate-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.correo }),
@@ -175,7 +176,7 @@ const Register = () => {
   const validatePhone = async () => {
     const fullPhoneNumber = `${countryCode}${formData.telefono}`;
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/validate-phone', {
+      const response = await fetch(`${API_URL}/api/validate-phone`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: fullPhoneNumber }),
@@ -216,7 +217,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://backendgias.onrender.com/api/users/register', {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, telefono: fullPhoneNumber }),

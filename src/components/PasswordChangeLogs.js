@@ -1,5 +1,6 @@
 import '../styles/AuditStyles.css';
 import React, { useEffect, useState } from 'react';
+import API_URL from '../apiConfig';
 
 const PasswordChangeLogs = () => {
   const [passwordChangeLogs, setPasswordChangeLogs] = useState([]);
@@ -8,7 +9,7 @@ const PasswordChangeLogs = () => {
   useEffect(() => {
     const fetchPasswordChanges = async () => {
       try {
-        const response = await fetch('https://backendgias.onrender.com/api/audit/password-change-logs');
+        const response = await fetch(`${API_URL}/api/audit/password-change-logs`);
         if (!response.ok) {
           throw new Error('Error al obtener los registros de cambios de contraseña');
         }
