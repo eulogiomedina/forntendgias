@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import "../styles/Home.css"; // Archivo CSS para estilos
+import { useState, useEffect } from "react";
 import CarouselOportunidades from "../components/CarouselOportunidades";
 import { Link } from "react-router-dom"; // Para navegación interna
 import axios from "axios"; // Para obtener datos dinámicos del backend
@@ -10,7 +9,7 @@ const Home = () => {
   const [latestTerms, setLatestTerms] = useState([]);
   const [latestDisclaimer, setLatestDisclaimer] = useState(null);
 
-  // ✅ Obtener la última versión de Políticas de Privacidad
+  // Obtener la última versión de Políticas de Privacidad
   useEffect(() => {
     const fetchLatestPolicies = async () => {
       try {
@@ -26,7 +25,7 @@ const Home = () => {
     fetchLatestPolicies();
   }, []);
 
-  // ✅ Obtener la última versión de Términos y Condiciones
+  // Obtener la última versión de Términos y Condiciones
   useEffect(() => {
     const fetchLatestTerms = async () => {
       try {
@@ -42,7 +41,7 @@ const Home = () => {
     fetchLatestTerms();
   }, []);
 
-  // ✅ Obtener la última versión del Deslinde
+  // Obtener la última versión del Deslinde
   useEffect(() => {
     const fetchLatestDisclaimer = async () => {
       try {
@@ -59,21 +58,23 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home-container">
-      <h1 className="main-title">Bienvenido a GIAS</h1>
+    <div className="max-w-full mx-auto p-6 mt-28">
+      <h1 className="text-4xl text-blue-800 font-bold mb-6">Bienvenido a GIAS</h1>
       <CarouselOportunidades />
 
-      <div className="info-container">
-        <div className="info-block red">
-          <h2>Pagos Desde</h2>
+      <div className="flex flex-wrap justify-center gap-6 mt-12">
+        {/* Info Block 1 */}
+        <div className="bg-blue-500 text-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 lg:w-1/3">
+          <h2 className="text-xl font-semibold mb-4">Pagos Desde</h2>
           <ul>
             <li>$334 - $1,000 SEMANAL</li>
             <li>$2,500 - $3,400 MENSUAL</li>
           </ul>
         </div>
 
-        <div className="info-block blue">
-          <h2>Recibe</h2>
+        {/* Info Block 2 */}
+        <div className="bg-blue-800 text-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 lg:w-1/3">
+          <h2 className="text-xl font-semibold mb-4">Recibe</h2>
           <ul>
             <li>$10,000 mil</li>
             <li>$30,000 mil</li>
@@ -82,8 +83,9 @@ const Home = () => {
           </ul>
         </div>
 
-        <div className="info-block red">
-          <h2>Beneficios</h2>
+        {/* Info Block 3 */}
+        <div className="bg-blue-500 text-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 lg:w-1/3">
+          <h2 className="text-xl font-semibold mb-4">Beneficios</h2>
           <ul>
             <li>Contrato</li>
             <li>Tú eliges cuándo cobrar</li>
@@ -94,8 +96,9 @@ const Home = () => {
           </ul>
         </div>
 
-        <div className="info-block blue">
-          <h2>¿Para qué ser parte de GIAS?</h2>
+        {/* Info Block 4 */}
+        <div className="bg-blue-800 text-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 lg:w-1/3">
+          <h2 className="text-xl font-semibold mb-4">¿Para qué ser parte de GIAS?</h2>
           <ul>
             <li>Ampliar tu negocio</li>
             <li>Mejorar tu salud</li>
@@ -109,33 +112,33 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ✅ Sección de Mapa del Sitio con datos obtenidos del backend */}
-      <div className="sitemap">
-        <h2>Mapa del Sitio</h2>
-        <ul>
-          <li><Link to="/">Inicio</Link></li>
-          <li><Link to="/register">Registrarse</Link></li>
-          <li><Link to="/login">Iniciar sesión</Link></li>
-          <li><Link to="/forgot-password">Olvidé mi contraseña</Link></li>
+      {/* Mapa del Sitio */}
+      <div className="bg-gray-100 p-6 rounded-lg shadow-lg mt-12">
+        <h2 className="text-2xl font-semibold mb-4">Mapa del Sitio</h2>
+        <ul className="space-y-2">
+          <li><Link to="/" className="text-blue-700 font-semibold hover:underline">Inicio</Link></li>
+          <li><Link to="/register" className="text-blue-700 font-semibold hover:underline">Registrarse</Link></li>
+          <li><Link to="/login" className="text-blue-700 font-semibold hover:underline">Iniciar sesión</Link></li>
+          <li><Link to="/forgot-password" className="text-blue-700 font-semibold hover:underline">Olvidé mi contraseña</Link></li>
 
-          {/* ✅ Términos y Condiciones dinámicos */}
+          {/* Términos y Condiciones dinámicos */}
           {latestTerms.map(term => (
             <li key={term._id}>
-              <Link to={`/terminos/${term._id}`}>{term.title}</Link>
+              <Link to={`/terminos/${term._id}`} className="text-blue-700 font-semibold hover:underline">{term.title}</Link>
             </li>
           ))}
 
-          {/* ✅ Deslinde dinámico */}
+          {/* Deslinde dinámico */}
           {latestDisclaimer && (
             <li key={latestDisclaimer._id}>
-              <Link to={`/deslinde/${latestDisclaimer._id}`}>{latestDisclaimer.title}</Link>
+              <Link to={`/deslinde/${latestDisclaimer._id}`} className="text-blue-700 font-semibold hover:underline">{latestDisclaimer.title}</Link>
             </li>
           )}
 
-          {/* ✅ Políticas de Privacidad dinámicas */}
+          {/* Políticas de Privacidad dinámicas */}
           {latestPolicies.map(policy => (
             <li key={policy._id}>
-              <Link to={`/politicas/${policy._id}`}>{policy.title}</Link>
+              <Link to={`/politicas/${policy._id}`} className="text-blue-700 font-semibold hover:underline">{policy.title}</Link>
             </li>
           ))}
         </ul>

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/NotFound.css';
 import errorImage400 from '../assets/400Error.jpg';
 import errorImage401 from '../assets/401Error.jpg';
 import errorImage403 from '../assets/403Error.jpg';
@@ -47,7 +46,7 @@ const NotFound = () => {
               navigate('/');
             }
           }}
-          className="error-button"
+          className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700"
         >
           Intentar de Nuevo
         </button>
@@ -57,19 +56,19 @@ const NotFound = () => {
     case 401:
       errorMessage = 'No tienes permisos para acceder a esta página. Por favor, inicia sesión.';
       errorImageSrc = errorImage401;
-      actionButton = <button onClick={() => navigate('/login')} className="error-button">Ir a inicio de sesión</button>;
+      actionButton = <button onClick={() => navigate('/login')} className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700">Ir a inicio de sesión</button>;
       break;
 
     case 403:
       errorMessage = 'Tu cuenta no tiene permisos suficientes para acceder a esta página.';
       errorImageSrc = errorImage403;
-      actionButton = <button onClick={() => navigate('/')} className="error-button">Volver al inicio</button>;
+      actionButton = <button onClick={() => navigate('/')} className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700">Volver al inicio</button>;
       break;
 
     case 404:
       errorMessage = 'Lo sentimos, no pudimos encontrar la página que buscas.';
       errorImageSrc = errorImage404;
-      actionButton = <button onClick={() => navigate('/')} className="error-button">Volver al inicio</button>;
+      actionButton = <button onClick={() => navigate('/')} className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700">Volver al inicio</button>;
       break;
 
     case 500:
@@ -86,7 +85,7 @@ const NotFound = () => {
               window.location.reload();
             }
           }}
-          className="error-button"
+          className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700"
         >
           Reintentar
         </button>
@@ -96,14 +95,14 @@ const NotFound = () => {
     default:
       errorMessage = 'Hubo un error inesperado. Por favor, intenta más tarde.';
       errorImageSrc = errorImage500;
-      actionButton = <button onClick={() => navigate('/')} className="error-button">Volver al inicio</button>;
+      actionButton = <button onClick={() => navigate('/')} className="bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700">Volver al inicio</button>;
   }
 
   return (
-    <main className="not-found-container">
-      <img src={errorImageSrc} alt={`Error ${actualErrorCode}`} className="error-image" />
-      <h1>Error {actualErrorCode}</h1>
-      <p>{errorMessage}</p>
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-8">
+      <img src={errorImageSrc} alt={`Error ${actualErrorCode}`} className="max-w-xs mb-4 rounded-lg shadow-lg" />
+      <h1 className="text-4xl text-red-600 mb-4">Error {actualErrorCode}</h1>
+      <p className="text-xl text-gray-700 mb-4">{errorMessage}</p>
       {actionButton}
     </main>
   );

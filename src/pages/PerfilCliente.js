@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../styles/PerfilCliente.css";
 import { FaUserCircle, FaIdCard, FaTimes } from "react-icons/fa"; // Íconos para usuario, credencial y cerrar
 import API_URL from '../apiConfig';
 
@@ -52,17 +51,17 @@ const PerfilCliente = () => {
   if (!perfil) return <p>No se encontró información del usuario.</p>;
 
   return (
-    <div className="perfil-container">
-      <h2>Perfil del Cliente</h2>
+    <div className="max-w-4xl mx-auto p-8 bg-gradient-to-r from-teal-200 to-teal-300 rounded-lg shadow-lg text-center font-sans">
+      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Perfil del Cliente</h2>
 
-      <div className="perfil-info">
+      <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg mb-8">
         {perfil.fotoPerfil ? (
-          <img src={perfil.fotoPerfil} alt="Foto de perfil" className="foto-perfil" />
+          <img src={perfil.fotoPerfil} alt="Foto de perfil" className="w-36 h-36 rounded-full object-cover mb-4 border-4 border-teal-500" />
         ) : (
-          <FaUserCircle className="icono-usuario" />
+          <FaUserCircle className="text-teal-600 text-6xl mb-4" />
         )}
-
-        <div className="info-texto">
+        
+        <div className="text-lg text-gray-700">
           <p><strong>Nombre:</strong> {perfil.nombre} {perfil.apellidos}</p>
           <p><strong>Correo:</strong> {perfil.correo}</p>
           <p><strong>Teléfono:</strong> {perfil.telefono || "No registrado"}</p>
@@ -70,38 +69,36 @@ const PerfilCliente = () => {
       </div>
 
       {/* 📌 Apartado de Credencial de Elector */}
-      <div className="credencial-container">
-        <h3>📌 Credencial de Elector</h3>
+      <div className="mb-8 bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-xl text-gray-800 mb-4">📌 Credencial de Elector</h3>
         {ahorros.length > 0 && ahorros[0].credencial ? (
-          <button className="btn-ver-credencial" onClick={() => abrirModal(ahorros[0].credencial)}>
+          <button className="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700" onClick={() => abrirModal(ahorros[0].credencial)}>
             📄 Ver Credencial
           </button>
         ) : (
-          <p className="mensaje-no-credencial">
-            <FaIdCard className="icono-credencial" /> No has subido una credencial.
+          <p className="text-gray-500 flex items-center justify-center">
+            <FaIdCard className="text-teal-600 mr-2" /> No has subido una credencial.
           </p>
         )}
       </div>
 
       {/* 📌 Modal de Credencial Ampliada */}
       {modalOpen && (
-        <div className="modal-overlay" onClick={cerrarModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="cerrar-modal" onClick={cerrarModal} tabIndex="-1">
-              <FaTimes />
-            </button>
-            <img src={credencialSeleccionada} alt="Credencial Ampliada" className="imagen-ampliada" />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={cerrarModal}>
+          <div className="bg-white p-4 rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <button className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-700" onClick={cerrarModal}><FaTimes /></button>
+            <img src={credencialSeleccionada} alt="Credencial Ampliada" className="w-full max-w-2xl h-auto rounded-lg" />
           </div>
         </div>
       )}
 
-      <h3>Mis Ahorros</h3>
+      <h3 className="text-2xl font-semibold text-gray-800 mb-4">Mis Ahorros</h3>
       {ahorros.length === 0 ? (
         <p>No tienes ahorros registrados.</p>
       ) : (
-        <ul className="lista-ahorros">
+        <ul className="space-y-4">
           {ahorros.map((ahorro) => (
-            <li key={ahorro._id} className="ahorro-item">
+            <li key={ahorro._id} className="p-4 bg-white rounded-lg shadow-md">
               <p><strong>Monto:</strong> ${ahorro.monto}</p>
               <p><strong>Frecuencia:</strong> {ahorro.tipo}</p>
               <p><strong>Fecha de Inicio:</strong> {new Date(ahorro.fechaInicio).toLocaleDateString()}</p>

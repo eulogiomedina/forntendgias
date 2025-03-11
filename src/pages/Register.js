@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/Register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../apiConfig';
@@ -37,7 +36,7 @@ const Register = () => {
   useEffect(() => {
     const fetchEstados = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/cupomex/estados`, {
+        const response = await fetch(`${API_URL}/api/estados`, {
           method: 'GET',
         });
 
@@ -66,7 +65,6 @@ const Register = () => {
 
     try {
       const response = await fetch(`${API_URL}/api/cupomex/municipios?estado=${encodeURIComponent(estado)}`, {
-
         method: 'GET',
       });
 
@@ -93,7 +91,6 @@ const Register = () => {
       const response = await fetch(`${API_URL}/api/cupomex/colonias?municipio=${encodeURIComponent(municipio)}`, {
         method: 'GET',
       });
-      
 
       if (!response.ok) {
         throw new Error('Error al obtener las colonias.');
@@ -201,8 +198,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Datos enviados al backend:", formData);
-
     if (!isEmailValid) {
       toast.error('No puedes registrarte con un correo inválido.');
       return;
@@ -248,76 +243,79 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-20 mb-12">
       <ToastContainer position="top-right" autoClose={3000} />
-      <h1>Registro</h1>
-      <form className="register-form" onSubmit={handleSubmit}>
-        {/* Nombre */}
-        <div className="form-group">
-          <label>Nombre</label>
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={formData.nombre}
-            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-            required
-          />
-        </div>
+      <h1 className="text-3xl font-semibold text-gray-800 mb-6">Registro</h1>
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        {/* Nombre y Apellidos */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="form-group">
+            <label htmlFor="nombre" className="text-lg font-medium text-gray-700">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              placeholder="Nombre"
+              value={formData.nombre}
+              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+            />
+          </div>
 
-        {/* Apellidos */}
-        <div className="form-group">
-          <label>Apellidos</label>
-          <input
-            type="text"
-            placeholder="Apellidos"
-            value={formData.apellidos}
-            onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="apellidos" className="text-lg font-medium text-gray-700">Apellidos</label>
+            <input
+              id="apellidos"
+              type="text"
+              placeholder="Apellidos"
+              value={formData.apellidos}
+              onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+            />
+          </div>
         </div>
 
         {/* Correo */}
         <div className="form-group">
-          <label>Correo</label>
+          <label htmlFor="correo" className="text-lg font-medium text-gray-700">Correo</label>
           <input
+            id="correo"
             type="email"
             placeholder="Correo"
             value={formData.correo}
             onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
             onBlur={validateEmail}
             required
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
           />
         </div>
 
         {/* Contraseña */}
         <div className="form-group">
-          <label>Contraseña</label>
-          <div style={{ position: 'relative' }}>
+          <label htmlFor="password" className="text-lg font-medium text-gray-700">Contraseña</label>
+          <div className="relative">
             <input
+              id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Contraseña"
               value={formData.password}
               onChange={handlePasswordChange}
               required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer',
-              }}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
             >
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </span>
           </div>
-          <div className={`password-strength ${passwordStrength.toLowerCase()}`}>
+          <div className={`mt-2 text-sm ${passwordStrength === 'Débil' ? 'text-red-500' : passwordStrength === 'Medio' ? 'text-orange-500' : 'text-green-500'}`}>
             Fortaleza: {passwordStrength}
           </div>
           {passwordSuggestions.length > 0 && (
-            <ul className="password-suggestions">
+            <ul className="text-xs text-red-500">
               {passwordSuggestions.map((suggestion, index) => (
                 <li key={index}>{suggestion}</li>
               ))}
@@ -327,12 +325,12 @@ const Register = () => {
 
         {/* Teléfono */}
         <div className="form-group">
-          <label>Número Telefónico</label>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label htmlFor="telefono" className="text-lg font-medium text-gray-700">Número Telefónico</label>
+          <div className="flex">
             <select
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
+              className="p-3 border border-gray-300 rounded-md mr-2"
             >
               <option value="+52">🇲🇽 +52 (México)</option>
               <option value="+1">🇺🇸 +1 (Estados Unidos)</option>
@@ -340,72 +338,82 @@ const Register = () => {
             </select>
             <input
               type="tel"
+              id="telefono"
               placeholder="Número Telefónico"
               value={formData.telefono}
               onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
               onBlur={validatePhone}
               required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
           </div>
         </div>
 
-        {/* Estado */}
-        <div className="form-group">
-          <label>Estado</label>
-          <select
-            value={formData.estado}
-            onChange={(e) => handleEstadoChange(e.target.value)}
-            required
-          >
-            <option value="">Selecciona un estado</option>
-            {estados.map((estado, index) => (
-              <option key={index} value={estado}>
-                {estado}
-              </option>
-            ))}
-          </select>
+        {/* Estado, Municipio, Colonia */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="form-group">
+            <label htmlFor="estado" className="text-lg font-medium text-gray-700">Estado</label>
+            <select
+              id="estado"
+              value={formData.estado}
+              onChange={(e) => handleEstadoChange(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+            >
+              <option value="">Selecciona un estado</option>
+              {estados.map((estado, index) => (
+                <option key={index} value={estado}>
+                  {estado}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="municipio" className="text-lg font-medium text-gray-700">Municipio</label>
+            <select
+              id="municipio"
+              value={formData.municipio}
+              onChange={(e) => handleMunicipioChange(e.target.value)}
+              disabled={!formData.estado}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+            >
+              <option value="">Selecciona un municipio</option>
+              {municipios.map((municipio, index) => (
+                <option key={index} value={municipio}>
+                  {municipio}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="colonia" className="text-lg font-medium text-gray-700">Colonia</label>
+            <select
+              id="colonia"
+              value={formData.colonia}
+              onChange={(e) => setFormData({ ...formData, colonia: e.target.value })}
+              disabled={!formData.municipio}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+            >
+              <option value="">Selecciona una colonia</option>
+              {colonias.map((colonia, index) => (
+                <option key={index} value={colonia}>
+                  {colonia}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Municipio */}
-        <div className="form-group">
-          <label>Municipio</label>
-          <select
-            value={formData.municipio}
-            onChange={(e) => handleMunicipioChange(e.target.value)}
-            disabled={!formData.estado}
-            required
-          >
-            <option value="">Selecciona un municipio</option>
-            {municipios.map((municipio, index) => (
-              <option key={index} value={municipio}>
-                {municipio}
-              </option>
-            ))}
-          </select>
+        {/* Botón para registrar */}
+        <div className="flex justify-center">
+          <button type="submit" disabled={loading} className="w-1/2 py-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
+            {loading ? 'Registrando...' : 'Registrar'}
+          </button>
         </div>
-
-        {/* Colonia */}
-        <div className="form-group">
-          <label>Colonia</label>
-          <select
-            value={formData.colonia}
-            onChange={(e) => setFormData({ ...formData, colonia: e.target.value })}
-            disabled={!formData.municipio}
-            required
-          >
-            <option value="">Selecciona una colonia</option>
-            {colonias.map((colonia, index) => (
-              <option key={index} value={colonia}>
-                {colonia}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Botón Registrar */}
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registrando...' : 'Registrar'}
-        </button>
       </form>
     </div>
   );

@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { faMapMarkedAlt, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../apiConfig';
-import '../styles/Footer.css';
 import axios from 'axios';
 
 const Footer = () => {
@@ -45,14 +44,14 @@ const Footer = () => {
     fetchSocialLinks();
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchLatestPolicies = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/policies`);
         const latestPolicy = response.data.reduce((prev, current) => {
           return (prev.version > current.version) ? prev : current;
         });
-        setLatestPolicies([latestPolicy]); // Solo guardamos la última política
+        setLatestPolicies([latestPolicy]);
       } catch (error) {
         console.error('Error fetching policies:', error);
       }
@@ -88,12 +87,12 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="footer">
-      <div className="container">
-        {/* Contenedor para la sección de redes sociales */}
-        <div className="social-container">
-          <h3>Nuestras Redes:</h3>
-          <div className="social-icons">
+    <footer className="bg-blue-800 text-white py-8">
+      <div className="container mx-auto px-4 text-center">
+        {/* Redes Sociales */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold mb-4">Nuestras Redes:</h3>
+          <div className="flex justify-center space-x-6">
             {socialLinks.map(link => (
               <a
                 key={link._id}
@@ -101,6 +100,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.platform}
+                className="text-white hover:text-gray-300"
               >
                 <FontAwesomeIcon
                   icon={
@@ -112,54 +112,61 @@ const Footer = () => {
                       ? faWhatsapp
                       : null
                   }
+                  className="text-2xl"
                 />
-                {link.platform}
               </a>
             ))}
           </div>
         </div>
 
-        <hr className="footer-divider" />
+        <hr className="border-t border-white my-6" />
 
-        {/* Contenedor para la sección de enlaces legales */}
-        <div className="legal-container">
-          <h3>Enlaces Legales</h3>
-          <ul>
+        {/* Enlaces Legales */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold mb-4">Enlaces Legales</h3>
+          <ul className="space-y-2">
             {latestPolicies.map(policy => (
               <li key={policy._id}>
-                <Link to={`/politicas/${policy._id}`}>{policy.title}</Link>
+                <Link to={`/politicas/${policy._id}`} className="text-white hover:text-gray-300">
+                  {policy.title}
+                </Link>
               </li>
             ))}
             {latestTerms.map(term => (
               <li key={term._id}>
-                <Link to={`/terminos/${term._id}`}>{term.title}</Link>
+                <Link to={`/terminos/${term._id}`} className="text-white hover:text-gray-300">
+                  {term.title}
+                </Link>
               </li>
             ))}
             {latestDisclaimer && (
               <li key={latestDisclaimer._id}>
-                <Link to={`/deslinde/${latestDisclaimer._id}`}>{latestDisclaimer.title}</Link>
+                <Link to={`/deslinde/${latestDisclaimer._id}`} className="text-white hover:text-gray-300">
+                  {latestDisclaimer.title}
+                </Link>
               </li>
             )}
           </ul>
         </div>
 
-        <hr className="footer-divider" />
+        <hr className="border-t border-white my-6" />
 
-        {/* Datos de contacto */}
-        <div className="contact-info">
-          <h3>Datos de Contacto:</h3>
-          <p>
-            <FontAwesomeIcon icon={faMapMarkedAlt} /> Dirección: {contactData.direccion || 'Cargando...'}
+        {/* Datos de Contacto */}
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Datos de Contacto:</h3>
+          <p className="flex items-center justify-center space-x-2 mb-2">
+            <FontAwesomeIcon icon={faMapMarkedAlt} />
+            <span>{contactData.direccion || 'Cargando...'}</span>
           </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> Correo Electrónico: {contactData.correo || 'Cargando...'}
+          <p className="flex items-center justify-center space-x-2 mb-2">
+            <FontAwesomeIcon icon={faEnvelope} />
+            <span>{contactData.correo || 'Cargando...'}</span>
           </p>
-          <p>
-            <FontAwesomeIcon icon={faPhone} /> Número de Teléfono: {contactData.telefono || 'Cargando...'}
+          <p className="flex items-center justify-center space-x-2">
+            <FontAwesomeIcon icon={faPhone} />
+            <span>{contactData.telefono || 'Cargando...'}</span>
           </p>
         </div>
-
-        
       </div>
     </footer>
   );

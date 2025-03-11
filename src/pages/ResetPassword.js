@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import '../styles/ResetPassword.css';
 import { checkPasswordStrength } from '../utils/PasswordUtils';
 import API_URL from '../apiConfig';
 
@@ -61,7 +60,7 @@ const ResetPassword = () => {
   return (
     <div className="reset-password-container">
       <div className="reset-password-form">
-        <h2>Restablecer Contraseña</h2>
+        <h2 className="text-xl font-semibold text-center">Restablecer Contraseña</h2>
         {message && (
           <p className={newPassword !== confirmPassword ? 'error-message' : 'success-message'}>
             {message}
@@ -69,32 +68,27 @@ const ResetPassword = () => {
         )}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Nueva Contraseña:</label>
-            <div className="password-input-container" style={{ position: 'relative' }}>
+            <label className="text-lg font-medium text-gray-700">Nueva Contraseña:</label>
+            <div className="password-input-container relative">
               <input
                 type={passwordVisible ? 'text' : 'password'}
                 value={newPassword}
                 onChange={handlePasswordChange}
                 required
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
               />
               <span
                 onClick={togglePasswordVisibility}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  cursor: 'pointer',
-                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
               >
                 <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
               </span>
             </div>
-            <div className={`password-strength ${passwordStrength.toLowerCase()}`}>
+            <div className={`password-strength mt-2 text-sm ${passwordStrength === 'Débil' ? 'text-red-500' : passwordStrength === 'Medio' ? 'text-orange-500' : 'text-green-500'}`}>
               Fortaleza: {passwordStrength}
             </div>
             {passwordSuggestions.length > 0 && (
-              <ul className="password-suggestions">
+              <ul className="password-suggestions text-xs text-gray-600">
                 {passwordSuggestions.map((suggestion, index) => (
                   <li key={index}>{suggestion}</li>
                 ))}
@@ -103,15 +97,16 @@ const ResetPassword = () => {
           </div>
 
           <div className="form-group">
-            <label>Confirmar Contraseña:</label>
+            <label className="text-lg font-medium text-gray-700">Confirmar Contraseña:</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
           </div>
-          <button type="submit" className="submit-btn">
+          <button type="submit" className="submit-btn w-full py-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
             Restablecer Contraseña
           </button>
         </form>

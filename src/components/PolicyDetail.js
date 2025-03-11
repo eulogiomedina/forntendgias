@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import API_URL from '../apiConfig'; // Ruta de configuración de tu API
-import '../styles/PolicyViewer.css'; // Asegúrate de importar tu archivo CSS
 
 const PolicyViewer = () => {
-  const { id } = useParams(); // Obtén el ID de la URL
+  const { id } = useParams();
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPolicy = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/policies/${id}`); // Obtén la política por ID
-        setPolicy(response.data); // Guarda la política en el estado
+        const response = await axios.get(`${API_URL}/api/policies/${id}`);
+        setPolicy(response.data);
       } catch (error) {
         console.error('Error al obtener la política:', error);
       } finally {
@@ -21,24 +20,29 @@ const PolicyViewer = () => {
       }
     };
 
-    fetchPolicy(); // Llama a la función para obtener la política
+    fetchPolicy();
   }, [id]);
 
   if (loading) {
-    return <div className="loading">Cargando...</div>;
+    return <div className="text-center text-xl text-blue-600">Cargando...</div>;
   }
 
   if (!policy) {
-    return <div className="error">No se encontró la política.</div>;
+    return <div className="text-center text-xl text-red-600">No se encontró la política.</div>;
   }
 
   return (
-    <div className="policy-viewer-container">
-      <div className="policy-viewer-content">
-        <h2 className="policy-title">{policy.title}</h2> {/* Agregar clase para el título */}
-        <h3>Contenido de la Política:</h3> {/* Título adicional para el contenido */}
-        <p>{policy.content}</p>
-        <button onClick={() => window.history.back()}>Regresar</button>
+    <div className="flex flex-col items-center min-h-screen bg-gray-50 py-8">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3">
+        <h2 className="text-2xl font-semibold text-blue-600 mb-4">{policy.title}</h2>
+        <h3 className="text-lg font-medium text-gray-700 mt-4">Contenido de la Política:</h3>
+        <p className="text-gray-600 text-justify mt-2">{policy.content}</p>
+        <button
+          onClick={() => window.history.back()}
+          className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          Regresar
+        </button>
       </div>
     </div>
   );

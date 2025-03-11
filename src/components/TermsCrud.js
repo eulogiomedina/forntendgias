@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import API_URL from '../apiConfig';
-import '../styles/terms.css';
+import API_URL from '../apiConfig'; 
+
 
 const TermsCrud = () => {
   const [terms, setTerms] = useState([]); // Lista de términos
@@ -108,94 +108,150 @@ const TermsCrud = () => {
   };
 
   return (
-    <div className="terms-crud-container">
-      <h2>Gestionar Términos y Condiciones</h2>
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">
+        Gestionar Términos y Condiciones
+      </h2>
 
-      {/* Mensaje de error */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
 
       {/* Crear nuevo término */}
-      <div className="card">
-        <h3>Crear nuevo término</h3>
+      <div className="space-y-6 p-4 bg-gray-100 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold text-gray-800">Crear nuevo término</h3>
         <input
           type="text"
           placeholder="Título"
           value={newTerm.title}
           onChange={(e) => setNewTerm({ ...newTerm, title: e.target.value })}
+          className="input input-bordered w-full p-4 border rounded-md focus:ring-2 focus:ring-blue-500"
         />
         <textarea
           placeholder="Contenido"
           value={newTerm.content}
           onChange={(e) => setNewTerm({ ...newTerm, content: e.target.value })}
+          className="textarea textarea-bordered w-full p-4 border rounded-md focus:ring-2 focus:ring-blue-500"
         />
-        <button onClick={handleCreateTerm}>Crear</button>
+        <button
+          onClick={handleCreateTerm}
+          className="btn btn-primary w-full py-3"
+        >
+          Crear
+        </button>
       </div>
 
       {/* Mostrar términos existentes */}
-      <button onClick={() => setShowTerms(true)}>Ir a Términos Existentes</button>
+      <button
+        onClick={() => setShowTerms(true)}
+        className="btn btn-secondary w-full py-3 mt-6"
+      >
+        Ir a Términos Existentes
+      </button>
 
       {showTerms && (
-        <div className="card">
-          <h3>Términos existentes</h3>
+        <div className="space-y-6 p-4 bg-gray-100 rounded-lg shadow-md mt-6">
+          <h3 className="text-xl font-semibold text-gray-800">Términos existentes</h3>
           <ul>
             {terms.map((term) => (
-              <li key={term._id}>
+              <li key={term._id} className="border-b py-4">
                 {editingTerm && editingTerm._id === term._id ? (
-                  <>
+                  <div className="space-y-4">
                     <input
                       type="text"
                       value={editingTerm.title}
                       onChange={(e) => setEditingTerm({ ...editingTerm, title: e.target.value })}
+                      className="input input-bordered w-full p-4"
                     />
                     <textarea
                       value={editingTerm.content}
                       onChange={(e) => setEditingTerm({ ...editingTerm, content: e.target.value })}
+                      className="textarea textarea-bordered w-full p-4"
                     />
-                    <button onClick={handleSaveTerm}>Guardar</button>
-                    <button onClick={() => setEditingTerm(null)}>Cancelar</button>
-                  </>
+                    <button
+                      onClick={handleSaveTerm}
+                      className="btn btn-primary w-full py-3 mt-4"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={() => setEditingTerm(null)}
+                      className="btn btn-secondary w-full py-3 mt-4"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 ) : (
-                  <>
-                    <h4>
-                      {term.title} {term.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
+                  <div className="space-y-4">
+                    <h4 className="text-xl font-semibold text-gray-800">
+                      {term.title} {term.isCurrent ? <span className="text-green-500">(Vigente)</span> : <span className="text-gray-500">(No Vigente)</span>}
                     </h4>
-                    <p>{term.content}</p>
-                    <p>Versión: {term.version || 1}</p>
-                    <p>Fecha de creación: {new Date(term.createdAt).toLocaleString()}</p>
-                    <button onClick={() => setEditingTerm(term)}>Editar</button>
-                    <button onClick={() => handleDeleteTerm(term._id)}>Eliminar</button>
-                  </>
+                    <p className="text-gray-700">{term.content}</p>
+                    <p className="text-sm text-gray-500">Versión: {term.version || 1}</p>
+                    <p className="text-sm text-gray-500">Fecha de creación: {new Date(term.createdAt).toLocaleString()}</p>
+                    <div className="space-x-4">
+                      <button
+                        onClick={() => setEditingTerm(term)}
+                        className="btn btn-warning"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTerm(term._id)}
+                        className="btn btn-danger"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowTerms(false)}>Regresar</button>
+          <button
+            onClick={() => setShowTerms(false)}
+            className="btn btn-secondary w-full py-3 mt-6"
+          >
+            Regresar
+          </button>
         </div>
       )}
 
       {/* Mostrar historial de términos */}
-      <button onClick={() => setShowHistory(true)}>Ir al Historial de Términos</button>
+      <button
+        onClick={() => setShowHistory(true)}
+        className="btn btn-secondary w-full py-3 mt-6"
+      >
+        Ir al Historial de Términos
+      </button>
 
       {showHistory && (
-        <div className="card">
-          <h3>Historial de Términos</h3>
+        <div className="space-y-6 p-4 bg-gray-100 rounded-lg shadow-md mt-6">
+          <h3 className="text-xl font-semibold text-gray-800">Historial de Términos</h3>
           <ul>
             {historyTerms.map((term) => (
-              <li key={term._id}>
-                <h4>
-                  {term.title}{' '}
-                  {term.isDeleted ? <span>(Eliminado)</span> : term.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
+              <li key={term._id} className="border-b py-4">
+                <h4 className="text-xl font-semibold text-gray-800">
+                  {term.title} {term.isDeleted ? <span className="text-red-500">(Eliminado)</span> : term.isCurrent ? <span className="text-green-500">(Vigente)</span> : <span className="text-gray-500">(No Vigente)</span>}
                 </h4>
-                <p>{term.content}</p>
-                <p>Versión: {term.version || 1}</p>
-                <p>Fecha de creación: {new Date(term.createdAt).toLocaleString()}</p>
+                <p className="text-gray-700">{term.content}</p>
+                <p className="text-sm text-gray-500">Versión: {term.version || 1}</p>
+                <p className="text-sm text-gray-500">Fecha de creación: {new Date(term.createdAt).toLocaleString()}</p>
                 {term.isDeleted && (
-                  <button onClick={() => handleRestoreTerm(term._id)}>Restaurar</button>
+                  <button
+                    onClick={() => handleRestoreTerm(term._id)}
+                    className="btn btn-success mt-4"
+                  >
+                    Restaurar
+                  </button>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowHistory(false)}>Regresar</button>
+          <button
+            onClick={() => setShowHistory(false)}
+            className="btn btn-secondary w-full py-3 mt-6"
+          >
+            Regresar
+          </button>
         </div>
       )}
     </div>

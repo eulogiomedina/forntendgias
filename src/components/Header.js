@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import '../styles/Header.css';
 import API_URL from '../apiConfig';
 
 const Header = ({ toggleDarkMode, isDarkMode }) => {
@@ -41,19 +40,21 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
     }, []);
 
     return (
-        <header className="header">
-            <div className="container">
-                {logoUrl && <img src={logoUrl} alt="Logo de GIAS" className="logo" />}
-                <h1>{title}</h1>
-                <p>{slogan}</p>
+        <header className="fixed top-0 w-full bg-blue-700 text-white z-10 h-25" >
+            <div className="container mx-auto flex justify-between items-center px-4">
+                {logoUrl && <img src={logoUrl} alt="Logo de GIAS" className="w-28 h-auto" />}
+                <div>
+                    <h1 className="text-2xl font-bold">{title}</h1>
+                    <p>{slogan}</p>
+                </div>
                 <nav>
-                    <ul>
-                        <li><Link to="/">Inicio</Link></li>
+                    <ul className="flex space-x-6">
+                        <li><Link to="/" className="text-white hover:text-gray-300 font-semibold">Inicio</Link></li>
 
                         {!isAuthenticated && (
                             <>
-                                <li><Link to="/register">Registro</Link></li>
-                                <li><Link to="/login">Login</Link></li>
+                                <li><Link to="/register" className="text-white hover:text-gray-300 font-semibold">Registro</Link></li>
+                                <li><Link to="/login" className="text-white hover:text-gray-300 font-semibold">Login</Link></li>
                             </>
                         )}
 
@@ -61,31 +62,30 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
                             <>
                                 {isAdmin ? (
                                     <>
-                                    <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>
-                                    <li><Link to="/admin-panel">Gestión Avanzada del Sistema</Link></li>
-                                   </>
+                                        <li><Link to="/admin-dashboard" className="text-white hover:text-gray-300 font-semibold">Admin Dashboard</Link></li>
+                                        <li><Link to="/admin-panel" className="text-white hover:text-gray-300 font-semibold">Gestión Avanzada del Sistema</Link></li>
+                                    </>
                                 ) : (
                                     <>
-                                    <li><Link to="/dashboard">Dashboard</Link></li>
-                                    <li><Link to="/perfil/:userId">Perfil</Link></li>
+                                        <li><Link to="/dashboard" className="text-white hover:text-gray-300 font-semibold">Dashboard</Link></li>
+                                        <li><Link to="/perfil/:userId" className="text-white hover:text-gray-300 font-semibold">Perfil</Link></li>
                                     </>
                                 )}
                             </>
                         )}
 
-                        {/* ✅ "Ayuda" siempre visible ANTES de "Cerrar Sesión" y "Modo Oscuro" */}
-                        <li><Link to="/ayuda">Ayuda</Link></li>
+                        <li><Link to="/ayuda" className="text-white hover:text-gray-300 font-semibold">Ayuda</Link></li>
 
                         {isAuthenticated && (
                             <li>
-                                <button onClick={handleLogout} className="logout-button">
+                                <button onClick={handleLogout} className="bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded-md font-semibold">
                                     Cerrar Sesión
                                 </button>
                             </li>
                         )}
 
                         <li>
-                            <button onClick={toggleDarkMode} className="dark-mode-toggle">
+                            <button onClick={toggleDarkMode} className="bg-gray-600 hover:bg-gray-800 text-white py-2 px-4 rounded-md font-semibold">
                                 {isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}
                             </button>
                         </li>

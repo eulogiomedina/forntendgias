@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import '../styles/SloganAdmin.css'
 import API_URL from '../apiConfig';
 
 const SloganAdmin = () => {
@@ -49,14 +48,17 @@ const SloganAdmin = () => {
   };
 
   return (
-    <div className='slogan-container'>
-      <h2>{isEditing ? 'Editar Eslogan' : 'Registrar Eslogan'}</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+    <div className="max-w-lg mx-auto mt-20 p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-lg">
+      <h2 className="text-xl font-semibold text-center text-gray-700 mb-6">
+        {isEditing ? 'Editar Eslogan' : 'Registrar Eslogan'}
+      </h2>
       
-      <form onSubmit={handleFormSubmit}>
-        <div>
-          <label htmlFor="slogan">Eslogan:</label>
+      {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
+      {successMessage && <p className="text-green-600 text-sm mb-4">{successMessage}</p>}
+      
+      <form onSubmit={handleFormSubmit} className="flex flex-col">
+        <div className="mb-4">
+          <label htmlFor="slogan" className="block text-sm font-medium text-gray-700 mb-2">Eslogan:</label>
           <input
             type="text"
             id="slogan"
@@ -65,11 +67,17 @@ const SloganAdmin = () => {
             maxLength="100"
             placeholder="Ingresa el eslogan"
             required
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <p>{slogan.length}/100 caracteres</p> {/* Mostrar número de caracteres */}
+          <p className="text-right text-sm text-gray-500">{slogan.length}/100 caracteres</p>
         </div>
 
-        <button type="submit">{isEditing ? 'Actualizar' : 'Registrar'}</button>
+        <button 
+          type="submit" 
+          className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:bg-gray-400" 
+          disabled={slogan.length === 0 || error}>
+          {isEditing ? 'Actualizar' : 'Registrar'}
+        </button>
       </form>
     </div>
   );

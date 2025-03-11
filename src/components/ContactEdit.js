@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/ContactEdit.css'; // Estilos para el componente
 import API_URL from '../apiConfig';
 
 const ContactEdit = () => {
@@ -94,22 +93,23 @@ const ContactEdit = () => {
   };
 
   return (
-    <div className="contact-edit-container">
+    <div className="max-w-md mx-auto p-8 bg-white rounded-xl shadow-lg mt-20">
       <ToastContainer />
-      <h1>Modificar Datos de Contacto</h1>
+      <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Modificar Datos de Contacto</h1>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Dirección</label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Dirección</label>
           <input
             type="text"
             name="direccion"
             value={contactData.direccion}
             onChange={handleChange}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="form-group">
-          <label>Correo Electrónico</label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Correo Electrónico</label>
           <input
             type="email"
             name="correo"
@@ -117,11 +117,12 @@ const ContactEdit = () => {
             onChange={handleChange}
             onBlur={handleBlur}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.correo && <span className="error-message">{errors.correo}</span>}
+          {errors.correo && <span className="text-red-500 text-sm">{errors.correo}</span>}
         </div>
-        <div className="form-group">
-          <label>Número de Teléfono</label>
+        <div className="mb-6">
+          <label className="block text-gray-700">Número de Teléfono</label>
           <input
             type="tel"
             name="telefono"
@@ -129,10 +130,15 @@ const ContactEdit = () => {
             onChange={handleChange}
             onBlur={handleBlur}
             required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.telefono && <span className="error-message">{errors.telefono}</span>}
+          {errors.telefono && <span className="text-red-500 text-sm">{errors.telefono}</span>}
         </div>
-        <button type="submit" disabled={isLoading}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
+        >
           {isLoading ? 'Guardando...' : 'Guardar Cambios'}
         </button>
       </form>
@@ -141,4 +147,3 @@ const ContactEdit = () => {
 };
 
 export default ContactEdit;
-

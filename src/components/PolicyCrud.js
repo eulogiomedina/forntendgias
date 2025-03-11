@@ -1,35 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import API_URL from '../apiConfig';
-import '../styles/policy.css';
 
 const PolicyCrud = () => {
-  const [policies, setPolicies] = useState([]); // Lista de políticas
-  const [newPolicy, setNewPolicy] = useState({ title: '', content: '' }); // Nueva política
-  const [historyPolicies, setHistoryPolicies] = useState([]); // Historial con eliminadas
-  const [editingPolicy, setEditingPolicy] = useState(null); // Política en edición
-  const [showPolicies, setShowPolicies] = useState(false); // Controla la visibilidad de las políticas
-  const [showHistory, setShowHistory] = useState(false); // Controla la visibilidad del historial de políticas
-  const [errorMessage, setErrorMessage] = useState(''); // Mensaje de error
+  const [policies, setPolicies] = useState([]);
+  const [newPolicy, setNewPolicy] = useState({ title: '', content: '' });
+  const [historyPolicies, setHistoryPolicies] = useState([]);
+  const [editingPolicy, setEditingPolicy] = useState(null);
+  const [showPolicies, setShowPolicies] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    fetchPolicies(); // Cargar todas las políticas al montar el componente
+    fetchPolicies();
   }, []);
 
-  // Obtener todas las políticas y ordenarlas
   const fetchPolicies = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/policies`);
       const allPolicies = response.data;
 
-      // Filtrar políticas no eliminadas
       const sortedPolicies = allPolicies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       const filteredPolicies = sortedPolicies.filter((policy) => !policy.isDeleted);
 
-      // Identificar la política vigente (última versión no eliminada)
       const latestPolicy = filteredPolicies.find((policy) => !policy.isDeleted);
       if (latestPolicy) {
-        latestPolicy.isCurrent = true; // Marca la última versión como vigente
+        latestPolicy.isCurrent = true;
       }
 
       setPolicies(filteredPolicies);
@@ -39,13 +35,11 @@ const PolicyCrud = () => {
     }
   };
 
-  // Validación para evitar etiquetas HTML maliciosas
   const containsHTMLTags = (str) => {
     const regex = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
     return regex.test(str);
   };
 
-  // Crear nueva política con validación
   const handleCreatePolicy = async () => {
     if (!newPolicy.title || !newPolicy.content) {
       setErrorMessage('Título y contenido no pueden estar vacíos');
@@ -66,7 +60,6 @@ const PolicyCrud = () => {
     }
   };
 
-  // Editar política existente con validación
   const handleSavePolicy = async () => {
     if (!editingPolicy || !editingPolicy.title || !editingPolicy.content) {
       setErrorMessage('Título y contenido no pueden estar vacíos');
@@ -87,7 +80,6 @@ const PolicyCrud = () => {
     }
   };
 
-  // Eliminar política lógicamente
   const handleDeletePolicy = async (id) => {
     try {
       await axios.delete(`${API_URL}/api/policies/delete/${id}`);
@@ -97,7 +89,6 @@ const PolicyCrud = () => {
     }
   };
 
-  // Restaurar política eliminada
   const handleRestorePolicy = async (id) => {
     try {
       await axios.put(`${API_URL}/api/policies/restore/${id}`);
@@ -108,94 +99,153 @@ const PolicyCrud = () => {
   };
 
   return (
-    <div className="policy-crud-container">
-      <h2>Gestionar Políticas</h2>
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Gestionar Políticas</h2>
 
-      {/* Mensaje de error */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div className="text-red-600 text-center mb-4">{errorMessage}</div>}
 
       {/* Crear nueva política */}
-      <div className="card">
-        <h3>Crear nueva política</h3>
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Crear nueva política</h3>
         <input
           type="text"
+          className="w-full p-3 mb-3 border border-gray-300 rounded-md"
           placeholder="Título"
           value={newPolicy.title}
           onChange={(e) => setNewPolicy({ ...newPolicy, title: e.target.value })}
         />
         <textarea
+          className="w-full p-3 mb-3 border border-gray-300 rounded-md"
           placeholder="Contenido"
           value={newPolicy.content}
           onChange={(e) => setNewPolicy({ ...newPolicy, content: e.target.value })}
         />
-        <button onClick={handleCreatePolicy}>Crear</button>
+        <button
+          onClick={handleCreatePolicy}
+          className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          Crear
+        </button>
       </div>
 
       {/* Mostrar políticas existentes */}
-      <button onClick={() => setShowPolicies(true)}>Ir a Políticas Existentes</button>
+      <button
+        onClick={() => setShowPolicies(true)}
+        className="mb-4 w-full p-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+      >
+        Ir a Políticas Existentes
+      </button>
 
       {showPolicies && (
-        <div className="card">
-          <h3>Políticas existentes</h3>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">Políticas existentes</h3>
           <ul>
             {policies.map((policy) => (
-              <li key={policy._id}>
+              <li key={policy._id} className="mb-4 p-4 bg-white border border-gray-300 rounded-md shadow-sm">
                 {editingPolicy && editingPolicy._id === policy._id ? (
                   <>
                     <input
                       type="text"
+                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
                       value={editingPolicy.title}
                       onChange={(e) => setEditingPolicy({ ...editingPolicy, title: e.target.value })}
                     />
                     <textarea
+                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
                       value={editingPolicy.content}
                       onChange={(e) => setEditingPolicy({ ...editingPolicy, content: e.target.value })}
                     />
-                    <button onClick={handleSavePolicy}>Guardar</button>
-                    <button onClick={() => setEditingPolicy(null)}>Cancelar</button>
+                    <button
+                      onClick={handleSavePolicy}
+                      className="w-full p-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={() => setEditingPolicy(null)}
+                      className="w-full p-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition mt-2"
+                    >
+                      Cancelar
+                    </button>
                   </>
                 ) : (
                   <>
-                    <h4>
+                    <h4 className="text-lg font-semibold text-gray-800">
                       {policy.title} {policy.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
                     </h4>
-                    <p>{policy.content}</p>
-                    <p>Versión: {policy.version || 1}</p>
-                    <p>Fecha de creación: {new Date(policy.createdAt).toLocaleString()}</p>
-                    <button onClick={() => setEditingPolicy(policy)}>Editar</button>
-                    <button onClick={() => handleDeletePolicy(policy._id)}>Eliminar</button>
+                    <p className="text-gray-600 mb-3">{policy.content}</p>
+                    <p className="text-sm text-gray-500">Versión: {policy.version || 1}</p>
+                    <p className="text-sm text-gray-500">Fecha de creación: {new Date(policy.createdAt).toLocaleString()}</p>
+                    <button
+                      onClick={() => setEditingPolicy(policy)}
+                      className="p-2 bg-yellow-500 text-white rounded-md mt-2 hover:bg-yellow-600 transition"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDeletePolicy(policy._id)}
+                      className="p-2 bg-red-500 text-white rounded-md mt-2 hover:bg-red-600 transition"
+                    >
+                      Eliminar
+                    </button>
                   </>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowPolicies(false)}>Regresar</button>
+          <button
+            onClick={() => setShowPolicies(false)}
+            className="w-full p-3 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
+          >
+            Regresar
+          </button>
         </div>
       )}
 
       {/* Mostrar historial de políticas */}
-      <button onClick={() => setShowHistory(true)}>Ir al Historial de Políticas</button>
+      <button
+        onClick={() => setShowHistory(true)}
+        className="mb-4 w-full p-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+      >
+        Ir al Historial de Políticas
+      </button>
 
       {showHistory && (
-        <div className="card">
-          <h3>Historial de Políticas</h3>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">Historial de Políticas</h3>
           <ul>
             {historyPolicies.map((policy) => (
-              <li key={policy._id}>
-                <h4>
+              <li key={policy._id} className="mb-4 p-4 bg-white border border-gray-300 rounded-md shadow-sm">
+                <h4 className="text-lg font-semibold text-gray-800">
                   {policy.title}{' '}
-                  {policy.isDeleted ? <span>(Eliminada)</span> : policy.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
+                  {policy.isDeleted ? (
+                    <span className="text-red-600">(Eliminada)</span>
+                  ) : policy.isCurrent ? (
+                    <span className="text-green-600">(Vigente)</span>
+                  ) : (
+                    <span className="text-yellow-600">(No Vigente)</span>
+                  )}
                 </h4>
-                <p>{policy.content}</p>
-                <p>Versión: {policy.version || 1}</p>
-                <p>Fecha de creación: {new Date(policy.createdAt).toLocaleString()}</p>
+                <p className="text-gray-600 mb-3">{policy.content}</p>
+                <p className="text-sm text-gray-500">Versión: {policy.version || 1}</p>
+                <p className="text-sm text-gray-500">Fecha de creación: {new Date(policy.createdAt).toLocaleString()}</p>
                 {policy.isDeleted && (
-                  <button onClick={() => handleRestorePolicy(policy._id)}>Restaurar</button>
+                  <button
+                    onClick={() => handleRestorePolicy(policy._id)}
+                    className="p-2 bg-green-500 text-white rounded-md mt-2 hover:bg-green-600 transition"
+                  >
+                    Restaurar
+                  </button>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowHistory(false)}>Regresar</button>
+          <button
+            onClick={() => setShowHistory(false)}
+            className="w-full p-3 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
+          >
+            Regresar
+          </button>
         </div>
       )}
     </div>

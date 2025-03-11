@@ -13,11 +13,29 @@ const UserDropdown = () => {
   };
 
   return (
-    <NavDropdown title={user ? user.nombre : 'Usuario'} id="user-dropdown" align="end">
-      <NavDropdown.Item onClick={() => navigate('/profile')}>Configuración de Perfil</NavDropdown.Item>
-      <NavDropdown.Item onClick={() => navigate('/savings')}>Mis Ahorros</NavDropdown.Item>
+    <NavDropdown 
+      title={user ? user.nombre : 'Usuario'} 
+      id="user-dropdown" 
+      align="end"
+      className="flex items-center space-x-2 mr-5"
+    >
+      {user && user.profilePicture && (
+        <img
+          src={user.profilePicture}
+          alt="Profile"
+          className="w-10 h-10 rounded-full object-cover cursor-pointer"
+        />
+      )}
+      <NavDropdown.Item onClick={() => navigate('/profile')} className="font-semibold text-gray-700">
+        Configuración de Perfil
+      </NavDropdown.Item>
+      <NavDropdown.Item onClick={() => navigate('/savings')} className="font-semibold text-gray-700">
+        Mis Ahorros
+      </NavDropdown.Item>
       <NavDropdown.Divider />
-      <NavDropdown.Item onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
+      <NavDropdown.Item onClick={handleLogout} className="font-semibold text-red-500">
+        Cerrar Sesión
+      </NavDropdown.Item>
     </NavDropdown>
   );
 };

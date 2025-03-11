@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/AdminDashboard.css';
 import { FaShieldAlt, FaFileContract, FaShareAlt, FaGavel, FaBullhorn, FaImage, FaHeading, FaAddressBook, FaSignInAlt, FaKey, FaUserLock } from 'react-icons/fa';
 
 const AdminDashboard = () => {
@@ -21,14 +20,18 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="admin-dashboard-container">
-      <h1 className="dashboard-title">Panel de Administrador</h1>
-      <div className="card-container">
+    <div className="flex flex-col items-center p-28 bg-blue-50 min-h-screen font-sans shadow-xl rounded-lg">
+      <h1 className="text-4xl font-bold text-blue-900 mb-8 uppercase text-center tracking-wide shadow-sm">Panel de Administrador</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-screen-xl">
         {tools.map((tool, index) => (
-          <div key={index} className="admin-card" onClick={() => navigate(tool.path)}>
-            <div className="card-icon">{tool.icon}</div>
-            <h2 className="card-title">{tool.title}</h2>
-            <p className="card-description">{tool.description}</p>
+          <div 
+            key={index} 
+            className="bg-white rounded-lg shadow-lg p-6 text-center transform transition-transform duration-300 cursor-pointer hover:translate-y-2 hover:shadow-2xl hover:bg-blue-100 hover:border-blue-800 border-2 border-blue-500"
+            onClick={() => navigate(tool.path)}
+          >
+            <div className="text-5xl text-blue-900 mb-4">{tool.icon}</div>
+            <h2 className="text-2xl font-semibold text-blue-900 mb-2">{tool.title}</h2>
+            <p className="text-base text-gray-700">{tool.description}</p>
           </div>
         ))}
       </div>

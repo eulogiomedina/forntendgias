@@ -11,17 +11,17 @@ const UserHeader = ({ onLogout, toggleDarkMode, isDarkMode }) => {
   };
 
   return (
-    <header className="header">
-      <div className="container">
-        <h1>GIAS Usuario</h1>
+    <header className="fixed top-0 w-full bg-blue-700 text-white z-10 py-4">
+      <div className="container mx-auto flex justify-between items-center max-w-screen-xl px-4">
+        <h1 className="text-xl font-semibold">GIAS Usuario</h1>
         <nav>
-          <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/profile">Perfil</a></li>
-            <li><a href="/savings">Ahorros</a></li>
-            <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+          <ul className="flex space-x-5">
+            <li><a href="/dashboard" className="text-white font-bold">Dashboard</a></li>
+            <li><a href="/profile" className="text-white font-bold">Perfil</a></li>
+            <li><a href="/savings" className="text-white font-bold">Ahorros</a></li>
+            <li><button onClick={handleLogout} className="text-white font-bold">Cerrar sesión</button></li>
             <li>
-              <button onClick={toggleDarkMode}>
+              <button onClick={toggleDarkMode} className="text-white font-bold">
                 {isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}
               </button>
             </li>

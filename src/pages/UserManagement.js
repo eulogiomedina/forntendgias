@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_URL from '../apiConfig';
-import '../styles/UserManagement.css';
 import { FaUserEdit, FaUserTimes, FaSave, FaSearch, FaTimes } from 'react-icons/fa';
 
 const UserManagement = () => {
@@ -39,28 +38,26 @@ const UserManagement = () => {
   };
 
   const handleCancel = () => {
-    setEditingAccount(null); // Cancelar la edición y volver a la vista normal
+    setEditingAccount(null);
   };
 
   const confirmDelete = (id) => {
-    setConfirmDeleteId(id); // Muestra el modal para confirmar
+    setConfirmDeleteId(id);
   };
-  
+
   const handleDelete = async () => {
     try {
       await axios.delete(`${API_URL}/api/acc/${confirmDeleteId}`);
       setAccounts(accounts.filter((account) => account._id !== confirmDeleteId));
-      setConfirmDeleteId(null); // Cierra el modal después de eliminar
+      setConfirmDeleteId(null);
     } catch (error) {
       console.error('Error al eliminar cuenta:', error);
     }
   };
-  
+
   const handleCancelDelete = () => {
-    setConfirmDeleteId(null); // Cierra el modal sin eliminar
+    setConfirmDeleteId(null);
   };
-  
-  
 
   const handleChange = (e) => {
     setEditingAccount({ ...editingAccount, [e.target.name]: e.target.value });
@@ -86,42 +83,51 @@ const UserManagement = () => {
   });
 
   return (
-    <div className="user-management">
-      <h1>Gestión de Usuarios</h1>
+    <div className="p-10 bg-gray-100 rounded-lg shadow-md max-w-6xl mx-auto">
+      <h1 className="text-4xl font-semibold text-center text-gray-800 mb-8">Gestión de Usuarios</h1>
 
-      <div className="search-bar">
+      {/* Search Bar */}
+      <div className="flex items-center mb-6 border border-gray-300 rounded-lg p-3 bg-white shadow-sm">
         <input
           type="text"
           placeholder="Buscar por nombre, correo, teléfono o apellidos"
           value={searchTerm}
           onChange={handleSearch}
+          className="flex-1 p-2 border-none outline-none text-gray-700 text-lg"
         />
-        <FaSearch className="search-icon" />
+        <FaSearch className="text-blue-500 ml-2" />
       </div>
 
-      <div className="filters">
-        <label>Filtrar por Rol:</label>
-        <select name="role" value={filters.role} onChange={handleFilterChange}>
+      {/* Filters */}
+      <div className="flex items-center mb-6">
+        <label className="mr-3 font-semibold">Filtrar por Rol:</label>
+        <select
+          name="role"
+          value={filters.role}
+          onChange={handleFilterChange}
+          className="p-2 border border-gray-300 rounded-lg w-52 bg-white shadow-sm"
+        >
           <option value="">Todos los roles</option>
           <option value="user">Usuario</option>
           <option value="admin">Administrador</option>
         </select>
       </div>
 
-      <table className="user-table">
+      {/* User Table */}
+      <table className="w-full bg-white shadow-sm rounded-lg overflow-hidden">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Correo Electrónico</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Acciones</th>
+            <th className="py-3 px-4 bg-blue-600 text-white font-semibold text-left">Nombre</th>
+            <th className="py-3 px-4 bg-blue-600 text-white font-semibold text-left">Correo Electrónico</th>
+            <th className="py-3 px-4 bg-blue-600 text-white font-semibold text-left">Teléfono</th>
+            <th className="py-3 px-4 bg-blue-600 text-white font-semibold text-left">Rol</th>
+            <th className="py-3 px-4 bg-blue-600 text-white font-semibold text-left">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {filteredAccounts.map((account) => (
-            <tr key={`${account._id}-${editingAccount?._id === account._id ? 'editing' : 'view'}`}>
-              <td>
+            <tr key={account._id} className="hover:bg-gray-50">
+              <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <>
                     <input
@@ -129,6 +135,7 @@ const UserManagement = () => {
                       name="nombre"
                       value={editingAccount.nombre || ''}
                       onChange={handleChange}
+                      className="p-2 border border-gray-300 rounded-lg w-full"
                       placeholder="Nombre"
                     />
                     <input
@@ -136,6 +143,7 @@ const UserManagement = () => {
                       name="apellidos"
                       value={editingAccount.apellidos || ''}
                       onChange={handleChange}
+                      className="p-2 border border-gray-300 rounded-lg w-full mt-2"
                       placeholder="Apellidos"
                     />
                   </>
@@ -143,36 +151,39 @@ const UserManagement = () => {
                   `${account.nombre} ${account.apellidos}`
                 )}
               </td>
-              <td>
+              <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <input
                     type="email"
                     name="correo"
                     value={editingAccount.correo || ''}
                     onChange={handleChange}
+                    className="p-2 border border-gray-300 rounded-lg w-full"
                   />
                 ) : (
                   account.correo
                 )}
               </td>
-              <td>
+              <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <input
                     type="tel"
                     name="telefono"
                     value={editingAccount.telefono || ''}
                     onChange={handleChange}
+                    className="p-2 border border-gray-300 rounded-lg w-full"
                   />
                 ) : (
                   account.telefono
                 )}
               </td>
-              <td>
+              <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <select
                     name="role"
                     value={editingAccount.role || 'user'}
                     onChange={handleChange}
+                    className="p-2 border border-gray-300 rounded-lg w-full"
                   >
                     <option value="user">Usuario</option>
                     <option value="admin">Administrador</option>
@@ -181,34 +192,40 @@ const UserManagement = () => {
                   account.role
                 )}
               </td>
-              <td>
+              <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <>
                     <button
-                      className="save-btn"
+                      className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
                       onClick={() => handleSave(account._id)}
                     >
-                      <FaSave /> Guardar
+                      <FaSave className="mr-2" />
+                      Guardar
                     </button>
                     <button
-                      className="cancel-btn"
+                      className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 ml-2"
                       onClick={handleCancel}
                     >
-                      <FaTimes /> Cancelar
+                      <FaTimes className="mr-2" />
+                      Cancelar
                     </button>
                   </>
                 ) : (
                   <>
                     <button
-                      className="edit-btn"
+                      className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                       onClick={() => handleEdit(account)}
                     >
-                      <FaUserEdit /> Editar
+                      <FaUserEdit className="mr-2" />
+                      Editar
                     </button>
-                    <button className="delete-btn" onClick={() => confirmDelete(account._id)}>
-                    <FaUserTimes /> Eliminar
+                    <button
+                      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 ml-2"
+                      onClick={() => confirmDelete(account._id)}
+                    >
+                      <FaUserTimes className="mr-2" />
+                      Eliminar
                     </button>
-
                   </>
                 )}
               </td>
@@ -216,22 +233,29 @@ const UserManagement = () => {
           ))}
         </tbody>
       </table>
-      {confirmDeleteId && (
-    <div className="modal-overlay">
-        <div className="modal-content">
-        <h3>¿Estás seguro de que deseas eliminar este usuario?</h3>
-        <div className="modal-buttons">
-            <button className="confirm-btn" onClick={handleDelete}>
-            Sí, Eliminar
-            </button>
-            <button className="cancel-btn" onClick={handleCancelDelete}>
-            Cancelar
-            </button>
-        </div>
-        </div>
-    </div>
-    )}
 
+      {/* Confirm Deletion Modal */}
+      {confirmDeleteId && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-96">
+            <h3 className="text-xl mb-4">¿Estás seguro de que deseas eliminar este usuario?</h3>
+            <div className="flex justify-between">
+              <button
+                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                onClick={handleDelete}
+              >
+                Sí, Eliminar
+              </button>
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+                onClick={handleCancelDelete}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

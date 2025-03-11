@@ -24,24 +24,24 @@ const BlockedAccounts = () => {
   }, []);
 
   return (
-    <div className="table-container">
-      <h2>Registro de Cuentas Bloqueadas</h2>
-      {errorMessage && <p className="error">{errorMessage}</p>}
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-24">
+      <h2 className="text-blue-600 text-center text-2xl font-bold mb-6">Registro de Cuentas Bloqueadas</h2>
+      {errorMessage && <p className="text-center text-red-500">{errorMessage}</p>}
       {blockedAccounts.length === 0 ? (
-        <p>No hay cuentas bloqueadas.</p>
+        <p className="text-center text-gray-500">No hay cuentas bloqueadas.</p>
       ) : (
-        <table>
+        <table className="min-w-full bg-white border-collapse">
           <thead>
-            <tr>
-              <th>Correo</th>
-              <th>Fecha de Bloqueo</th>
+            <tr className="bg-blue-600 text-white">
+              <th className="py-3 px-4 text-left">Correo</th>
+              <th className="py-3 px-4 text-left">Fecha de Bloqueo</th>
             </tr>
           </thead>
           <tbody>
             {blockedAccounts.map((account) => (
-              <tr key={account._id}>
-                <td>{account.correo}</td>
-                <td>
+              <tr key={account._id} className="hover:bg-gray-100">
+                <td className="py-3 px-4 text-gray-800">{account.correo}</td>
+                <td className="py-3 px-4 text-gray-800">
                   {account.fechaBloqueo
                     ? new Date(account.fechaBloqueo).toLocaleString() // Convertir fecha al formato legible
                     : 'Fecha no disponible'}

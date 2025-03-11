@@ -1,4 +1,3 @@
-import '../styles/AuditStyles.css';
 import React, { useEffect, useState } from 'react';
 import API_URL from '../apiConfig';
 
@@ -28,27 +27,27 @@ const AuditLogs = () => {
   }, []);
 
   return (
-    <div className="table-container">
-      <h2>Registros de Inicios de Sesión</h2>
-      {loading && <p>Cargando...</p>} {/* Mensaje de carga */}
-      {errorMessage && <p className="error">{errorMessage}</p>}
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-24">
+      <h2 className="text-blue-600 text-center text-2xl font-bold mb-6">Registros de Inicios de Sesión</h2>
+      {loading && <p className="text-center text-gray-500">Cargando...</p>}
+      {errorMessage && <p className="text-center text-red-500">{errorMessage}</p>}
       {logs.length === 0 && !loading ? (
-        <p>No hay registros de inicios de sesión.</p>
+        <p className="text-center text-gray-500">No hay registros de inicios de sesión.</p>
       ) : (
-        <table>
+        <table className="min-w-full bg-white border-collapse">
           <thead>
-            <tr>
-              <th>Nombre Completo</th>
-              <th>Correo</th>
-              <th>Fecha y Hora</th>
+            <tr className="bg-blue-600 text-white">
+              <th className="py-3 px-4 text-left">Nombre Completo</th>
+              <th className="py-3 px-4 text-left">Correo</th>
+              <th className="py-3 px-4 text-left">Fecha y Hora</th>
             </tr>
           </thead>
           <tbody>
             {logs.map((log) => (
-              <tr key={log._id}>
-                <td>{log.nombreCompleto}</td>
-                <td>{log.correo}</td>
-                <td>{new Date(log.fechaHora).toLocaleString()}</td>
+              <tr key={log._id} className="hover:bg-gray-100">
+                <td className="py-3 px-4 text-gray-800">{log.nombreCompleto}</td>
+                <td className="py-3 px-4 text-gray-800">{log.correo}</td>
+                <td className="py-3 px-4 text-gray-800">{new Date(log.fechaHora).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

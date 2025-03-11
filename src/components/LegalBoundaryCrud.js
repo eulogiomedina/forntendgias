@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import API_URL from '../apiConfig';
-import '../styles/legalBoundary.css';
 
 const LegalBoundaryCrud = () => {
   const [legalBoundaries, setLegalBoundaries] = useState([]); // Lista de deslindes
@@ -108,94 +107,95 @@ const LegalBoundaryCrud = () => {
   };
 
   return (
-    <div className="legal-boundary-crud-container">
-      <h2>Gestionar Deslindes Legales</h2>
+    <div className="legal-boundary-crud-container p-6 bg-gray-50 rounded-lg shadow-lg mt-10">
+      <h2 className="text-2xl font-bold text-center mb-6">Gestionar Deslindes Legales</h2>
 
       {/* Mensaje de error */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div className="error-message text-red-500 font-bold mb-4 p-2 border border-red-500 bg-red-100">{errorMessage}</div>}
 
       {/* Crear nuevo deslinde legal */}
-      <div className="card">
-        <h3>Crear nuevo deslinde legal</h3>
+      <div className="card p-4 mb-6 bg-white shadow-lg rounded-lg">
+        <h3 className="text-xl font-semibold mb-4">Crear nuevo deslinde legal</h3>
         <input
           type="text"
           placeholder="Título"
+          className="w-full p-2 border rounded mb-4"
           value={newLegalBoundary.title}
           onChange={(e) => setNewLegalBoundary({ ...newLegalBoundary, title: e.target.value })}
         />
         <textarea
           placeholder="Contenido"
+          className="w-full p-2 border rounded mb-4"
           value={newLegalBoundary.content}
           onChange={(e) => setNewLegalBoundary({ ...newLegalBoundary, content: e.target.value })}
         />
-        <button onClick={handleCreateLegalBoundary}>Crear</button>
+        <button onClick={handleCreateLegalBoundary} className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Crear</button>
       </div>
 
       {/* Mostrar deslindes existentes */}
-      <button onClick={() => setShowLegalBoundaries(true)}>Ir a Deslindes Existentes</button>
+      <button onClick={() => setShowLegalBoundaries(true)} className="w-full bg-green-500 text-white py-2 rounded mb-4 hover:bg-green-600">Ir a Deslindes Existentes</button>
 
       {showLegalBoundaries && (
-        <div className="card">
-          <h3>Deslindes legales existentes</h3>
+        <div className="card p-4 mb-6 bg-white shadow-lg rounded-lg">
+          <h3 className="text-xl font-semibold mb-4">Deslindes legales existentes</h3>
           <ul>
             {legalBoundaries.map((boundary) => (
-              <li key={boundary._id}>
+              <li key={boundary._id} className="border-b border-gray-200 py-4">
                 {editingLegalBoundary && editingLegalBoundary._id === boundary._id ? (
                   <>
                     <input
                       type="text"
+                      className="w-full p-2 border rounded mb-4"
                       value={editingLegalBoundary.title}
                       onChange={(e) => setEditingLegalBoundary({ ...editingLegalBoundary, title: e.target.value })}
                     />
                     <textarea
+                      className="w-full p-2 border rounded mb-4"
                       value={editingLegalBoundary.content}
                       onChange={(e) => setEditingLegalBoundary({ ...editingLegalBoundary, content: e.target.value })}
                     />
-                    <button onClick={handleSaveLegalBoundary}>Guardar</button>
-                    <button onClick={() => setEditingLegalBoundary(null)}>Cancelar</button>
+                    <button onClick={handleSaveLegalBoundary} className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Guardar</button>
+                    <button onClick={() => setEditingLegalBoundary(null)} className="w-full bg-gray-400 text-white py-2 rounded mt-4 hover:bg-gray-500">Cancelar</button>
                   </>
                 ) : (
                   <>
-                    <h4>
-                      {boundary.title} {boundary.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
-                    </h4>
+                    <h4 className="text-lg font-semibold">{boundary.title} {boundary.isCurrent ? <span className="text-green-500">(Vigente)</span> : <span className="text-gray-500">(No Vigente)</span>}</h4>
                     <p>{boundary.content}</p>
                     <p>Versión: {boundary.version || 1}</p>
                     <p>Fecha de creación: {new Date(boundary.createdAt).toLocaleString()}</p>
-                    <button onClick={() => setEditingLegalBoundary(boundary)}>Editar</button>
-                    <button onClick={() => handleDeleteLegalBoundary(boundary._id)}>Eliminar</button>
+                    <div className="flex space-x-4 mt-4">
+                      <button onClick={() => setEditingLegalBoundary(boundary)} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Editar</button>
+                      <button onClick={() => handleDeleteLegalBoundary(boundary._id)} className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Eliminar</button>
+                    </div>
                   </>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowLegalBoundaries(false)}>Regresar</button>
+          <button onClick={() => setShowLegalBoundaries(false)} className="w-full bg-gray-400 text-white py-2 rounded mt-4 hover:bg-gray-500">Regresar</button>
         </div>
       )}
 
       {/* Mostrar historial de deslindes legales */}
-      <button onClick={() => setShowHistory(true)}>Ir al Historial de Deslindes Legales</button>
+      <button onClick={() => setShowHistory(true)} className="w-full bg-yellow-500 text-white py-2 rounded mb-4 hover:bg-yellow-600">Ir al Historial de Deslindes Legales</button>
 
       {showHistory && (
-        <div className="card">
-          <h3>Historial de Deslindes Legales</h3>
+        <div className="card p-4 mb-6 bg-white shadow-lg rounded-lg">
+          <h3 className="text-xl font-semibold mb-4">Historial de Deslindes Legales</h3>
           <ul>
             {historyLegalBoundaries.map((boundary) => (
-              <li key={boundary._id}>
-                <h4>
-                  {boundary.title}{' '}
-                  {boundary.isDeleted ? <span>(Eliminado)</span> : boundary.isCurrent ? <span>(Vigente)</span> : <span>(No Vigente)</span>}
-                </h4>
+              <li key={boundary._id} className="border-b border-gray-200 py-4">
+                <h4 className="text-lg font-semibold">{boundary.title} {boundary.isDeleted ? <span className="text-red-500">(Eliminado)</span> : boundary.isCurrent ? <span className="text-green-500">(Vigente)</span> : <span className="text-gray-500">(No Vigente)</span>}</h4>
                 <p>{boundary.content}</p>
                 <p>Versión: {boundary.version || 1}</p>
                 <p>Fecha de creación: {new Date(boundary.createdAt).toLocaleString()}</p>
                 {boundary.isDeleted && (
-                  <button onClick={() => handleRestoreLegalBoundary(boundary._id)}>Restaurar</button>
+                  <button onClick={() => handleRestoreLegalBoundary(boundary._id)} className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Restaurar</button>
                 )}
               </li>
             ))}
           </ul>
-          <button onClick={() => setShowHistory(false)}>Regresar</button>
+          <button onClick={() => setShowHistory(false)} className="w-full bg-gray-400 text-white py-2 rounded mt-4 hover:bg-gray-500">Regresar</button>
         </div>
       )}
     </div>

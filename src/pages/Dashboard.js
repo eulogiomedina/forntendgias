@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../styles/Dashboard.css";
 import AhorroSelector from "./AhorroSelector";
 import ResumenAhorro from "./ResumenAhorro";
 import HistorialAhorros from "./HistorialAhorros";
@@ -117,10 +116,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <h1>Bienvenido al Dashboard</h1>
-      <p>Esta es la página principal para el usuario ya logueado.</p>
-      
+    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg relative mt-28 text-center">
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">Bienvenido al Dashboard</h1>
+      <p className="text-gray-600 mb-8">Esta es la página principal para el usuario ya logueado.</p>
+
       {historialAhorros.length > 0 ? (
         // Se muestra el resumen con todos los ahorros registrados
         <ResumenAhorro ahorros={historialAhorros} setAhorroSeleccionado={setAhorroSeleccionado} />
@@ -128,58 +127,67 @@ const Dashboard = () => {
         // Si no hay ahorros, se muestra el selector para agregar uno
         <AhorroSelector onSelect={handleSelectAhorro} />
       )}
-      
+
       {/* Modal de Confirmación */}
       {mostrarConfirmacion && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Confirmar selección</h3>
-            <p className="selected-ahorro">
-              Estás seleccionando el plan de ahorro de{" "}
-              <strong>{ahorroSeleccionado}</strong>. ¿Deseas continuar?
-            </p>
-            <div className="modal-buttons">
-              <button className="btn-submit" onClick={confirmarSeleccion}>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center w-96">
+            <h3 className="text-xl font-bold mb-4">Confirmar selección</h3>
+            <p className="text-lg mb-6">Estás seleccionando el plan de ahorro de <strong>{ahorroSeleccionado}</strong>. ¿Deseas continuar?</p>
+            <div className="flex justify-between">
+              <button
+                className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                onClick={confirmarSeleccion}
+              >
                 Sí, continuar
               </button>
-              <button className="btn-cancel" onClick={() => setMostrarConfirmacion(false)}>
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700"
+                onClick={() => setMostrarConfirmacion(false)}
+              >
                 Cancelar
               </button>
             </div>
           </div>
         </div>
       )}
-      
+
       {/* Modal de Datos Adicionales */}
       {mostrarModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Información adicional para el ahorro</h3>
-            <p className="selected-ahorro">
-              Has seleccionado: <strong>{ahorroSeleccionado}</strong>
-            </p>
-            {/* Mostrar campos solo si es el primer ahorro */}
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center w-96">
+            <h3 className="text-xl font-bold mb-4">Información adicional para el ahorro</h3>
+            <p className="text-lg mb-6">Has seleccionado: <strong>{ahorroSeleccionado}</strong></p>
             {historialAhorros.length === 0 && (
               <>
-                <label className="label-file">
-                  Sube una foto de tu credencial de lector:
-                </label>
-                <input type="file" accept="image/*" onChange={handleFileChange} className="input-file" />
-                <label className="label-file">Enlace de tu perfil de Facebook:</label>
+                <label className="block text-left mb-2 font-semibold">Sube una foto de tu credencial de lector:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                />
+                <label className="block text-left mb-2 font-semibold">Enlace de tu perfil de Facebook:</label>
                 <input
                   type="text"
                   placeholder="https://facebook.com/tu-perfil"
                   value={facebook}
                   onChange={(e) => setFacebook(e.target.value)}
-                  className="input-field"
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
                 />
               </>
             )}
-            <div className="modal-buttons">
-              <button className="btn-submit" onClick={handleSubmit}>
+            <div className="flex justify-between">
+              <button
+                className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                onClick={handleSubmit}
+              >
                 Confirmar
               </button>
-              <button className="btn-cancel" onClick={() => setMostrarModal(false)}>
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700"
+                onClick={() => setMostrarModal(false)}
+              >
                 Cancelar
               </button>
             </div>

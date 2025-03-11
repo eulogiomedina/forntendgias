@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import '../styles/TitleAdmin.css'
 import API_URL from '../apiConfig';
 
 const TitleAdmin = () => {
@@ -34,7 +33,7 @@ const TitleAdmin = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (title.length > 50) {
-      setError('El título no puede tener más de 100 caracteres.');
+      setError('El título no puede tener más de 50 caracteres.');
       return;
     }
 
@@ -49,14 +48,14 @@ const TitleAdmin = () => {
   };
 
   return (
-    <div className="title-admin-container">
-      <h2 className="title-admin-header">{isEditing ? 'Editar Título' : 'Registrar Título'}</h2>
-      {error && <p className="error-message">{error}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
+    <div className="max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-md mt-36">
+      <h2 className="text-center text-green-600 text-2xl mb-6">{isEditing ? 'Editar Título' : 'Registrar Título'}</h2>
+      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      {successMessage && <p className="text-green-600 text-sm text-center">{successMessage}</p>}
 
-      <form className="title-admin-form" onSubmit={handleFormSubmit}>
-        <div className="form-group">
-          <label htmlFor="title" className="form-label">Título:</label>
+      <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
+        <div className="flex flex-col">
+          <label htmlFor="title" className="mb-2 font-bold text-gray-700">Título:</label>
           <input
             type="text"
             id="title"
@@ -65,12 +64,12 @@ const TitleAdmin = () => {
             maxLength="50"
             placeholder="Ingresa el título"
             required
-            className="form-input"
+            className="p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:border-green-600"
           />
-          <p className="character-count">{title.length}/50 caracteres</p>
+          <p className="text-xs text-gray-500 text-right">{title.length}/50 caracteres</p>
         </div>
 
-        <button type="submit" className="form-button">
+        <button type="submit" className="py-3 px-5 bg-green-600 text-white rounded-lg text-lg hover:bg-green-700">
           {isEditing ? 'Actualizar' : 'Registrar'}
         </button>
       </form>

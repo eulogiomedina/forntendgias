@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext'; // Importar el contexto de autenticación
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Carousel } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify'; // Importar react-toastify
 import 'react-toastify/dist/ReactToastify.css'; // Importar el CSS de react-toastify
-import '../styles/Login.css';
 import imagen2 from '../assets/imagen2.png';
 import imagen3 from '../assets/imagen3.jpg';
 import API_URL from '../apiConfig';
@@ -14,6 +11,17 @@ const Login = () => {
   const [formData, setFormData] = useState({ correo: '', password: '' });
   const { login } = useContext(AuthContext); // Usar el método login del contexto
   const navigate = useNavigate();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [imagen2, imagen3];
+
+  // Cambiar la imagen del carrusel cada 3 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval); // Limpiar el intervalo cuando el componente se desmonte
+  }, []);
 
   // Cargar reCAPTCHA cuando el componente se monta
   useEffect(() => {
@@ -73,55 +81,67 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page-container">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-6">
       <ToastContainer /> {/* Contenedor de notificaciones */}
-      <div className="login-container-wrapper">
-        <div className="login-carousel">
-          <Carousel>
-            <Carousel.Item>
-              <img src={imagen2} alt="Segunda imagen" className="carousel-image" />
-            </Carousel.Item>
-            <Carousel.Item>
-              <img src={imagen3} alt="Tercera imagen" className="carousel-image" />
-            </Carousel.Item>
-          </Carousel>
+      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl w-full">
+        {/* Carrusel personalizado con Tailwind */}
+        <div className="w-full sm:w-1/2">
+          <div className="relative h-full">
+            <img
+              src={images[currentImageIndex]}
+              alt="Imagen de carrusel"
+              className="w-full h-full object-cover transition duration-500"
+            />
+            
+          </div>
         </div>
 
-        <div className="login-container">
-          <h1>Iniciar Sesión</h1>
+        {/* Formulario de login */}
+        <div className="flex flex-col justify-center items-center p-6 sm:w-1/2 w-full">
+          <h1 className="text-3xl font-bold text-blue-800 mb-6">Iniciar Sesión</h1>
 
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Correo</label>
+          <form className="w-full" onSubmit={handleSubmit}>
+            <div className="mb-4 w-full">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Correo</label>
               <input
                 type="email"
                 placeholder="Correo"
                 value={formData.correo}
                 onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
-            <div className="form-group">
-              <label>Contraseña</label>
+            <div className="mb-6 w-full">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
               <input
                 type="password"
                 placeholder="Contraseña"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
-            {/* Aquí se incluye el reCAPTCHA */}
-            <div className="g-recaptcha" data-sitekey="6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_"></div>
+            {/* reCAPTCHA */}
+            <div className="mb-4">
+              <div className="g-recaptcha" data-sitekey="6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_"></div>
+            </div>
 
-            <button type="submit">Iniciar Sesión</button>
+            <button
+              type="submit"
+              className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            >
+              Iniciar Sesión
+            </button>
           </form>
 
-          <div className="extra-links">
-            <a href="/forgot-password">¿Olvidaste la contraseña?</a>
-            <a href="/register">Registrarse</a>
+          <div className="mt-4 text-sm">
+            <a href="/forgot-password" className="text-blue-600 hover:underline">¿Olvidaste la contraseña?</a>
+            <span className="mx-2">|</span>
+            <a href="/register" className="text-blue-600 hover:underline">Registrarse</a>
           </div>
         </div>
       </div>
