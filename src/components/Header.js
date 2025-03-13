@@ -68,6 +68,8 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
                                 ) : (
                                     <>
                                         <li><Link to="/dashboard" className="text-white hover:text-gray-300 font-semibold">Dashboard</Link></li>
+                                        <li><Link to="/gestion-cuenta" className="text-white hover:text-gray-300 font-semibold">Gestion Cuenta</Link></li>
+                                        <li><Link to="/pagos" className="text-white hover:text-gray-300 font-semibold">Pagos</Link></li>
                                         <li><Link to="/perfil/:userId" className="text-white hover:text-gray-300 font-semibold">Perfil</Link></li>
                                     </>
                                 )}

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FaUserCircle, FaIdCard, FaTimes } from "react-icons/fa"; // Íconos para usuario, credencial y cerrar
-import API_URL from '../apiConfig';
+import { FaUserCircle, FaIdCard, FaTimes } from "react-icons/fa";
+import API_URL from "../apiConfig";
 
 const PerfilCliente = () => {
   const [perfil, setPerfil] = useState(null);
   const [ahorros, setAhorros] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false); // Estado del modal
-  const [credencialSeleccionada, setCredencialSeleccionada] = useState(null); // URL de la credencial seleccionada
+  const [modalOpen, setModalOpen] = useState(false);
+  const [credencialSeleccionada, setCredencialSeleccionada] = useState(null);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -22,7 +22,7 @@ const PerfilCliente = () => {
         })
         .then((data) => {
           setPerfil(data.usuario);
-          setAhorros(data.ahorros);
+          setAhorros(data.ahorros.length > 0 ? data.ahorros[0].ahorros : []);
           setLoading(false);
         })
         .catch((err) => {
@@ -35,13 +35,11 @@ const PerfilCliente = () => {
     }
   }, []);
 
-  // 📌 Función para abrir el modal con la imagen seleccionada
   const abrirModal = (credencialUrl) => {
     setCredencialSeleccionada(credencialUrl);
     setModalOpen(true);
   };
 
-  // 📌 Función para cerrar el modal
   const cerrarModal = () => {
     setModalOpen(false);
     setCredencialSeleccionada(null);
@@ -51,57 +49,97 @@ const PerfilCliente = () => {
   if (!perfil) return <p>No se encontró información del usuario.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-gradient-to-r from-teal-200 to-teal-300 rounded-lg shadow-lg text-center font-sans">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Perfil del Cliente</h2>
+    <div className="max-w-[600px] mx-auto mt-[120px] mb-[50px] p-[30px] bg-gradient-to-br from-[#e0f7fa] to-[#80deea] rounded-[15px] shadow-[0px_10px_40px_rgba(0,0,0,0.2)] text-center font-Poppins">
+      <h2 className="text-2xl font-bold mb-4">Perfil del Cliente</h2>
 
-      <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg mb-8">
+      <div className="flex flex-col items-center bg-white rounded-[10px] p-[20px] shadow-[0px_4px_15px_rgba(0,0,0,0.1)] mb-[20px]">
         {perfil.fotoPerfil ? (
-          <img src={perfil.fotoPerfil} alt="Foto de perfil" className="w-36 h-36 rounded-full object-cover mb-4 border-4 border-teal-500" />
+          <img
+            src={perfil.fotoPerfil}
+            alt="Foto de perfil"
+            className="w-[150px] h-[150px] rounded-full object-cover mb-[15px] border-[3px] border-[#00796b]"
+          />
         ) : (
-          <FaUserCircle className="text-teal-600 text-6xl mb-4" />
+          <FaUserCircle className="text-[150px] text-[#004d40] mb-[15px]" />
         )}
-        
-        <div className="text-lg text-gray-700">
-          <p><strong>Nombre:</strong> {perfil.nombre} {perfil.apellidos}</p>
-          <p><strong>Correo:</strong> {perfil.correo}</p>
-          <p><strong>Teléfono:</strong> {perfil.telefono || "No registrado"}</p>
+
+        <div className="space-y-2">
+          <p className="text-[18px] text-[#333]">
+            <strong>Nombre:</strong> {perfil.nombre} {perfil.apellidos}
+          </p>
+          <p className="text-[18px] text-[#333]">
+            <strong>Correo:</strong> {perfil.correo}
+          </p>
+          <p className="text-[18px] text-[#333]">
+            <strong>Teléfono:</strong> {perfil.telefono || "No registrado"}
+          </p>
         </div>
       </div>
 
-      {/* 📌 Apartado de Credencial de Elector */}
-      <div className="mb-8 bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl text-gray-800 mb-4">📌 Credencial de Elector</h3>
-        {ahorros.length > 0 && ahorros[0].credencial ? (
-          <button className="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700" onClick={() => abrirModal(ahorros[0].credencial)}>
+      {/* Sección de Credencial */}
+      <div className="mt-[25px] p-[20px] bg-white rounded-[12px] shadow-[0px_8px_20px_rgba(0,0,0,0.1)]">
+        <h3 className="text-xl font-semibold mb-2">📌 Credencial de Elector</h3>
+        {ahorros.length > 0 ? (
+          <button
+            onClick={() => abrirModal(ahorros[0].credencial)}
+            className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
             📄 Ver Credencial
           </button>
         ) : (
-          <p className="text-gray-500 flex items-center justify-center">
-            <FaIdCard className="text-teal-600 mr-2" /> No has subido una credencial.
+          <p className="text-[18px] text-gray-700 flex items-center justify-center">
+            <FaIdCard className="text-2xl mr-2" /> No has subido una credencial.
           </p>
         )}
       </div>
 
-      {/* 📌 Modal de Credencial Ampliada */}
+      {/* Modal para la credencial */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={cerrarModal}>
-          <div className="bg-white p-4 rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <button className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-700" onClick={cerrarModal}><FaTimes /></button>
-            <img src={credencialSeleccionada} alt="Credencial Ampliada" className="w-full max-w-2xl h-auto rounded-lg" />
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center z-[1000]"
+          onClick={cerrarModal}
+        >
+          <div
+            className="relative bg-white p-[20px] rounded-[15px] text-center max-w-[90%] max-h-[90%] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-[10px] right-[10px] bg-none border-none text-[28px] cursor-pointer text-[#d9534f] outline-none"
+              onClick={cerrarModal}
+              tabIndex="-1"
+            >
+              <FaTimes />
+            </button>
+            <img
+              src={credencialSeleccionada}
+              alt="Credencial Ampliada"
+              className="max-w-[90%] max-h-[85vh] rounded-[10px]"
+            />
           </div>
         </div>
       )}
 
-      <h3 className="text-2xl font-semibold text-gray-800 mb-4">Mis Ahorros</h3>
+      {/* Lista de Ahorros */}
+      <h3 className="text-xl font-semibold mt-6 mb-2">Mis Ahorros</h3>
       {ahorros.length === 0 ? (
         <p>No tienes ahorros registrados.</p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="list-none p-0">
           {ahorros.map((ahorro) => (
-            <li key={ahorro._id} className="p-4 bg-white rounded-lg shadow-md">
-              <p><strong>Monto:</strong> ${ahorro.monto}</p>
-              <p><strong>Frecuencia:</strong> {ahorro.tipo}</p>
-              <p><strong>Fecha de Inicio:</strong> {new Date(ahorro.fechaInicio).toLocaleDateString()}</p>
+            <li
+              key={ahorro._id}
+              className="bg-white p-[15px] border border-[#e0e0e0] rounded-[8px] mb-[10px]"
+            >
+              <p>
+                <strong>Monto:</strong> ${ahorro.monto}
+              </p>
+              <p>
+                <strong>Frecuencia:</strong> {ahorro.tipo}
+              </p>
+              <p>
+                <strong>Fecha de Inicio:</strong>{" "}
+                {new Date(ahorro.fechaInicio).toLocaleDateString()}
+              </p>
             </li>
           ))}
         </ul>

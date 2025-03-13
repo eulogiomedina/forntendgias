@@ -39,7 +39,9 @@ import Breadcrumbs from "./components/Breadcrumbs"; // Importamos las migas de p
 import AdminSidebar from './components/AdminSidebar';
 import UserManagement from './pages/UserManagement';
 import GestionAhorros from './pages/GestionAhorros';
-import PerfilCliente from './pages/PerfilCliente'
+import PerfilCliente from './pages/PerfilCliente';
+import GestionCuenta from './pages/GestionCuenta';
+import Pagos from "./pages/Pagos";
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -204,6 +206,8 @@ function App() {
                             <Route path="/admin-panel/users" element={<UserManagement />} />
                             <Route path="/admin-panel/gestionAhorros" element={<GestionAhorros />} />
                             <Route path="/perfil/:userId" element={<PerfilCliente />} />
+                            <Route path="/gestion-cuenta" element={<GestionCuenta />} />
+                            <Route path="/pagos" element={<Pagos />} />
 
                         </Routes>
                     </main>

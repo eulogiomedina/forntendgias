@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import AdminTandas from "../components/AdminTandas";
 import API_URL from '../apiConfig';
 
 const GestionAhorros = () => {
@@ -81,42 +82,42 @@ const GestionAhorros = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-28">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Gestión de Ahorros</h2>
+    <div className="max-w-[900px] mx-auto mt-[110px] mb-5 p-5 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-4">Gestión de Ahorros</h2>
 
       {/* Tabla de ahorros */}
-      <table className="w-full border-collapse mb-6">
+      <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="border-b p-2 text-left">Monto</th>
-            <th className="border-b p-2 text-left">Frecuencia</th>
-            <th className="border-b p-2 text-left">Fecha Creación</th>
-            <th className="border-b p-2 text-left">Acciones</th>
+            <th className="p-2.5 border-b border-gray-300">Monto</th>
+            <th className="p-2.5 border-b border-gray-300">Frecuencia</th>
+            <th className="p-2.5 border-b border-gray-300">Fecha Creación</th>
+            <th className="p-2.5 border-b border-gray-300">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {ahorros.map((ahorro) => (
             <tr key={ahorro._id}>
-              <td className="p-2">
+              <td className="p-2.5 border-b border-gray-300">
                 {editando?._id === ahorro._id ? (
                   <input
                     type="number"
                     name="monto"
                     value={editando?.monto || ""}
                     onChange={handleChange}
-                    className="p-2 border rounded-md"
+                    className="border border-gray-300 rounded p-1"
                   />
                 ) : (
                   `$${ahorro.monto}`
                 )}
               </td>
-              <td className="p-2">
+              <td className="p-2.5 border-b border-gray-300">
                 {editando?._id === ahorro._id ? (
                   <select
                     name="tipo"
                     value={editando?.tipo || ""}
                     onChange={handleChange}
-                    className="p-2 border rounded-md"
+                    className="border border-gray-300 rounded p-1"
                   >
                     <option value="Semanal">Semanal</option>
                     <option value="Quincenal">Quincenal</option>
@@ -126,19 +127,21 @@ const GestionAhorros = () => {
                   ahorro.tipo
                 )}
               </td>
-              <td className="p-2">{new Date(ahorro.fechaCreacion).toLocaleDateString()}</td>
-              <td className="p-2 flex space-x-2">
+              <td className="p-2.5 border-b border-gray-300">
+                {new Date(ahorro.fechaCreacion).toLocaleDateString()}
+              </td>
+              <td className="p-2.5 border-b border-gray-300">
                 {editando?._id === ahorro._id ? (
                   <>
                     <button
+                      className="py-2 px-3 bg-green-500 hover:bg-green-600 text-white rounded font-bold m-1"
                       onClick={handleSave}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                     >
                       Guardar
                     </button>
                     <button
+                      className="py-2 px-3 bg-gray-500 hover:bg-gray-600 text-white rounded font-bold m-1"
                       onClick={handleCancel}
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
                     >
                       Cancelar
                     </button>
@@ -146,14 +149,14 @@ const GestionAhorros = () => {
                 ) : (
                   <>
                     <button
+                      className="py-2 px-3 bg-blue-500 hover:bg-blue-600 text-white rounded font-bold m-1"
                       onClick={() => handleEdit(ahorro)}
-                      className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700"
                     >
                       Editar
                     </button>
                     <button
+                      className="py-2 px-3 bg-red-500 hover:bg-red-600 text-white rounded font-bold m-1"
                       onClick={() => confirmDelete(ahorro._id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
                     >
                       Eliminar
                     </button>
@@ -166,19 +169,19 @@ const GestionAhorros = () => {
       </table>
 
       {/* Formulario para Agregar Ahorro */}
-      <div className="bg-gray-100 p-4 rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">Agregar Nuevo Ahorro</h3>
+      <div className="mt-5 p-4 bg-gray-100 rounded-lg">
+        <h3 className="text-xl font-semibold mb-3">Agregar Nuevo Ahorro</h3>
         <input
           type="number"
           placeholder="Ingrese monto"
           value={nuevoMonto}
           onChange={(e) => setNuevoMonto(e.target.value)}
-          className="p-2 border rounded-md w-full mb-4"
+          className="w-full p-2 mb-3 border border-gray-300 rounded"
         />
         <select
           value={nuevoTipo}
           onChange={(e) => setNuevoTipo(e.target.value)}
-          className="p-2 border rounded-md w-full mb-4"
+          className="w-full p-2 mb-3 border border-gray-300 rounded"
         >
           <option value="Semanal">Semanal</option>
           <option value="Quincenal">Quincenal</option>
@@ -186,7 +189,7 @@ const GestionAhorros = () => {
         </select>
         <button
           onClick={handleAdd}
-          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          className="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded font-bold"
         >
           Agregar Ahorro
         </button>
@@ -194,19 +197,21 @@ const GestionAhorros = () => {
 
       {/* Modal de Confirmación de Eliminación */}
       {confirmDeleteId && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">¿Está seguro de que desea eliminar este ahorro?</h3>
-            <div className="flex justify-between">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-5 rounded-lg text-center">
+            <h3 className="text-lg font-semibold mb-4">
+              ¿Está seguro de que desea eliminar este ahorro?
+            </h3>
+            <div className="flex justify-center space-x-4">
               <button
+                className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded font-bold"
                 onClick={handleDelete}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
                 Sí, Eliminar
               </button>
               <button
+                className="py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white rounded font-bold"
                 onClick={() => setConfirmDeleteId(null)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
               >
                 Cancelar
               </button>
@@ -214,6 +219,9 @@ const GestionAhorros = () => {
           </div>
         </div>
       )}
+
+      {/* Sección de Gestión de Tandas del Administrador */}
+      <AdminTandas />
     </div>
   );
 };
