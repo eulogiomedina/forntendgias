@@ -9,7 +9,11 @@ const GestionPagos = () => {
   useEffect(() => {
     fetch(`${API_URL}/api/pagos`)
       .then((res) => res.json())
-      .then((data) => setPagos(data))
+      .then((data) => {
+        const ordenEstados = { Pendiente: 0, Aprobado: 1, Rechazado: 2 };
+        const pagosOrdenados = data.sort((a, b) => ordenEstados[a.estado] - ordenEstados[b.estado]);
+        setPagos(pagosOrdenados);
+      })
       .catch((err) => console.error("Error al obtener pagos:", err));
   }, []);
 
@@ -69,6 +73,7 @@ const GestionPagos = () => {
             <tr className="bg-[#0d47a1] text-white">
               <th className="border p-3">Usuario</th>
               <th className="border p-3">Monto</th>
+              <th className="border p-3">Fecha</th>
               <th className="border p-3">Estado</th>
               <th className="border p-3">Comprobante</th>
               <th className="border p-3">Acciones</th>
@@ -78,11 +83,18 @@ const GestionPagos = () => {
             {pagos.length > 0 ? (
               pagos.map((pago) => (
                 <tr key={pago._id} className="text-center">
-                  <td className="border p-3">{pago.userId.nombre}</td>
+                  <td className="border p-3">{pago.userId?.nombre || "Usuario no disponible"}</td>
                   <td className="border p-3">${pago.monto}</td>
+                  <td className="border p-3">
+                    {new Date(pago.fechaPago || pago.fecha).toLocaleDateString("es-MX")}
+                  </td>
                   <td
                     className={`border p-3 font-bold ${
-                      pago.estado === "Aprobado" ? "text-green-600" : pago.estado === "Rechazado" ? "text-red-600" : "text-yellow-600"
+                      pago.estado === "Aprobado"
+                        ? "text-green-600"
+                        : pago.estado === "Rechazado"
+                        ? "text-red-600"
+                        : "text-yellow-600"
                     }`}
                   >
                     {pago.estado}
@@ -97,25 +109,31 @@ const GestionPagos = () => {
                       Ver comprobante
                     </a>
                   </td>
-                  <td className="border p-3 flex justify-center gap-2">
-                    <button
-                      onClick={() => handleAprobarPago(pago._id)}
-                      className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                    >
-                      Aprobar
-                    </button>
-                    <button
-                      onClick={() => handleRechazarPago(pago._id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                    >
-                      Rechazar
-                    </button>
+                  <td className="border p-3">
+                    {pago.estado === "Pendiente" ? (
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => handleAprobarPago(pago._id)}
+                          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                        >
+                          Aprobar
+                        </button>
+                        <button
+                          onClick={() => handleRechazarPago(pago._id)}
+                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                        >
+                          Rechazar
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 italic">Ya revisado</span>
+                    )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="border p-3 text-center">
+                <td colSpan="6" className="border p-3 text-center">
                   No hay pagos registrados.
                 </td>
               </tr>
