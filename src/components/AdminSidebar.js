@@ -37,7 +37,7 @@ const AdminSidebar = () => {
 
         <div
           className="bg-white rounded-lg shadow-xl p-6 text-center transition-transform transform hover:translate-y-2 hover:shadow-2xl hover:border-[#0d47a1] hover:bg-[#c3f3f3] cursor-pointer border-2 border-[#2196f3]"
-          onClick={() => handleNavigation('/admin-dashboard/payments')}
+          onClick={() => handleNavigation('/admin-panel/gestion-pagos')}
         >
           <FaMoneyCheckAlt className="text-[#0d47a1] text-6xl mb-4" />
           <h2 className="text-2xl font-bold text-[#0d47a1] mb-3">Gestión de Pagos</h2>

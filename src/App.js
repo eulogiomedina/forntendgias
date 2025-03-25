@@ -42,6 +42,8 @@ import GestionAhorros from './pages/GestionAhorros';
 import PerfilCliente from './pages/PerfilCliente';
 import GestionCuenta from './pages/GestionCuenta';
 import Pagos from "./pages/Pagos";
+import AdminCuentaDestino from "./pages/AdminCuentaDestino";
+import GestionPagos from "./pages/GestionPagos"; 
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -208,6 +210,8 @@ function App() {
                             <Route path="/perfil/:userId" element={<PerfilCliente />} />
                             <Route path="/gestion-cuenta" element={<GestionCuenta />} />
                             <Route path="/pagos" element={<Pagos />} />
+                            <Route path="/admin-dashboard/cuenta-destino" element={<AdminCuentaDestino />} />
+                            <Route path="/admin-panel/gestion-pagos" element={<GestionPagos />} /> 
 
                         </Routes>
                     </main>
