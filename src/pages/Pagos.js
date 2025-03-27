@@ -17,11 +17,9 @@ const Pagos = () => {
   const [enviandoPago, setEnviandoPago] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [contenidoModal, setContenidoModal] = useState("");
+  const [proximaFechaPago, setProximaFechaPago] = useState(null);
 
 
-  const hoy = new Date();
-  const lunesSemana = new Date(hoy.setDate(hoy.getDate() - hoy.getDay() + 1));
-  const domingoSemana = new Date(hoy.setDate(lunesSemana.getDate() + 6));
 
   const convertirFechaLocal = (fechaISO) => {
     if (!fechaISO) return "No definida";
@@ -86,6 +84,12 @@ const Pagos = () => {
       setArchivo(e.target.files[0]);
     }
   };
+  const parsePaymentDate = (fechaISO) => {
+    const date = new Date(fechaISO);
+    // Extrae el año, mes y día en UTC y crea una fecha en hora local con esos valores.
+    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  };
+  
 
   const obtenerDiaSemana = (fechaISO) => {
     const fecha = new Date(fechaISO);
@@ -100,19 +104,16 @@ const Pagos = () => {
   };   
   
   const yaPagoEstaSemana = (tanda) => {
-    const hoy = new Date();
     return tanda.fechasPago?.some(f =>
       f.userId === user.id &&
       f.fechaPago &&
-      new Date(f.fechaPago) >= lunesSemana &&
-      new Date(f.fechaPago) <= domingoSemana &&
       historial.some(h =>
         h.userId === user.id &&
         h.tandaId === tanda._id &&
-        new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
+        new Date(h.fechaPago).toDateString() === new Date(f.fechaPago).toDateString()
       )
     );
-  };  
+  };   
 
   const handleRegistrarPago = async () => {
     if (!selectedTanda) return alert("Selecciona una tanda a pagar.");
@@ -151,12 +152,15 @@ const Pagos = () => {
       
         const historialActualizado = [...historial, data.pago];
         const proxima = obtenerProximaFechaPagoConHistorial(selectedTanda, historialActualizado);
+        setProximaFechaPago(proxima?.fechaPago || null);
         const fechaHoy = new Date();
         const proximaFecha = proxima?.fechaPago ? new Date(proxima.fechaPago) : null;
-        const siguienteSemanaInicio = new Date(lunesSemana);
+        const siguienteSemanaInicio = new Date();
         siguienteSemanaInicio.setDate(siguienteSemanaInicio.getDate() + 7);
-        const siguienteSemanaFin = new Date(domingoSemana);
-        siguienteSemanaFin.setDate(siguienteSemanaFin.getDate() + 7);
+
+        const siguienteSemanaFin = new Date();
+        siguienteSemanaFin.setDate(siguienteSemanaFin.getDate() + 13);
+
       
         if (proxima?.fechaPago) {
           mensajeModal += `\n🗓️ Tu siguiente fecha de pago es el ${obtenerDiaSemana(proxima.fechaPago)}.`;
@@ -224,42 +228,42 @@ const Pagos = () => {
   };  
 
   const estaAtrasado = (tanda) => {
-    const hoy = new Date();
-    const pagosPendientes = tanda.fechasPago?.filter(f => 
-      f.userId === user.id &&
-      f.fechaPago &&
-      new Date(f.fechaPago) < hoy &&
-      !historial.some(h => new Date(h.fechaPago).toDateString() === new Date(f.fechaPago).toDateString())
-    );
+    const ahora = new Date(); // Fecha actual local
+    const pagosPendientes = tanda.fechasPago?.filter(f => {
+      if (f.userId !== user.id || !f.fechaPago) return false;
+      // Convierte la fecha de pago usando parsePaymentDate para que se interprete como "día fijo"
+      const fechaPagoLocal = parsePaymentDate(f.fechaPago);
+      const fechaLimiteLocal = new Date(
+        fechaPagoLocal.getFullYear(),
+        fechaPagoLocal.getMonth(),
+        fechaPagoLocal.getDate(),
+        23, 59, 59, 999  // Límite al final del día local
+      );
+      // Si el límite ya pasó y aún no se registró el pago, se considera atrasado
+      return fechaLimiteLocal < ahora &&
+        !historial.some(h =>
+          h.tandaId === tanda._id &&
+          new Date(h.fechaPago).toDateString() === new Date(f.fechaPago).toDateString()
+        );
+    });
     return pagosPendientes?.length > 0;
   };
-
-  const obtenerProximaFechaPago = (tanda) => {
-    if (!tanda?.fechasPago || !user?.id) return null;
   
-    const pendientes = tanda.fechasPago
-      .filter(f =>
-        f.userId === user.id &&
-        f.fechaPago &&
-        !historial.some(h =>
-          h.userId === user.id &&
-          h.tandaId === tanda._id &&
-          new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
-        )
-      )
-      .sort((a, b) => new Date(a.fechaPago) - new Date(b.fechaPago));
-  
-    return pendientes[0] || null;
-  };  
+    
 
   const usuarioRecibeEstaSemana = (tanda) => {
     if (!tanda?.fechasPago || !user?.id) return false;
+  
+    const hoy = new Date();
+    const finSemana = new Date();
+    finSemana.setDate(hoy.getDate() + (7 - hoy.getDay())); // domingo de esta semana
+  
     return tanda.fechasPago.some((f) => {
       if (f.userId !== user.id || !f.fechaRecibo) return false;
       const fechaRecibo = new Date(f.fechaRecibo);
-      return fechaRecibo >= lunesSemana && fechaRecibo <= domingoSemana;
+      return fechaRecibo >= hoy && fechaRecibo <= finSemana;
     });
-  };
+  };  
 
   const handleCopiar = (valor, tipo) => {
     navigator.clipboard.writeText(valor);
@@ -408,26 +412,58 @@ const Pagos = () => {
 
           {(() => {
             const historialLocal = [...historial];
-            const proxima = obtenerProximaFechaPagoConHistorial(selectedTanda, historialLocal);
+            const ahora = new Date(); // fecha actual local
+
+            const pagosDelUsuario = selectedTanda.fechasPago?.filter(f => f.userId === user.id && f.fechaPago);
+            const pagosPendientes = pagosDelUsuario?.filter(f =>
+              !historialLocal.some(h =>
+                h.userId === user.id &&
+                h.tandaId === selectedTanda._id &&
+                new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
+              )
+            );
+
+            const siguientePago = pagosPendientes?.sort((a, b) => new Date(a.fechaPago) - new Date(b.fechaPago))[0];
+
+            const yaPagoEstaSemanaBool = yaPagoEstaSemana(selectedTanda);
+
+            if (!yaPagoEstaSemanaBool && siguientePago) {
+              // Usa la función para obtener la fecha de pago como "día fijo"
+              const fechaPagoLocal = parsePaymentDate(siguientePago.fechaPago);
+              const fechaLimiteLocal = new Date(
+                fechaPagoLocal.getFullYear(),
+                fechaPagoLocal.getMonth(),
+                fechaPagoLocal.getDate(), 
+                23, 59, 59, 999
+              );
+              // Si la fecha actual supera el límite, se aplica penalización
+              if (ahora > fechaLimiteLocal) {
+                return (
+                  <p className="text-red-600 font-semibold">
+                    ⚠️ No realizaste el pago a tiempo para el día <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Se te aplicará una penalización.
+                  </p>
+                );
+              } else {
+                return (
+                  <p className="text-yellow-700 font-semibold">
+                    ⏳ Tienes pendiente el pago correspondiente al <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Tienes hasta las 11:59 p.m. de ese día.
+                  </p>
+                );
+              }
+            }
+
+            if (yaPagoEstaSemanaBool) {
+              return (
+                <p className="text-green-700 font-semibold">
+                  ✅ Ya realizaste tu pago esta semana.
+                </p>
+              );
+            }
 
             return (
-              <div className="space-y-1">
-                {yaPagoEstaSemana(selectedTanda) && (
-                  <p className="text-green-700 font-semibold">
-                    ✅ Ya realizaste tu pago esta semana.
-                  </p>
-                )}
-
-                {proxima?.fechaPago ? (
-                  <p>
-                    <strong>Siguiente pago programado:</strong> {convertirFechaLocal(proxima.fechaPago)}
-                  </p>
-                ) : (
-                  <p className="text-green-600 font-bold">
-                    <FaRegCheckCircle className="inline-block mr-1" /> ✅ ¡Estás al día! No hay pagos pendientes.
-                  </p>
-                )}
-              </div>
+              <p className="text-green-600 font-bold">
+                <FaRegCheckCircle className="inline-block mr-1" /> ✅ ¡Estás al día! No hay pagos pendientes.
+              </p>
             );
           })()}
 
