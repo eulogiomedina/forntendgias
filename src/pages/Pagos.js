@@ -525,12 +525,6 @@ const Pagos = () => {
                 🏷️ <em className={pago.estado === "Aprobado" ? "text-green-600" : "text-yellow-600"}>
                   {pago.estado}
                 </em>
-        
-                {pago.atraso && (
-                  <span className="text-red-600 font-semibold ml-2">
-                    (Con penalización de ${pago.comision || 80})
-                  </span>
-                )}
               </div>
             </li>
           ))}
