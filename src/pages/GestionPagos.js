@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API_URL from "../apiConfig";
-import AdminCuentaDestino from "../pages/AdminCuentaDestino"; // Importamos la gestión de cuenta destino
+import AdminCuentaDestino from "./AdminCuentaDestino"; // Importamos la gestión de cuenta destino
 
 const GestionPagos = () => {
   const [pagos, setPagos] = useState([]);

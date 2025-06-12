@@ -68,9 +68,12 @@ const Login = () => {
         setTimeout(() => {
           if (result.user.role === 'admin') {
             navigate('/admin-dashboard');
+          } else if (result.user.role === 'empleado') {
+            navigate('/empleado-dashboard'); // 👈 AQUI
           } else {
             navigate('/dashboard');
           }
+
         }, 2000); // Esperar 2 segundos antes de redirigir
       } else {
         toast.error(result.message || 'Error al iniciar sesión.', { position: 'top-right' });

@@ -110,7 +110,9 @@ const UserManagement = () => {
           <option value="">Todos los roles</option>
           <option value="user">Usuario</option>
           <option value="admin">Administrador</option>
+          <option value="empleado">Empleado</option> {/* 👈 AÑADIR ESTA LINEA */}
         </select>
+
       </div>
 
       {/* User Table */}
@@ -129,7 +131,7 @@ const UserManagement = () => {
             <tr key={account._id} className="hover:bg-gray-50">
               <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
-                  <>
+                  <div>
                     <input
                       type="text"
                       name="nombre"
@@ -146,11 +148,12 @@ const UserManagement = () => {
                       className="p-2 border border-gray-300 rounded-lg w-full mt-2"
                       placeholder="Apellidos"
                     />
-                  </>
+                  </div>
                 ) : (
                   `${account.nombre} ${account.apellidos}`
                 )}
               </td>
+
               <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
                   <input
@@ -187,48 +190,51 @@ const UserManagement = () => {
                   >
                     <option value="user">Usuario</option>
                     <option value="admin">Administrador</option>
+                    <option value="empleado">Empleado</option> {/* 👈 AÑADIR ESTA LINEA */}
                   </select>
+
                 ) : (
                   account.role
                 )}
               </td>
               <td className="py-3 px-4">
                 {editingAccount?._id === account._id ? (
-                  <>
+                  <div className="flex space-x-2">
                     <button
-                      className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                      className="flex items-center space-x-2 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
                       onClick={() => handleSave(account._id)}
                     >
-                      <FaSave className="mr-2" />
-                      Guardar
+                      <FaSave />
+                      <span>Guardar</span>
                     </button>
                     <button
-                      className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 ml-2"
+                      className="flex items-center space-x-2 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 ml-2"
                       onClick={handleCancel}
                     >
-                      <FaTimes className="mr-2" />
-                      Cancelar
+                      <FaTimes />
+                      <span>Cancelar</span>
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div className="flex space-x-2">
                     <button
-                      className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                      className="flex items-center space-x-2 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                       onClick={() => handleEdit(account)}
                     >
-                      <FaUserEdit className="mr-2" />
-                      Editar
+                      <FaUserEdit />
+                      <span>Editar</span>
                     </button>
                     <button
-                      className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 ml-2"
+                      className="flex items-center space-x-2 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 ml-2"
                       onClick={() => confirmDelete(account._id)}
                     >
-                      <FaUserTimes className="mr-2" />
-                      Eliminar
+                      <FaUserTimes />
+                      <span>Eliminar</span>
                     </button>
-                  </>
+                  </div>
                 )}
               </td>
+
             </tr>
           ))}
         </tbody>

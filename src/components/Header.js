@@ -5,7 +5,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import API_URL from '../apiConfig';
 
 const Header = ({ toggleDarkMode, isDarkMode }) => {
-    const { isAuthenticated, isAdmin, logout } = useContext(AuthContext);
+    const { isAuthenticated, isAdmin, isEmpleado, logout } = useContext(AuthContext);
     const [logoUrl, setLogoUrl] = useState('');
     const [slogan, setSlogan] = useState('');
     const [title, setTitle] = useState('');
@@ -59,22 +59,46 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
                         )}
 
                         {isAuthenticated && (
+                        <>
+                            {isAdmin ? (
                             <>
-                                {isAdmin ? (
-                                    <>
-                                        <li><Link to="/admin-dashboard" className="text-white hover:text-gray-300 font-semibold">Admin Dashboard</Link></li>
-                                        <li><Link to="/admin-panel" className="text-white hover:text-gray-300 font-semibold">Gestión Avanzada del Sistema</Link></li>
-                                    </>
-                                ) : (
-                                    <>
-                                        <li><Link to="/dashboard" className="text-white hover:text-gray-300 font-semibold">Dashboard</Link></li>
-                                        <li><Link to="/gestion-cuenta" className="text-white hover:text-gray-300 font-semibold">Gestion Cuenta</Link></li>
-                                        <li><Link to="/pagos" className="text-white hover:text-gray-300 font-semibold">Pagos</Link></li>
-                                        <li><Link to="/perfil/:userId" className="text-white hover:text-gray-300 font-semibold">Perfil</Link></li>
-                                    </>
-                                )}
+                                <li><Link to="/admin-dashboard" className="text-white hover:text-gray-300 font-semibold">Admin Dashboard</Link></li>
+                                <li><Link to="/admin-panel" className="text-white hover:text-gray-300 font-semibold">Gestión Avanzada del Sistema</Link></li>
                             </>
+                            ) : isEmpleado ? (
+                            <>
+                                <li>
+                                    <Link to="/empleado-dashboard" className="text-white hover:text-gray-300 font-semibold">
+                                        Panel Principal
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/empleado/gestion-ahorros" className="text-white hover:text-gray-300 font-semibold">
+                                        Gestión de Ahorros
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/empleado/pagos" className="text-white hover:text-gray-300 font-semibold">
+                                        Pagos
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/empleado/estadisticas-reportes" className="text-white hover:text-gray-300 font-semibold">
+                                        Estadísticas y Reportes
+                                    </Link>
+                                </li>
+                            </>
+                            ) : (
+                            <>
+                                <li><Link to="/dashboard" className="text-white hover:text-gray-300 font-semibold">Dashboard</Link></li>
+                                <li><Link to="/gestion-cuenta" className="text-white hover:text-gray-300 font-semibold">Gestion Cuenta</Link></li>
+                                <li><Link to="/pagos" className="text-white hover:text-gray-300 font-semibold">Pagos</Link></li>
+                                <li><Link to="/perfil/:userId" className="text-white hover:text-gray-300 font-semibold">Perfil</Link></li>
+                            </>
+                            )}
+                        </>
                         )}
+
 
                         <li><Link to="/ayuda" className="text-white hover:text-gray-300 font-semibold">Ayuda</Link></li>
 
