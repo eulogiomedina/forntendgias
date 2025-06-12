@@ -8,6 +8,7 @@ const PerfilCliente = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [credencialSeleccionada, setCredencialSeleccionada] = useState(null);
+  const [tokenWearOS, setTokenWearOS] = useState(null);  // NUEVO
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -45,12 +46,45 @@ const PerfilCliente = () => {
     setCredencialSeleccionada(null);
   };
 
+  const generarTokenWearOS = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    try {
+      const response = await fetch(`${API_URL}/api/wearos/generar-token/${storedUser.id}`, {
+        method: "POST",
+      });
+      const data = await response.json();
+      setTokenWearOS(data.token);  // Guardar token en el state
+    } catch (error) {
+      console.error("Error al generar token:", error);
+      alert("❌ Error al generar el token. Intenta nuevamente.");
+    }
+  };
+
   if (loading) return <p>Cargando perfil...</p>;
   if (!perfil) return <p>No se encontró información del usuario.</p>;
 
   return (
     <div className="max-w-[600px] mx-auto mt-[120px] mb-[50px] p-[30px] bg-gradient-to-br from-[#e0f7fa] to-[#80deea] rounded-[15px] shadow-[0px_10px_40px_rgba(0,0,0,0.2)] text-center font-Poppins">
       <h2 className="text-2xl font-bold mb-4">Perfil del Cliente</h2>
+
+      {/* Botón para generar token */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={generarTokenWearOS}
+          className="py-2 px-4 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors shadow-md"
+        >
+          Generar Token para Wear OS
+        </button>
+      </div>
+
+      {/* Mostrar token si existe */}
+      {tokenWearOS && (
+        <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded text-center">
+          <p className="font-semibold mb-1">🔑 Tu token actual para sincronizar con Wear OS:</p>
+          <p className="text-2xl font-mono tracking-wider">{tokenWearOS}</p>
+          <p className="text-xs text-gray-600 mt-1">(Ingresa este código en tu aplicación de reloj)</p>
+        </div>
+      )}
 
       <div className="flex flex-col items-center bg-white rounded-[10px] p-[20px] shadow-[0px_4px_15px_rgba(0,0,0,0.1)] mb-[20px]">
         {perfil.fotoPerfil ? (
