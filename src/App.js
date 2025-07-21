@@ -46,6 +46,9 @@ import AdminCuentaDestino from "./pages/AdminCuentaDestino";
 import GestionPagos from "./pages/GestionPagos"; 
 import EmpleadoDashboard from './pages/EmpleadoDashboard';
 import GestionAhorrosEmpleado from './pages/GestionAhorrosEmpleado';
+import SolicitudPrestamoForm from "./pages/SolicitudPrestamoForm";
+import SolicitudesPrestamoAdmin from './pages/SolicitudesPrestamoAdmin';
+
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -216,6 +219,9 @@ function App() {
                             <Route path="/admin-panel/gestion-pagos" element={<GestionPagos />} /> 
                             <Route path="/empleado-dashboard" element={<EmpleadoDashboard />} />
                             <Route path="/empleado/gestion-ahorros" element={<GestionAhorrosEmpleado />} />
+                            <Route path="/solicitar-prestamo" element={<SolicitudPrestamoForm />} />
+                            <Route path="/admin-panel/solicitudes-prestamo" element={<SolicitudesPrestamoAdmin />} />
+
 
                         </Routes>
                     </main>

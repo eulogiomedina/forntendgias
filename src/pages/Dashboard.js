@@ -175,6 +175,13 @@ const Dashboard = () => {
             >
               Ir a Gestión de Cuenta
             </Link>
+            <Link 
+              to="/solicitar-prestamo"
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
+            >
+              Solicitar préstamo
+            </Link>
+
           </div>
         </>
       ) : (
