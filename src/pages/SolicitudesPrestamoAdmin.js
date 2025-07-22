@@ -89,8 +89,8 @@ export default function SolicitudesPrestamoAdmin() {
         setPrediccion(data.es_buen_pagador);
         setPredMsg(
           data.es_buen_pagador === 1
-            ? `Buen pagador (aprobado)\nProbabilidad: ${(data.probabilidad * 100).toFixed(1)}%`
-            : `Mal pagador (rechazado)\nProbabilidad: ${(data.probabilidad * 100).toFixed(1)}%`
+            ? "Buen pagador (aprobado)"
+            : "Mal pagador (rechazado)"
         );
         setShowPredModal(true);
       } else {
@@ -210,7 +210,7 @@ export default function SolicitudesPrestamoAdmin() {
               onClick={() => setShowPredModal(false)}
             >×</button>
             <div className={`text-2xl font-bold mb-4 ${prediccion === 1 ? "text-green-600" : "text-red-600"}`}>
-              {predMsg.split('\n').map((line, idx) => <div key={idx}>{line}</div>)}
+              {predMsg}
             </div>
             <button
               className="mt-2 bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-700"
