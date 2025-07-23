@@ -46,18 +46,12 @@ import AdminCuentaDestino from "./pages/AdminCuentaDestino";
 import GestionPagos from "./pages/GestionPagos"; 
 import EmpleadoDashboard from './pages/EmpleadoDashboard';
 import GestionAhorrosEmpleado from './pages/GestionAhorrosEmpleado';
-<<<<<<< HEAD
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PagosEmpleado from './pages/PagosEmpleado';
 import UsersDirectory from './pages/UsersDirectory';
 import PagoExitoso from "./pages/PagoExitoso";
 import SolicitudPrestamoForm from "./pages/SolicitudPrestamoForm";
 import SolicitudesPrestamoAdmin from './pages/SolicitudesPrestamoAdmin';
-=======
-import SolicitudPrestamoForm from "./pages/SolicitudPrestamoForm";
-import SolicitudesPrestamoAdmin from './pages/SolicitudesPrestamoAdmin';
-
->>>>>>> 633dec5d2b0c93f67783ee932a2f92de188199c9
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
