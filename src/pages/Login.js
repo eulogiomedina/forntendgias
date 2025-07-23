@@ -9,7 +9,8 @@ import API_URL from '../apiConfig';
 // ----------- Importa la librería de recaptcha -----------
 import ReCAPTCHA from 'react-google-recaptcha';
 
-const SITE_KEY = "6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_"; // pon aquí tu sitekey de reCAPTCHA
+ {/* reCAPTCHA   6LevFWwqAAAAAJXo2ezz-8y_u_CLAPnvlsOYLYht ---- 6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_  */}
+const SITE_KEY = "6LevFWwqAAAAAJXo2ezz-8y_u_CLAPnvlsOYLYht"; // pon aquí tu sitekey de reCAPTCHA
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', password: '' });

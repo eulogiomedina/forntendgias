@@ -1,4 +1,3 @@
-// src/components/AdminSidebar.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUsers, FaPiggyBank, FaMoneyCheckAlt, FaFileAlt } from 'react-icons/fa';
@@ -52,6 +51,16 @@ const AdminSidebar = () => {
           <h2 className="text-2xl font-bold text-[#0d47a1] mb-3">Documentos de los Usuarios</h2>
           <p className="text-lg text-black">Consulta todos los usuarios, perfiles y tandas.</p>
         </div>
+        {/* --- NUEVO: Solicitudes de Préstamo --- */}
+        <div
+          className="bg-white rounded-lg shadow-xl p-6 text-center transition-transform transform hover:translate-y-2 hover:shadow-2xl hover:border-[#0d47a1] hover:bg-[#ffe9ce] cursor-pointer border-2 border-[#ffc107]"
+          onClick={() => handleNavigation('/admin-panel/solicitudes-prestamo')}
+        >
+          <FaFileAlt className="text-[#ffa000] text-6xl mb-4" />
+          <h2 className="text-2xl font-bold text-[#ff9800] mb-3">Solicitudes de Préstamo</h2>
+          <p className="text-lg text-black">Revisa, evalúa y gestiona las solicitudes de préstamo.</p>
+        </div>
+
         {/* --- NUEVO: Solicitudes de Préstamo --- */}
         <div
           className="bg-white rounded-lg shadow-xl p-6 text-center transition-transform transform hover:translate-y-2 hover:shadow-2xl hover:border-[#0d47a1] hover:bg-[#ffe9ce] cursor-pointer border-2 border-[#ffc107]"
