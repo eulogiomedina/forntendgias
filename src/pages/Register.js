@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom'; // asegúrate de tener esto al inicio del archivo
 import API_URL from '../apiConfig';
 
 const Register = () => {
@@ -16,6 +17,7 @@ const Register = () => {
     estado: '',
     municipio: '',
     colonia: '',
+    aceptaPoliticas: false, 
   });
 
   const [estados, setEstados] = useState([]);
@@ -29,6 +31,8 @@ const Register = () => {
   const [countryCode, setCountryCode] = useState('+52'); // Código de país por defecto (México)
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [latestTerm, setLatestTerm] = useState(null);
+
 
   const commonPatterns = ['123', '123456', 'qwerty', 'password', 'abc123', '111111', 'aaa', 'qqq'];
 
@@ -53,6 +57,20 @@ const Register = () => {
     };
 
     fetchEstados();
+    const fetchLatestTerm = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/terms`);
+      const data = await response.json();
+      const latest = data.reduce((prev, current) =>
+        prev.version > current.version ? prev : current
+      );
+      setLatestTerm(latest);
+    } catch (error) {
+      console.error('Error al obtener los términos más recientes:', error);
+    }
+  };
+
+  fetchLatestTerm();
   }, []);
 
   // Manejar cambios en estado para cargar municipios
@@ -197,6 +215,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.aceptaPoliticas) {
+      toast.error('Debes aceptar el Aviso de Privacidad y los Términos para registrarte.');
+      return;
+    }
 
     if (!isEmailValid) {
       toast.error('No puedes registrarte con un correo inválido.');
@@ -407,10 +429,51 @@ const Register = () => {
             </select>
           </div>
         </div>
+        
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            id="aceptaPoliticas"
+            checked={formData.aceptaPoliticas}
+            onChange={(e) => setFormData({ ...formData, aceptaPoliticas: e.target.checked })}
+            className="mr-2 mt-1 accent-teal-600"
+          />
+          <label htmlFor="aceptaPoliticas" className="text-sm text-gray-700">
+            Acepto el{' '}
+            <a
+              href="/aviso-de-privacidad"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-700 underline"
+            >
+              Aviso de Privacidad
+            </a>{' '}
+            y los{' '}
+            {latestTerm && (
+              <Link
+                to={`/terminos/${latestTerm._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-700 underline"
+              >
+                {latestTerm.title || 'Términos y Condiciones'}
+              </Link>
+            )}
+          </label>
+
+        </div>
 
         {/* Botón para registrar */}
         <div className="flex justify-center">
-          <button type="submit" disabled={loading} className="w-1/2 py-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
+          <button
+            type="submit"
+            disabled={loading || !formData.aceptaPoliticas}
+            className={`w-1/2 py-3 text-white rounded-md focus:outline-none focus:ring-2 
+              ${!formData.aceptaPoliticas || loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-teal-600 hover:bg-teal-700 focus:ring-teal-600'}`}
+          >
+
             {loading ? 'Registrando...' : 'Registrar'}
           </button>
         </div>

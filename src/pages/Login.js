@@ -1,49 +1,36 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext'; // Importar el contexto de autenticación
-import { toast, ToastContainer } from 'react-toastify'; // Importar react-toastify
-import 'react-toastify/dist/ReactToastify.css'; // Importar el CSS de react-toastify
+import { AuthContext } from '../contexts/AuthContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import imagen2 from '../assets/imagen2.png';
 import imagen3 from '../assets/imagen3.jpg';
 import API_URL from '../apiConfig';
+// ----------- Importa la librería de recaptcha -----------
+import ReCAPTCHA from 'react-google-recaptcha';
+
+const SITE_KEY = "6Lc5pV0qAAAAAFyeHTlFcFJOlMWTXzQGwlbeA88_"; // pon aquí tu sitekey de reCAPTCHA
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', password: '' });
-  const { login } = useContext(AuthContext); // Usar el método login del contexto
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const images = [imagen2, imagen3];
 
-  // Cambiar la imagen del carrusel cada 3 segundos
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000);
-
-    return () => clearInterval(interval); // Limpiar el intervalo cuando el componente se desmonte
-  }, []);
-
-  // Cargar reCAPTCHA cuando el componente se monta
-  useEffect(() => {
-    const loadRecaptcha = () => {
-      const script = document.createElement('script');
-      script.src = 'https://www.google.com/recaptcha/api.js';
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    };
-    loadRecaptcha();
+    return () => clearInterval(interval);
   }, []);
 
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verificar si el elemento reCAPTCHA existe
-    const recaptchaElement = document.querySelector('#g-recaptcha-response');
-    const recaptchaResponse = recaptchaElement ? recaptchaElement.value : '';
-
-    if (!recaptchaResponse) {
+    if (!recaptchaToken) {
       toast.error('Por favor completa el reCAPTCHA', { position: 'top-right' });
       return;
     }
@@ -53,7 +40,7 @@ const Login = () => {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, recaptchaToken: recaptchaResponse }),
+        body: JSON.stringify({ ...formData, recaptchaToken }),
       });
 
       const result = await response.json();
@@ -61,20 +48,17 @@ const Login = () => {
       if (response.ok) {
         toast.success('Inicio de sesión exitoso.', { position: 'top-right' });
 
-        // Actualizar el contexto de autenticación
         login(result.user);
 
-        // Redirigir al dashboard según el rol
         setTimeout(() => {
           if (result.user.role === 'admin') {
             navigate('/admin-dashboard');
           } else if (result.user.role === 'empleado') {
-            navigate('/empleado-dashboard'); // 👈 AQUI
+            navigate('/empleado-dashboard');
           } else {
             navigate('/dashboard');
           }
-
-        }, 2000); // Esperar 2 segundos antes de redirigir
+        }, 2000);
       } else {
         toast.error(result.message || 'Error al iniciar sesión.', { position: 'top-right' });
       }
@@ -83,9 +67,12 @@ const Login = () => {
     }
   };
 
+  // Si quieres limpiar el token de recaptcha cada vez que se cambia el formulario (opcional)
+  // useEffect(() => { setRecaptchaToken(""); }, [formData.correo]);
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-6">
-      <ToastContainer /> {/* Contenedor de notificaciones */}
+      <ToastContainer />
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl w-full">
         {/* Carrusel personalizado con Tailwind */}
         <div className="w-full sm:w-1/2">
@@ -95,7 +82,6 @@ const Login = () => {
               alt="Imagen de carrusel"
               className="w-full h-full object-cover transition duration-500"
             />
-            
           </div>
         </div>
 
@@ -128,9 +114,13 @@ const Login = () => {
               />
             </div>
 
-            {/* reCAPTCHA */}
+            {/* reCAPTCHA con react-google-recaptcha */}
             <div className="mb-4">
-              <div className="g-recaptcha" data-sitekey="6LevFWwqAAAAAJXo2ezz-8y_u_CLAPnvlsOYLYht"></div>
+              <ReCAPTCHA
+                sitekey={SITE_KEY}
+                onChange={(token) => setRecaptchaToken(token)}
+                onExpired={() => setRecaptchaToken("")}
+              />
             </div>
 
             <button

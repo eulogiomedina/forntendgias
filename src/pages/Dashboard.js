@@ -14,6 +14,9 @@ const Dashboard = () => {
   const [mostrarSelector, setMostrarSelector] = useState(false);
   const [userId, setUserId] = useState(null);
   const [historialAhorros, setHistorialAhorros] = useState([]);
+  const [fotoPersona, setFotoPersona] = useState(null);
+  const [numeros, setNumeros] = useState(1);
+
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -39,6 +42,25 @@ const Dashboard = () => {
     setAhorroSeleccionado(plan);
     setMostrarSelector(false);
     setMostrarConfirmacion(true);
+  };
+
+  function esFacebookPerfil(link) {
+    const regex = /^https:\/\/(www\.)?facebook\.com\/(?!pages|groups|events|marketplace)[A-Za-z0-9.\-]+\/?$/i;
+    return regex.test(link);
+  }
+
+  const handleFotoPersonaChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      alert("No se seleccionó ninguna foto.");
+      return;
+    }
+    const allowedFormats = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowedFormats.includes(file.type)) {
+      alert("Formato no válido. Solo se permiten JPG, JPEG y PNG.");
+      return;
+    }
+    setFotoPersona(file);
   };
 
   const confirmarSeleccion = () => {
@@ -86,6 +108,21 @@ const Dashboard = () => {
       alert("Debes seleccionar un tipo de ahorro.");
       return;
     }
+    if (!fotoPersona) {
+      alert("Debes subir una foto tuya con cabello recogido.");
+      return;
+    }
+
+    if (historialAhorros.length === 0) {
+      if (!facebook) {
+        alert("Debes ingresar el enlace de tu perfil de Facebook.");
+        return;
+      }
+      if (!esFacebookPerfil(facebook)) {
+        alert("Por favor, ingresa un enlace de perfil de Facebook válido, por ejemplo:\nhttps://facebook.com/tu.usuario");
+        return;
+      }
+    }
   
     // Extraer monto y tipo del ahorro seleccionado
     const [montoStr, tipo] = ahorroSeleccionado.split(" ");
@@ -107,11 +144,15 @@ const Dashboard = () => {
       formData.append("userId", userId);
       formData.append("monto", monto);
       formData.append("tipo", tipo);
-  
+
       if (historialAhorros.length === 0) {
         formData.append("credencial", credencial);
+        formData.append("fotoPersona", fotoPersona); // ✅ Asegúrate de incluirla
         formData.append("facebook", facebook);
       }
+
+      formData.append("numeros", numeros); // ✅ Siempre manda cuántos números
+
   
       const response = await fetch(`${API_URL}/api/ahorros-usuarios`, {
         method: "POST",
@@ -124,7 +165,7 @@ const Dashboard = () => {
   
       alert("Ahorro registrado exitosamente.");
       setMostrarModal(false);
-      setHistorialAhorros((prev) => [...prev, result.ahorro]);
+      setHistorialAhorros((prev) => [...prev, ...result.nuevosAhorros]);
       setAhorroSeleccionado(null);
       setCredencial(null);
       setFacebook("");
@@ -137,6 +178,7 @@ const Dashboard = () => {
           userId,
           monto,
           tipo,
+          numeros,
         }),
       });
   
@@ -174,6 +216,12 @@ const Dashboard = () => {
               className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded"
             >
               Ir a Gestión de Cuenta
+            </Link>
+            <Link 
+              to="/solicitar-prestamo"
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
+            >
+              Solicitar préstamo
             </Link>
           </div>
         </>
@@ -240,6 +288,15 @@ const Dashboard = () => {
                   accept="image/*" 
                   onChange={handleFileChange} 
                   className="w-full p-[10px] mb-[10px] border border-gray-300 rounded"
+                />               
+                <label className="block mt-[10px] mb-[5px] font-bold">
+                  Sube una foto tuya con cabello recogido:
+                </label>
+                <input 
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotoPersonaChange}
+                  className="w-full p-[10px] mb-[10px] border border-gray-300 rounded"
                 />
                 <label className="block mt-[10px] mb-[5px] font-bold">
                   Enlace de tu perfil de Facebook:
@@ -249,8 +306,25 @@ const Dashboard = () => {
                   placeholder="https://facebook.com/tu-perfil"
                   value={facebook}
                   onChange={(e) => setFacebook(e.target.value)}
+                  className="w-full p-[10px] mb-[2px] border border-gray-300 rounded"
+                />
+                {facebook && !esFacebookPerfil(facebook) && (
+                  <p className="text-red-500 text-xs mb-2">
+                    Ingresa un link válido, ej: https://facebook.com/tu.usuario
+                  </p>
+                )}
+
+                <label className="block mt-[10px] mb-[5px] font-bold">
+                  ¿Cuántos números deseas adquirir en esta tanda?
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={numeros}
+                  onChange={(e) => setNumeros(e.target.value)}
                   className="w-full p-[10px] mb-[10px] border border-gray-300 rounded"
                 />
+
               </>
             )}
             <div className="flex justify-between mt-5">

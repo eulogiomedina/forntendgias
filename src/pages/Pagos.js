@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import API_URL from "../apiConfig";
 import { Link } from "react-router-dom";
 import { FaMoneyBillWave, FaRegFileAlt, FaRegCheckCircle, FaExclamationCircle, FaCopy, FaCheckCircle } from 'react-icons/fa';
+import PagoOpenpay from "../components/PagoOpenpay";
+import PagoMercadoPago from "../components/PagoMercadoPago";
+
 
 const Pagos = () => {
   const [tandas, setTandas] = useState([]);
@@ -18,6 +21,7 @@ const Pagos = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [contenidoModal, setContenidoModal] = useState("");
   const [proximaFechaPago, setProximaFechaPago] = useState(null);
+  const [mostrarPagoTarjeta, setMostrarPagoTarjeta] = useState(false);
 
 
 
@@ -77,7 +81,8 @@ const Pagos = () => {
   const handleCardClick = (tanda) => {
     setSelectedTanda((prev) => (prev?._id === tanda._id ? null : tanda));
   };
-
+  
+  // ...dentro de tu componente Pagos
 
   const handleArchivoChange = (e) => {
     if (e.target.files?.[0]) {
@@ -511,6 +516,32 @@ const Pagos = () => {
         >
           {enviandoPago ? "Verificando..." : "Confirmar Pago"}
         </button>
+        <button
+          onClick={() => setMostrarPagoTarjeta(true)}
+          className="py-2 px-4 rounded-md mt-3 bg-indigo-600 hover:bg-indigo-700 text-white transition"
+        >
+          Pagar con Tarjeta (Mercado Pago)
+        </button>
+
+        {mostrarPagoTarjeta && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white rounded-xl shadow-lg p-6 relative max-w-md w-full flex flex-col items-center">
+              {/* SOLO PASA LA TANDA SELECCIONADA Y EL USER */}
+              <PagoMercadoPago
+                tanda={selectedTanda}
+                user={user}
+                recargo={estaAtrasado(selectedTanda) ? 80 : 0}
+              />
+              <button
+                onClick={() => setMostrarPagoTarjeta(false)}
+                className="mt-6 px-8 py-2 bg-gray-300 hover:bg-red-400 rounded font-semibold transition text-gray-700"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
 
       <div className="mt-8">
