@@ -554,18 +554,42 @@ const Pagos = () => {
         <h3 className="text-2xl text-gray-800 font-semibold mb-2">Historial de Pagos</h3>
         {Array.isArray(historial) && historial.length > 0 ? (
           <ul className="list-disc pl-5 space-y-2">
-          {historial.map((pago) => (
-            <li key={pago._id}>
-              <div>
-                <FaRegFileAlt className="inline-block mr-1" /> 📅 {new Date(pago.fechaPago || pago.fecha).toLocaleDateString("es-MX")} - 
-                💰 <strong>${pago.monto}</strong> - 
-                🏷️ <em className={pago.estado === "Aprobado" ? "text-green-600" : "text-yellow-600"}>
-                  {pago.estado}
-                </em>
-              </div>
-            </li>
-          ))}
-        </ul>        
+            {historial.map((pago) => (
+              <li key={pago._id}>
+                <div>
+                  <FaRegFileAlt className="inline-block mr-1" />
+                  📅 {new Date(pago.fechaPago || pago.fecha).toLocaleDateString("es-MX")} -
+                  💰 <strong>${pago.monto}</strong> -
+                  🏷️ <em className={pago.estado === "Aprobado" ? "text-green-600" : "text-yellow-600"}>
+                    {pago.estado}
+                  </em>
+                  {pago.metodo === "MercadoPago" && (
+                    <span className="ml-2 inline-flex items-center bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-semibold">
+                      <FaMoneyBillWave className="inline-block mr-1" /> MercadoPago
+                    </span>
+                  )}
+                  {pago.metodo === "manual" && pago.comprobanteUrl && (
+                    <span className="ml-2 inline-flex items-center bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs font-semibold">
+                      <FaRegFileAlt className="inline-block mr-1" /> Manual
+                    </span>
+                  )}
+                </div>
+                {pago.metodo === "manual" && pago.comprobanteUrl && (
+                  <div>
+                    <a
+                      href={pago.comprobanteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline text-xs"
+                    >
+                      Ver comprobante
+                    </a>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        
         ) : (
           <p className="text-gray-600">Aún no has registrado pagos en esta cuenta.</p>
         )}
