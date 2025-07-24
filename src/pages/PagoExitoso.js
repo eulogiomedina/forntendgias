@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PagoExitoso() {
@@ -9,15 +9,8 @@ export default function PagoExitoso() {
   const params = new URLSearchParams(location.search);
   const tandaId = params.get("tanda");
   const userId = params.get("user");
-  const monto = params.get("monto"); // Si lo agregas en la URL del backend
-  const tipo = params.get("tipo");   // Si lo agregas también
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/pagos");
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  const monto = params.get("monto");
+  const tipo = params.get("tipo");
 
   // Fecha y hora del pago
   const fecha = new Date().toLocaleString();
@@ -41,7 +34,7 @@ export default function PagoExitoso() {
           <div><span className="font-semibold">Fecha y hora:</span> {fecha}</div>
         </div>
       </div>
-      <p className="text-gray-400 mb-6">Serás redirigido automáticamente a la pantalla de pagos en 5 segundos.</p>
+      <p className="text-gray-400 mb-6">Presiona el botón para regresar a la pantalla de pagos.</p>
       <button
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow transition"
         onClick={() => navigate("/pagos")}
