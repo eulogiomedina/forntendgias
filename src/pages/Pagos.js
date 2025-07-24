@@ -432,71 +432,90 @@ const Pagos = () => {
               <FaRegCheckCircle className="inline-block mr-1" /> 🎉 Esta semana te toca recibir. ¡No necesitas pagar!
             </p>
           )}
-          {usuarioAlDia(selectedTanda) && (
+
+          {usuarioAlDia(selectedTanda) ? (
             <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded font-bold mb-2 flex items-center">
-              <FaRegCheckCircle className="mr-2" /> ¡No tienes pagos pendientes! Estás al día con tus pagos en esta tanda.
-            </div>
-          )}
-
-          {(() => {
-            const historialLocal = [...historial];
-            const ahora = new Date(); // fecha actual local
-
-            const pagosDelUsuario = selectedTanda.fechasPago?.filter(f => f.userId === user.id && f.fechaPago);
-            const pagosPendientes = pagosDelUsuario?.filter(f =>
-              !historialLocal.some(h =>
-                h.userId === user.id &&
-                h.tandaId === selectedTanda._id &&
-                new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
-              )
-            );
-
-            const siguientePago = pagosPendientes?.sort((a, b) => new Date(a.fechaPago) - new Date(b.fechaPago))[0];
-
-            const yaPagoEstaSemanaBool = yaPagoEstaSemana(selectedTanda);
-
-            if (!yaPagoEstaSemanaBool && siguientePago) {
-              // Usa la función para obtener la fecha de pago como "día fijo"
-              const fechaPagoLocal = parsePaymentDate(siguientePago.fechaPago);
-              const fechaLimiteLocal = new Date(
-                fechaPagoLocal.getFullYear(),
-                fechaPagoLocal.getMonth(),
-                fechaPagoLocal.getDate(), 
-                23, 59, 59, 999
-              );
-              // Si la fecha actual supera el límite, se aplica penalización
-              if (ahora > fechaLimiteLocal) {
-                return (
-                  <p className="text-red-600 font-semibold">
-                    ⚠️ No realizaste el pago a tiempo para el día <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Se te aplicará una penalización.
-                  </p>
+              <FaRegCheckCircle className="mr-2" />
+              ¡No tienes pagos pendientes! Estás al día con tus pagos en esta tanda.
+              {(() => {
+                // Mostrar próxima fecha si existe
+                const proxima = obtenerProximaFechaPagoConHistorial(selectedTanda, historial);
+                return proxima?.fechaPago ? (
+                  <span className="ml-2 font-normal text-green-900">
+                    | Tu siguiente pago es el <b>{convertirFechaLocal(proxima.fechaPago)}</b>.
+                  </span>
+                ) : (
+                  <span className="ml-2 font-normal text-green-900">| Ya terminaste todos tus pagos.</span>
                 );
-              } else {
+              })()}
+            </div>
+          ) : (
+            (() => {
+              const historialLocal = [...historial];
+              const ahora = new Date();
+              const pagosDelUsuario = selectedTanda.fechasPago?.filter(f => f.userId === user.id && f.fechaPago);
+              const pagosPendientes = pagosDelUsuario?.filter(f =>
+                !historialLocal.some(h =>
+                  h.userId === user.id &&
+                  h.tandaId === selectedTanda._id &&
+                  new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
+                )
+              );
+              const siguientePago = pagosPendientes?.sort((a, b) => new Date(a.fechaPago) - new Date(b.fechaPago))[0];
+              const yaPagoEstaSemanaBool = yaPagoEstaSemana(selectedTanda);
+
+              if (!yaPagoEstaSemanaBool && siguientePago) {
+                const fechaPagoLocal = parsePaymentDate(siguientePago.fechaPago);
+                const fechaLimiteLocal = new Date(
+                  fechaPagoLocal.getFullYear(),
+                  fechaPagoLocal.getMonth(),
+                  fechaPagoLocal.getDate(),
+                  23, 59, 59, 999
+                );
+                if (ahora > fechaLimiteLocal) {
+                  return (
+                    <p className="text-red-600 font-semibold">
+                      ⚠️ No realizaste el pago a tiempo para el día <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Se te aplicará una penalización.
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p className="text-yellow-700 font-semibold">
+                      ⏳ Tienes pendiente el pago correspondiente al <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Tienes hasta las 11:59 p.m. de ese día.
+                    </p>
+                  );
+                }
+              }
+
+              if (yaPagoEstaSemanaBool) {
+                // Extra: también mostrar próxima fecha de pago
+                const proxima = obtenerProximaFechaPagoConHistorial(selectedTanda, historialLocal);
                 return (
-                  <p className="text-yellow-700 font-semibold">
-                    ⏳ Tienes pendiente el pago correspondiente al <strong>{convertirFechaLocal(siguientePago.fechaPago)}</strong>. Tienes hasta las 11:59 p.m. de ese día.
-                  </p>
+                  <div className="text-green-700 font-semibold flex flex-col">
+                    <span>✅ Ya realizaste tu pago esta semana.</span>
+                    {proxima?.fechaPago && (
+                      <span className="text-green-900 font-normal">
+                        Tu siguiente pago es el <b>{convertirFechaLocal(proxima.fechaPago)}</b>.
+                      </span>
+                    )}
+                    {!proxima?.fechaPago && (
+                      <span className="text-green-900 font-normal">
+                        Ya terminaste todos tus pagos de esta tanda.
+                      </span>
+                    )}
+                  </div>
                 );
               }
-            }
 
-            if (yaPagoEstaSemanaBool) {
+              // Fallback
               return (
-                <p className="text-green-700 font-semibold">
-                  ✅ Ya realizaste tu pago esta semana.
+                <p className="text-green-600 font-bold">
+                  <FaRegCheckCircle className="inline-block mr-1" /> ✅ ¡Estás al día! No hay pagos pendientes.
                 </p>
               );
-            }
-
-            return (
-              <p className="text-green-600 font-bold">
-                <FaRegCheckCircle className="inline-block mr-1" /> ✅ ¡Estás al día! No hay pagos pendientes.
-              </p>
-            );
-          })()}
-
+            })()
+          )}
         </div>
-
 
           {/* 🧾 Resumen de pago formal */}
           <div className="mt-4 border-t pt-4">
