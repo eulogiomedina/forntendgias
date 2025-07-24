@@ -3,33 +3,26 @@ import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
-const INACTIVITY_MINUTES = 30; // minutos
+const INACTIVITY_MINUTES = 30;
 const INACTIVITY_MS = INACTIVITY_MINUTES * 60 * 1000;
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEmpleado, setIsEmpleado] = useState(false);
-
-  // 👇 Agrega esto:
-  const navigate = typeof window !== "undefined" && window.location ? require('react-router-dom').useNavigate() : () => {};
-
-  // Ref para el timer de inactividad
   const inactivityTimeout = useRef();
+  const navigate = useNavigate();
 
-  // Detecta y resetea el timer de inactividad
+  // ⏰ Timer de inactividad
   const resetInactivityTimer = () => {
     if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current);
     inactivityTimeout.current = setTimeout(() => {
-      logout();
-      // Puedes mostrar un toast o redireccionar si quieres
+      logout(); // Solo logout después de 30 min sin actividad
     }, INACTIVITY_MS);
-
-    // Guarda la última vez de actividad
     localStorage.setItem('lastActivity', Date.now());
   };
 
-  // Efecto para inicializar sesión desde localStorage
+  // Cargar sesión al iniciar (si está guardada)
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
@@ -40,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Efecto para escuchar actividad del usuario y reiniciar timer
+  // Reset timer si hay interacción
   useEffect(() => {
     if (isAuthenticated) {
       const events = ['mousemove', 'keydown', 'mousedown', 'touchstart'];
@@ -52,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  // Cerrar sesión y limpiar + redirigir
+  // Logout manual o por timeout
   const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('lastActivity');
@@ -60,12 +53,7 @@ export const AuthProvider = ({ children }) => {
     setIsAdmin(false);
     setIsEmpleado(false);
     if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current);
-
-    // 👇 Redirecciona al login
-    if (typeof window !== "undefined" && window.location) {
-      window.location.href = "/login";
-      // O con navigate("/login"); si el AuthProvider está DENTRO del BrowserRouter.
-    }
+    navigate("/login");
   };
 
   // Login normal
