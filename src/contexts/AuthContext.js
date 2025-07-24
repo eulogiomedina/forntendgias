@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useRef } from 'react';
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -9,6 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEmpleado, setIsEmpleado] = useState(false);
+
+  // 👇 Agrega esto:
+  const navigate = typeof window !== "undefined" && window.location ? require('react-router-dom').useNavigate() : () => {};
 
   // Ref para el timer de inactividad
   const inactivityTimeout = useRef();
@@ -48,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  // Cerrar sesión y limpiar
+  // Cerrar sesión y limpiar + redirigir
   const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('lastActivity');
@@ -56,6 +60,12 @@ export const AuthProvider = ({ children }) => {
     setIsAdmin(false);
     setIsEmpleado(false);
     if (inactivityTimeout.current) clearTimeout(inactivityTimeout.current);
+
+    // 👇 Redirecciona al login
+    if (typeof window !== "undefined" && window.location) {
+      window.location.href = "/login";
+      // O con navigate("/login"); si el AuthProvider está DENTRO del BrowserRouter.
+    }
   };
 
   // Login normal
@@ -66,20 +76,6 @@ export const AuthProvider = ({ children }) => {
     setIsEmpleado(user.role === 'empleado');
     resetInactivityTimer();
   };
-
-  // Limpiar sesión al cerrar pestaña (pero no al recargar)
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      // Si es recarga, NO borres nada
-      if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
-        return;
-      }
-      logout();
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    // eslint-disable-next-line
-  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isAdmin, isEmpleado, login, logout }}>
