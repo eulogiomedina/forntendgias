@@ -314,17 +314,6 @@ const Dashboard = () => {
                   </p>
                 )}
 
-                <label className="block mt-[10px] mb-[5px] font-bold">
-                  ¿Cuántos números deseas adquirir en esta tanda?
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={numeros}
-                  onChange={(e) => setNumeros(e.target.value)}
-                  className="w-full p-[10px] mb-[10px] border border-gray-300 rounded"
-                />
-
               </>
             )}
             <div className="flex justify-between mt-5">
