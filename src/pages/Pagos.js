@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaMoneyBillWave, FaRegFileAlt, FaRegCheckCircle, FaExclamationCircle, FaCopy, FaCheckCircle } from 'react-icons/fa';
 import PagoOpenpay from "../components/PagoOpenpay";
 import PagoMercadoPago from "../components/PagoMercadoPago";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const Pagos = () => {
@@ -22,8 +23,8 @@ const Pagos = () => {
   const [contenidoModal, setContenidoModal] = useState("");
   const [proximaFechaPago, setProximaFechaPago] = useState(null);
   const [mostrarPagoTarjeta, setMostrarPagoTarjeta] = useState(false);
-
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successModalParams, setSuccessModalParams] = useState({});
 
   const convertirFechaLocal = (fechaISO) => {
     if (!fechaISO) return "No definida";
@@ -77,6 +78,30 @@ const Pagos = () => {
       .then((data) => setCuentaDestino(data))
       .catch((err) => console.error("Error al obtener cuenta destino:", err));
   }, []);
+
+// ...al inicio ya tienes location y navigate
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("status") === "success") {
+      setSuccessModalParams({
+        tandaId: params.get("tanda"),
+        userId: params.get("user"),
+        fecha: new Date().toLocaleString(),
+        // Puedes agregar más si pasas más en la URL (ej: tipo, monto)
+        // tipo: params.get("tipo"),
+        // monto: params.get("monto"),
+      });
+      setShowSuccessModal(true);
+
+      // Quita los parámetros para evitar que el modal se vuelva a mostrar al refrescar
+      window.history.replaceState({}, document.title, location.pathname);
+
+      // Cierra el modal después de 5 segundos
+      const timer = setTimeout(() => setShowSuccessModal(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   const handleCardClick = (tanda) => {
     setSelectedTanda((prev) => (prev?._id === tanda._id ? null : tanda));
@@ -401,7 +426,38 @@ const Pagos = () => {
           </div>
         </div>
       )}
- 
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-xl px-10 py-8 text-center relative max-w-xs w-full">
+            <button
+              className="absolute top-3 right-4 text-xl text-gray-400 hover:text-gray-600"
+              onClick={() => setShowSuccessModal(false)}
+            >×</button>
+            <svg className="h-14 w-14 text-green-500 mb-3 mx-auto" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            <h2 className="text-2xl font-bold text-green-700 mb-2">¡Pago realizado correctamente!</h2>
+            <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2 mb-4 shadow">
+              <div className="text-gray-800 text-sm text-left">
+                <div><span className="font-semibold">ID de la tanda:</span> {successModalParams.tandaId || "-"}</div>
+                <div><span className="font-semibold">ID del usuario:</span> {successModalParams.userId || "-"}</div>
+                {/* {successModalParams.tipo && <div><span className="font-semibold">Tanda:</span> {successModalParams.tipo}</div>} */}
+                {/* {successModalParams.monto && <div><span className="font-semibold">Monto pagado:</span> ${parseFloat(successModalParams.monto).toFixed(2)} MXN</div>} */}
+                <div><span className="font-semibold">Fecha y hora:</span> {successModalParams.fecha}</div>
+              </div>
+            </div>
+            <p className="text-gray-500 mb-4 text-sm">Serás redirigido automáticamente o cierra este mensaje.</p>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow transition"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Regresar a Pagos ahora
+            </button>
+          </div>
+        </div>
+      )}
+
       {selectedTanda && (
         <div className="p-5 border rounded-lg mt-5 bg-blue-50 shadow-md">
           <h4 className="text-lg font-semibold text-gray-800 mb-2">Detalles de la Tanda</h4>
