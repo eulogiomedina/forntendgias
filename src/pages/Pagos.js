@@ -274,6 +274,18 @@ const Pagos = () => {
       return fechaRecibo >= hoy && fechaRecibo <= finSemana;
     });
   };  
+  const usuarioAlDia = (tanda) => {
+  if (!tanda?.fechasPago) return true;
+  return !tanda.fechasPago.some(f =>
+    f.userId === user.id &&
+    f.fechaPago &&
+    !historial.some(h =>
+      h.userId === user.id &&
+      h.tandaId === tanda._id &&
+      new Date(h.fechaPago).getTime() === new Date(f.fechaPago).getTime()
+    )
+  );
+};
 
   const handleCopiar = (valor, tipo) => {
     navigator.clipboard.writeText(valor);
@@ -419,6 +431,11 @@ const Pagos = () => {
             <p className="text-green-600 font-bold">
               <FaRegCheckCircle className="inline-block mr-1" /> 🎉 Esta semana te toca recibir. ¡No necesitas pagar!
             </p>
+          )}
+          {usuarioAlDia(selectedTanda) && (
+            <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded font-bold mb-2 flex items-center">
+              <FaRegCheckCircle className="mr-2" /> ¡No tienes pagos pendientes! Estás al día con tus pagos en esta tanda.
+            </div>
           )}
 
           {(() => {
