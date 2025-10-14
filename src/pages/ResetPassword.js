@@ -58,58 +58,94 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="reset-password-container">
-      <div className="reset-password-form">
-        <h2 className="text-xl font-semibold text-center">Restablecer Contraseña</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-200 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Restablecer Contraseña
+        </h2>
+
         {message && (
-          <p className={newPassword !== confirmPassword ? 'error-message' : 'success-message'}>
+          <p
+            className={`text-center text-sm font-medium mb-4 ${
+              message.includes('no coinciden') || message.includes('Error')
+                ? 'text-red-500'
+                : 'text-green-600'
+            }`}
+          >
             {message}
           </p>
         )}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="text-lg font-medium text-gray-700">Nueva Contraseña:</label>
-            <div className="password-input-container relative">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Nueva contraseña */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Nueva Contraseña
+            </label>
+            <div className="relative">
               <input
                 type={passwordVisible ? 'text' : 'password'}
                 value={newPassword}
                 onChange={handlePasswordChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                placeholder="Ingresa tu nueva contraseña"
               />
               <span
                 onClick={togglePasswordVisibility}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
               >
                 <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
               </span>
             </div>
-            <div className={`password-strength mt-2 text-sm ${passwordStrength === 'Débil' ? 'text-red-500' : passwordStrength === 'Medio' ? 'text-orange-500' : 'text-green-500'}`}>
-              Fortaleza: {passwordStrength}
-            </div>
+
+            {passwordStrength && (
+              <div
+                className={`mt-2 text-sm font-medium ${
+                  passwordStrength === 'Débil'
+                    ? 'text-red-500'
+                    : passwordStrength === 'Medio'
+                    ? 'text-orange-500'
+                    : 'text-green-600'
+                }`}
+              >
+                Fortaleza: {passwordStrength}
+              </div>
+            )}
+
             {passwordSuggestions.length > 0 && (
-              <ul className="password-suggestions text-xs text-gray-600">
-                {passwordSuggestions.map((suggestion, index) => (
-                  <li key={index}>{suggestion}</li>
+              <ul className="mt-2 text-xs text-gray-500 list-disc list-inside space-y-1">
+                {passwordSuggestions.map((s, i) => (
+                  <li key={i}>{s}</li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className="form-group">
-            <label className="text-lg font-medium text-gray-700">Confirmar Contraseña:</label>
+          {/* Confirmar contraseña */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Confirmar Contraseña
+            </label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+              placeholder="Confirma tu nueva contraseña"
             />
           </div>
-          <button type="submit" className="submit-btn w-full py-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
+
+          <button
+            type="submit"
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-lg shadow-md transition-all"
+          >
             Restablecer Contraseña
           </button>
         </form>
+
+        
       </div>
     </div>
   );
