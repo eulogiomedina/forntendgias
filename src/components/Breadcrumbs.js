@@ -36,10 +36,13 @@ const Breadcrumbs = () => {
   const pathSegments = location.pathname.split("/").filter((segment) => segment);
 
   return (
-    <nav className="flex items-center gap-1 p-2 bg-[#1e3a8a] text-white fixed top-[90px] left-0 w-full z-50 shadow-lg font-semibold">
+    <nav className="flex items-center gap-1 p-2 bg-[#1e3a8a] text-white fixed top-[64px] sm:top-[80px] left-0 w-full z-40 shadow-md font-semibold">
       <ul className="flex gap-3 m-0 p-0 list-none text-sm font-semibold">
         <li>
-          <Link to="/" className="text-lightGray font-semibold hover:text-teal-200 transition-all">
+          <Link
+            to="/"
+            className="text-lightGray font-semibold hover:text-teal-200 transition-all"
+          >
             Inicio
           </Link>
         </li>
@@ -52,10 +55,16 @@ const Breadcrumbs = () => {
 
           return (
             <li key={index} className="flex items-center">
-              <Link to={url} className="text-lightGray font-semibold hover:text-teal-200 transition-all relative">
+              <Link
+                to={url}
+                className="text-lightGray font-semibold hover:text-teal-200 transition-all relative"
+              >
                 {name}
                 {index < pathSegments.length - 1 && (
-                  <span className="absolute right-0 top-0 text-lightGray opacity-60"> &gt; </span>
+                  <span className="absolute right-0 top-0 text-lightGray opacity-60">
+                    {" "}
+                    &gt;{" "}
+                  </span>
                 )}
               </Link>
             </li>

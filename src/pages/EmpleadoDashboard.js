@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import API_URL from '../apiConfig';
 import {
-  FaUsers, FaUserLock, FaMoneyCheckAlt, FaExclamationTriangle, FaRegClock, FaDownload, FaEye
+  FaUsers, FaUserLock, FaMoneyCheckAlt, FaExclamationTriangle,
+  FaRegClock, FaDownload, FaEye, FaTrophy
 } from 'react-icons/fa';
+
+import { useNavigate } from "react-router-dom";
 
 // Importa pdfmake
 import pdfMake from "pdfmake/build/pdfmake";
@@ -16,6 +19,7 @@ const valueStyle = "font-bold text-3xl mb-1";
 const labelStyle = "text-gray-500";
 
 export default function EmpleadoDashboard() {
+  const navigate = useNavigate();
   const [resumen, setResumen] = useState({});
   const [alertas, setAlertas] = useState([]);
   const [selectedPago, setSelectedPago] = useState(null);
@@ -32,7 +36,6 @@ export default function EmpleadoDashboard() {
       try {
         const [usuariosRes, bloqueadasRes, pagosRes] = await Promise.all([
           axios.get(`${API_URL}/api/acc`),
-          axios.get(`${API_URL}/api/accounts`),
           axios.get(`${API_URL}/api/pagos`),
         ]);
         setResumen({
@@ -283,6 +286,13 @@ export default function EmpleadoDashboard() {
             className="flex gap-2 items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow transition">
             <FaDownload /> Exportar Todo (PDF)
           </button>
+          <button
+            onClick={() => navigate("/gamificacion")}
+            className="flex gap-2 items-center bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow transition"
+          >
+            <FaTrophy /> Ver Gamificación
+          </button>
+
         </div>
         <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">
           Panel Principal - Empleado

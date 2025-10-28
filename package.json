@@ -39,6 +39,8 @@
     "zxcvbn": "^4.4.2"
   },
   "scripts": {
+    "fix-icons": "npx pwa-asset-generator public/logo.jpg public/icons -m public/manifest.json -i public/index.html",
+    "pwa-build": "npm run fix-icons && react-scripts build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -64,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "postcss-flexbugs-fixes": "^5.0.2"
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "pwa-asset-generator": "^8.1.2"
   }
 }
