@@ -52,6 +52,8 @@ import UsersDirectory from './pages/UsersDirectory';
 import PagoExitoso from "./pages/PagoExitoso";
 import SolicitudPrestamoForm from "./pages/SolicitudPrestamoForm";
 import SolicitudesPrestamoAdmin from './pages/SolicitudesPrestamoAdmin';
+import GamificacionDashboard from "./pages/GamificacionDashboard";
+import PuntosDashboard from "./pages/PuntosDashboard";
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -228,7 +230,8 @@ function App() {
                             <Route path="/pago-exitoso" element={<PagoExitoso />} />
                             <Route path="/solicitar-prestamo" element={<SolicitudPrestamoForm />} />
                             <Route path="/admin-panel/solicitudes-prestamo" element={<SolicitudesPrestamoAdmin />} />
-
+                            <Route path="/gamificacion" element={<GamificacionDashboard />} /> {/* 👈 nueva ruta */}
+                            <Route path="/puntos" element={<PuntosDashboard />} />
                          </Routes>
                     </main>
                     <Footer />
