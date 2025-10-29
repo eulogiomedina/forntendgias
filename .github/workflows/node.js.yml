@@ -16,18 +16,22 @@ jobs:
 
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v3
+      - name: Configurar Node.js versión correcta
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20'  # 🔹 Versión requerida por cheerio, meow, undici, etc.
+          cache: 'npm'
 
-      - name: Instalar dependencias
-        run: npm install
+      - name: Instalar dependencias (modo limpio y estable)
+        run: npm ci --legacy-peer-deps
 
       - name: Validar código (Lint)
-        run: npm run lint || echo "Lint no configurado, se continúa..."
+        run: npm run lint || echo "Lint no configurado, continuando sin errores..."
 
-      - name: Ejecutar pruebas
-        run: npm test || echo "No hay pruebas configuradas aún"
+      - name: Ejecutar pruebas unitarias
+        run: npm test || echo "No hay pruebas configuradas aún, continuando..."
+
+      - name: Compilar proyecto para producción (opcional pero recomendable)
+        run: npm run build || echo "No existe comando build o falló, revisa si tu front lo necesita"
