@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [historialAhorros, setHistorialAhorros] = useState([]);
   const [fotoPersona, setFotoPersona] = useState(null);
   const [numeros, setNumeros] = useState(1);
+  const [mensajePuntos, setMensajePuntos] = useState(null);
 
 
   useEffect(() => {
@@ -164,6 +165,17 @@ const Dashboard = () => {
       }
   
       alert("Ahorro registrado exitosamente.");
+      // 🎯 Consultar total de puntos actualizados
+      try {
+        const puntosRes = await fetch(`${API_URL}/api/puntos/total/${userId}`);
+        const puntosData = await puntosRes.json();
+        const totalActual = puntosData.totalPuntos || 0;
+
+        setMensajePuntos(`🎉 ¡Felicidades! Has acumulado un total de 20 puntos en tu cuenta.`);
+      } catch (err) {
+        console.error("⚠️ No se pudo mostrar los puntos acumulados:", err);
+      }
+
       setMostrarModal(false);
       setHistorialAhorros((prev) => [...prev, ...result.nuevosAhorros]);
       setAhorroSeleccionado(null);
@@ -333,6 +345,21 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      {mensajePuntos && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-[350px] w-[90%]">
+            <h3 className="text-xl font-bold text-green-600 mb-4">✅ Registro exitoso</h3>
+            <p className="text-gray-700 mb-4">{mensajePuntos}</p>
+            <button
+              onClick={() => setMensajePuntos(null)}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+            >
+              ¡Genial!
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
