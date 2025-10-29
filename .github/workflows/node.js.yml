@@ -31,7 +31,7 @@ jobs:
         run: npm run lint || echo "Lint no configurado, continuando sin errores..."
 
       - name: Ejecutar pruebas unitarias
-        run: npm test || echo "No hay pruebas configuradas aún, continuando..."
+        run: npm test --watchAll=false || echo "⚠️ No hay pruebas configuradas o algunas fallaron"
 
       - name: Compilar proyecto para producción (opcional pero recomendable)
-        run: npm run build || echo "No existe comando build o falló, revisa si tu front lo necesita"
+        run: npm run build || echo "⚠️ No existe comando build o falló, revisa si tu front lo necesita"
