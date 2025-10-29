@@ -1,4 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import API_URL from "../apiConfig";
 import { AuthContext } from "../contexts/AuthContext";
 import PuntosUsuario from "../components/PuntosUsuario";
 import RecompensasUsuario from "../components/RecompensasUsuario";
@@ -7,6 +9,22 @@ import { FaBookOpen } from "react-icons/fa";
 export default function GamificacionDashboard() {
   const { user } = useContext(AuthContext);
   const [mostrarReglas, setMostrarReglas] = useState(false);
+
+  // ✅ Registrar visita cuando el usuario ingresa a esta pantalla
+  useEffect(() => {
+    const registrarVisita = async () => {
+      try {
+        await axios.post(`${API_URL}/api/gamificacion/registro-visita/${user?._id}`);
+        console.log("✅ Visita de gamificación registrada correctamente");
+      } catch (error) {
+        console.error("⚠️ Error al registrar la visita:", error.message);
+      }
+    };
+
+    if (user?._id) {
+      registrarVisita();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6">
@@ -34,7 +52,7 @@ export default function GamificacionDashboard() {
       {mostrarReglas && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white max-w-3xl w-full rounded-2xl shadow-xl overflow-y-auto max-h-[90vh] animate-fade-in p-8 border border-gray-200 relative">
-            
+
             {/* Botón Cerrar */}
             <button
               onClick={() => setMostrarReglas(false)}

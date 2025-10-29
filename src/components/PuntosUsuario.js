@@ -19,6 +19,9 @@ export default function PuntosUsuario() {
     }
 
     const obtenerPuntos = async () => {
+      // 🔹 Inicio de medición
+      const start = performance.now();
+
       try {
         const res = await axios.get(`${API_URL}/api/puntos/historial/${userId}`);
         const data = res.data || [];
@@ -29,12 +32,18 @@ export default function PuntosUsuario() {
         setPuntos([]);
         setTotal(0);
       } finally {
+        // 🔹 Fin de medición
+        const end = performance.now();
+        const latencia = (end - start).toFixed(2);
+        console.log(`⚡ Latencia de la API /puntos/historial: ${latencia} ms`);
+
         setLoading(false);
       }
     };
 
     obtenerPuntos();
   }, []);
+
 
   if (loading) {
     return (

@@ -16,12 +16,26 @@ export default function RecompensasUsuario() {
     }
 
     const obtenerRecompensas = async () => {
+      const start = performance.now(); // ⏱ Inicio de medición
       try {
         const res = await axios.get(`${API_URL}/api/recompensas/${userId}`);
-        setRecompensas(res.data || []);
-      } catch {
-        setRecompensas([]);
+        const data = res.data || [];
+        setRecompensas(data);
+
+        // 🔹 KPI: Calcular tasa de recompensas obtenidas vs totales
+        const obtenidas = data.filter((r) => r.obtenida).length;
+        const total = data.length;
+        const tasa = total > 0 ? ((obtenidas / total) * 100).toFixed(2) : 0;
+
+        // 📌 Mostrar solo en consola
+        console.log(`📊 Tasa de éxito recompensas: ${tasa}% (Objetivo ≥ 99%)`);
+
+      } catch (error) {
+        console.error("❌ Error al obtener recompensas:", error);
       } finally {
+        const end = performance.now(); // 🔚 Fin de medición
+        const tiempo = (end - start).toFixed(2);
+        console.log(`⚡ Latencia API /recompensas: ${tiempo} ms (Objetivo ≤ 600 ms)`);
         setLoading(false);
       }
     };
@@ -56,7 +70,6 @@ export default function RecompensasUsuario() {
                     : "bg-gray-100 border border-gray-300"
                 }`}
             >
-              {/* Icons opcionales */}
               <div className="flex justify-center mb-3">
                 <img
                   src={`/icons/${r.puntosRequeridos}.png`}
@@ -76,9 +89,7 @@ export default function RecompensasUsuario() {
               <div className="text-center mt-4">
                 <span
                   className={`inline-block px-4 py-1 rounded-full text-sm font-semibold shadow-md ${
-                    r.obtenida
-                      ? "bg-green-600 text-white"
-                      : "bg-gray-400 text-white"
+                    r.obtenida ? "bg-green-600 text-white" : "bg-gray-400 text-white"
                   }`}
                 >
                   {r.obtenida ? "✅ Obtenida" : "🔒 Bloqueada"}
