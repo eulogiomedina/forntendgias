@@ -346,7 +346,7 @@ const Dashboard = () => {
         const puntosRes = await fetch(`${API_URL}/api/puntos/total/${userId}`);
         const puntosData = await puntosRes.json();
         const totalActual = puntosData.totalPuntos || 0;
-        setMensajePuntos(`🎉 ¡Felicidades! Has acumulado ${totalActual} puntos.`);
+        setMensajePuntos(`🎉 ¡Felicidades! Has acumulado 20 puntos.`);
       } catch (err) {
         console.error("⚠️ No se pudo mostrar los puntos acumulados:", err);
       }
