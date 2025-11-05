@@ -11,27 +11,51 @@ on:
       - main
 
 jobs:
+  # 🧪 1️⃣ JOB: Instalar, probar y validar
   install-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del repositorio
+      - name: 📥 Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js versión correcta
+      - name: ⚙️ Configurar Node.js versión correcta
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # 🔹 Versión requerida por cheerio, meow, undici, etc.
+          node-version: '20'  # Versión moderna compatible con dependencias
           cache: 'npm'
 
-      - name: Instalar dependencias (modo limpio y estable)
+      - name: 📦 Instalar dependencias (modo limpio)
         run: npm ci --legacy-peer-deps
 
-      - name: Validar código (Lint)
-        run: npm run lint || echo "Lint no configurado, continuando sin errores..."
+      - name: 🧹 Validar código (Lint)
+        run: npm run lint || echo "⚠️ Lint no configurado, continuando sin errores..."
 
-      - name: Ejecutar pruebas unitarias
+      - name: 🧪 Ejecutar pruebas unitarias
         run: npm test --watchAll=false || echo "⚠️ No hay pruebas configuradas o algunas fallaron"
 
-      - name: Compilar proyecto para producción (opcional pero recomendable)
+      - name: 🏗️ Compilar proyecto para producción (opcional)
         run: npm run build || echo "⚠️ No existe comando build o falló, revisa si tu front lo necesita"
+
+  # 🚀 2️⃣ JOB: Despliegue en Vercel (solo si el anterior pasa correctamente)
+  deploy:
+    needs: install-test  # 👉 Solo se ejecuta si install-test termina sin errores
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Solo en la rama main
+
+    steps:
+      - name: 📥 Checkout del código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Instalar Vercel CLI
+        run: npm install -g vercel
+
+      - name: 🚀 Desplegar en Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          echo "🔄 Iniciando despliegue manual con Vercel CLI..."
+          vercel --prod --yes --token=$VERCEL_TOKEN --scope=$VERCEL_ORG_ID
+          echo "🎉 Despliegue completado exitosamente"

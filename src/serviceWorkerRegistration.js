@@ -4,12 +4,8 @@ export function register() {
     window.addEventListener("load", () => {
       navigator.serviceWorker
         .register("/service-worker.js")
-        .then((registration) => {
-          console.log("✅ Service Worker registrado:", registration);
-        })
-        .catch((error) => {
-          console.error("❌ Error al registrar el Service Worker:", error);
-        });
+        .then((reg) => console.log("✅ Service Worker registrado:", reg.scope))
+        .catch((err) => console.error("❌ Error al registrar SW:", err));
     });
   }
 }
