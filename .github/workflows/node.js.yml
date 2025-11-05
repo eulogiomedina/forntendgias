@@ -47,14 +47,15 @@ jobs:
       - name: 📥 Checkout del código
         uses: actions/checkout@v4
 
-      - name: 🔑 Validar credenciales de despliegue
+      - name: 🚀 Despliegue en Vercel (con verificación de credenciales)
         run: |
-          echo "🔍 Verificando secretos de Vercel..."
+          echo "🔍 Iniciando proceso de despliegue a Vercel..."
           if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then echo "✅ VERCEL_TOKEN detectado"; else echo "❌ Falta VERCEL_TOKEN"; fi
           if [ -n "${{ secrets.VERCEL_ORG_ID }}" ]; then echo "✅ VERCEL_ORG_ID detectado"; else echo "❌ Falta VERCEL_ORG_ID"; fi
           if [ -n "${{ secrets.VERCEL_PROJECT_ID }}" ]; then echo "✅ VERCEL_PROJECT_ID detectado"; else echo "❌ Falta VERCEL_PROJECT_ID"; fi
+          echo "⚙️ Ejecutando acción de despliegue..."
 
-      - name: 🚀 Desplegar automáticamente en Vercel
+      - name: 🌐 Publicar en entorno de producción Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
