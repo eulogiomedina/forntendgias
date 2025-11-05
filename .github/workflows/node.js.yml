@@ -22,7 +22,7 @@ jobs:
       - name: ⚙️ Configurar Node.js versión correcta
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Versión moderna compatible con dependencias
+          node-version: '20'
           cache: 'npm'
 
       - name: 📦 Instalar dependencias (modo limpio)
@@ -34,28 +34,31 @@ jobs:
       - name: 🧪 Ejecutar pruebas unitarias
         run: npm test --watchAll=false || echo "⚠️ No hay pruebas configuradas o algunas fallaron"
 
-      - name: 🏗️ Compilar proyecto para producción (opcional)
-        run: npm run build || echo "⚠️ No existe comando build o falló, revisa si tu front lo necesita"
+      - name: 🏗️ Compilar proyecto para producción
+        run: npm run build || echo "⚠️ No existe comando build o falló"
 
   # 🚀 2️⃣ JOB: Despliegue en Vercel (solo si el anterior pasa correctamente)
   deploy:
-    needs: install-test  # 👉 Solo se ejecuta si install-test termina sin errores
+    needs: install-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Solo en la rama main
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: 📥 Checkout del código
         uses: actions/checkout@v4
 
-      - name: ⚙️ Instalar Vercel CLI
-        run: npm install -g vercel
-
-      - name: 🚀 Desplegar en Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      - name: 🔑 Validar credenciales de despliegue
         run: |
-          echo "🔄 Iniciando despliegue manual con Vercel CLI..."
-          vercel --prod --yes --token=$VERCEL_TOKEN --scope=$VERCEL_ORG_ID
-          echo "🎉 Despliegue completado exitosamente"
+          echo "🔍 Verificando secretos de Vercel..."
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then echo "✅ VERCEL_TOKEN detectado"; else echo "❌ Falta VERCEL_TOKEN"; fi
+          if [ -n "${{ secrets.VERCEL_ORG_ID }}" ]; then echo "✅ VERCEL_ORG_ID detectado"; else echo "❌ Falta VERCEL_ORG_ID"; fi
+          if [ -n "${{ secrets.VERCEL_PROJECT_ID }}" ]; then echo "✅ VERCEL_PROJECT_ID detectado"; else echo "❌ Falta VERCEL_PROJECT_ID"; fi
+
+      - name: 🚀 Desplegar automáticamente en Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
