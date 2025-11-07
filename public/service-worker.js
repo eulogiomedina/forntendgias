@@ -111,3 +111,28 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+// ✅ Escuchar eventos desde React (online/offline) y mostrar notificación
+self.addEventListener("message", (event) => {
+  if (!event.data) return;
+
+  if (event.data.type === "NOTIFY_STATUS") {
+    const { status } = event.data;
+
+    self.registration.showNotification(
+      status === "online" ? "✅ Conexión restaurada" : "⚠️ Sin conexión a Internet",
+      {
+        body:
+          status === "online"
+            ? "Tu dispositivo volvió a conectarse. Se sincronizarán los datos pendientes."
+            : "Estás sin internet. Seguiremos trabajando offline.",
+        icon: "/logo192.png",
+        vibrate: [200, 100, 200],
+      }
+    );
+  }
+});
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow("/"));
+});

@@ -252,6 +252,7 @@ const Dashboard = () => {
 
   // 🧠 Guardado con validación diferida
   const handleSubmit = async () => {
+    // 🧩 Validaciones básicas
     if (historialAhorros.length === 0 && !credencial) {
       alert("Por favor, sube una foto de tu credencial.");
       return;
@@ -264,12 +265,13 @@ const Dashboard = () => {
       alert("Debes seleccionar un tipo de ahorro.");
       return;
     }
-    if (!fotoPersona) {
-      alert("Debes subir una foto tuya con cabello recogido.");
-      return;
-    }
 
+    // 🟩 Solo pedir foto y Facebook si es el primer ahorro
     if (historialAhorros.length === 0) {
+      if (!fotoPersona) {
+        alert("Debes subir una foto tuya con cabello recogido.");
+        return;
+      }
       if (!facebook) {
         alert("Debes ingresar el enlace de tu perfil de Facebook.");
         return;
@@ -280,6 +282,7 @@ const Dashboard = () => {
       }
     }
 
+    // 🧮 Extraer monto y tipo del plan seleccionado
     const [montoStr, tipo] = ahorroSeleccionado.split(" ");
     const monto = parseFloat(montoStr);
 
@@ -288,8 +291,7 @@ const Dashboard = () => {
       return;
     }
 
-    // 💾 Si está offline, guardar localmente y marcar pendiente
-    // 💾 Si está offline, guardar completamente (datos + imágenes) en IndexedDB
+    // 💾 Si no hay conexión, guardar localmente
     if (!isOnline) {
       const ahorroLocal = {
         userId,
@@ -314,20 +316,23 @@ const Dashboard = () => {
       return;
     }
 
-
-    // ☁️ Si hay Internet, proceder normalmente
+    // ☁️ Si hay conexión, enviar al servidor
     try {
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("monto", monto);
       formData.append("tipo", tipo);
+
+      // Solo enviar credencial, selfie y Facebook si es el primer ahorro
       if (historialAhorros.length === 0) {
         formData.append("credencial", credencial);
         formData.append("fotoPersona", fotoPersona);
         formData.append("facebook", facebook);
       }
+
       formData.append("numeros", numeros);
 
+      // 📤 Registrar ahorro
       const response = await fetch(`${API_URL}/api/ahorros-usuarios`, {
         method: "POST",
         body: formData,
@@ -342,6 +347,29 @@ const Dashboard = () => {
         "Tu foto fue subida y el ahorro quedó registrado."
       );
 
+      // 🟩 Registrar en la tanda
+      try {
+        const tandaResponse = await fetch(`${API_URL}/api/tandas`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            monto,
+            tipo,
+          }),
+        });
+
+        const tandaResult = await tandaResponse.json();
+        if (!tandaResponse.ok) {
+          throw new Error(tandaResult.message || "Error al registrar en la tanda.");
+        }
+
+        console.log("✅ Tanda registrada/unida:", tandaResult);
+      } catch (tandaError) {
+        console.error("❌ Error al registrar la tanda:", tandaError);
+      }
+
+      // 🎯 Actualizar puntos
       try {
         const puntosRes = await fetch(`${API_URL}/api/puntos/total/${userId}`);
         const puntosData = await puntosRes.json();
@@ -351,6 +379,7 @@ const Dashboard = () => {
         console.error("⚠️ No se pudo mostrar los puntos acumulados:", err);
       }
 
+      // 🔄 Resetear estado
       setMostrarModal(false);
       setHistorialAhorros((prev) => [...prev, ...result.nuevosAhorros]);
       setAhorroSeleccionado(null);
