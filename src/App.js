@@ -69,9 +69,40 @@ function App() {
     const toggleDarkMode = () => {
         setIsDarkMode((prevMode) => !prevMode);
     };
+    // ✅ Solicitar permiso de notificaciones al cargar la app
+    // ✅ Función para solicitar permiso cuando el usuario haga clic
+    const solicitarPermisoNotificaciones = () => {
+    if ("Notification" in window) {
+        Notification.requestPermission().then((resultado) => {
+        console.log("🔔 Permiso de notificaciones:", resultado);
+        });
+    }
+    };
+
+
+    // ✅ Notificaciones al perder/conectar Internet
     useEffect(() => {
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    }, [isDarkMode]);
+        const notifySW = async (status) => {
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.active) {
+            registration.active.postMessage({
+            type: "NOTIFY_STATUS",
+            status, // "online" o "offline"
+            });
+        }
+        };
+
+        const handleOnline = () => notifySW("online");
+        const handleOffline = () => notifySW("offline");
+
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+        };
+    }, []);
 
     return (
         <AuthProvider>
@@ -79,9 +110,29 @@ function App() {
             <AxiosInterceptor>
                 <div className="App">
                     <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+
+                    {/* ✅ BOTÓN SOLO SI EL PERMISO NO HA SIDO ACEPTADO */}
+                    {Notification.permission !== "granted" && (
+                        <button
+                        style={{
+                            backgroundColor: "#0F2B45",
+                            color: "white",
+                            padding: "10px 20px",
+                            borderRadius: "6px",
+                            border: "none",
+                            cursor: "pointer",
+                            margin: "15px"
+                        }}
+                        onClick={solicitarPermisoNotificaciones}
+                        >
+                        🔔 Habilitar notificaciones
+                        </button>
+                    )}
+
                     <div className="breadcrumbs-container">
-                            <Breadcrumbs />
+                        <Breadcrumbs />
                     </div>
+
                     <ToastContainer position="top-right" autoClose={5000} />
                     <main style={{ paddingTop: "80px" }}>
                         <Routes>
