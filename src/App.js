@@ -65,6 +65,7 @@ window.onerror = function (message, source, lineno, colno, error) {
 
 function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [internetStatus, setInternetStatus] = useState(null);
 
     const toggleDarkMode = () => {
         setIsDarkMode((prevMode) => !prevMode);
@@ -81,28 +82,45 @@ function App() {
 
 
     // ✅ Notificaciones al perder/conectar Internet
+    // 🟢 Controla banner en React + Notificación PWA al Service Worker
     useEffect(() => {
-        const notifySW = async (status) => {
+    const notifySW = async (status) => {
+        try {
         const registration = await navigator.serviceWorker.ready;
+
         if (registration.active) {
             registration.active.postMessage({
-            type: "NOTIFY_STATUS",
+            type: "NOTIFY_STATUS", // ← lo recibirá el Service Worker
             status, // "online" o "offline"
             });
         }
-        };
+        } catch (error) {
+        console.log("⚠️ No hay Service Worker activo aún");
+        }
+    };
 
-        const handleOnline = () => notifySW("online");
-        const handleOffline = () => notifySW("offline");
+    const handleOnline = () => {
+        setInternetStatus("online");   // ✅ Banner verde en React
+        notifySW("online");            // ✅ Notificación del navegador (PWA)
 
-        window.addEventListener("online", handleOnline);
-        window.addEventListener("offline", handleOffline);
+        // Oculta el banner después de 3 segundos
+        setTimeout(() => setInternetStatus(null), 3000);
+    };
 
-        return () => {
+    const handleOffline = () => {
+        setInternetStatus("offline");  // ✅ Banner rojo en React
+        notifySW("offline");           // ✅ Notificación del navegador (PWA)
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
         window.removeEventListener("online", handleOnline);
         window.removeEventListener("offline", handleOffline);
-        };
+    };
     }, []);
+
 
     return (
         <AuthProvider>
@@ -110,6 +128,18 @@ function App() {
             <AxiosInterceptor>
                 <div className="App">
                     <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+                    {/* ✅ Banner de conexión (Tailwind + Animación) */}
+                    {internetStatus === "offline" && (
+                    <div className="bg-red-600 text-white text-center font-semibold py-2 animate-fade-in shadow-md z-50">
+                        ⚠️ Sin conexión — estás trabajando offline
+                    </div>
+                    )}
+
+                    {internetStatus === "online" && (
+                    <div className="bg-green-600 text-white text-center font-semibold py-2 animate-fade-out shadow-md z-50">
+                        ✅ Conexión restaurada — datos sincronizados
+                    </div>
+                    )}
 
                     {/* ✅ BOTÓN SOLO SI EL PERMISO NO HA SIDO ACEPTADO */}
                     {Notification.permission !== "granted" && (
