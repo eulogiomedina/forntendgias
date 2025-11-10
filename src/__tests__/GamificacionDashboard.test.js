@@ -1,10 +1,10 @@
 // ✅ Simulamos Axios antes de importarlo
-jest.mock("axios");
-
 import { render, screen, waitFor } from "@testing-library/react";
 import axios from "axios";
 import GamificacionDashboard from "../pages/GamificacionDashboard";
 import { AuthContext } from "../contexts/AuthContext";
+
+jest.mock("axios");
 
 const mockUser = { _id: "12345", nombre: "Usuario de prueba" };
 
