@@ -10,7 +10,7 @@ const AdminTandas = () => {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false); 
-  //const [fechasPago, setFechasPago] = useState([]);
+  const [fechasPago, setFechasPago] = useState([]);
   const [isEditingOrden, setIsEditingOrden] = useState(false);
 
 
