@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import API_URL from '../apiConfig';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 
 const AdminTandas = () => {
   const [tandas, setTandas] = useState([]);
@@ -10,7 +10,7 @@ const AdminTandas = () => {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false); 
-  const [fechasPago, setFechasPago] = useState([]);
+  //const [fechasPago, setFechasPago] = useState([]);
   const [isEditingOrden, setIsEditingOrden] = useState(false);
 
 

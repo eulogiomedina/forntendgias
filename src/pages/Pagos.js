@@ -23,8 +23,8 @@ const Pagos = () => {
   const [contenidoModal, setContenidoModal] = useState("");
   const [proximaFechaPago, setProximaFechaPago] = useState(null);
   const [mostrarPagoTarjeta, setMostrarPagoTarjeta] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successModalParams, setSuccessModalParams] = useState({});
+  //const [showSuccessModal, setShowSuccessModal] = useState(false);
+  //const [successModalParams, setSuccessModalParams] = useState({});
 
   const convertirFechaLocal = (fechaISO) => {
     if (!fechaISO) return "No definida";
