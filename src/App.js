@@ -82,34 +82,29 @@ function App() {
 
 
     // ✅ Notificaciones al perder/conectar Internet
-    // 🟢 Controla banner en React + Notificación PWA al Service Worker
     useEffect(() => {
     const notifySW = async (status) => {
-        try {
+        if ("serviceWorker" in navigator) {
         const registration = await navigator.serviceWorker.ready;
 
         if (registration.active) {
             registration.active.postMessage({
-            type: "NOTIFY_STATUS", // ← lo recibirá el Service Worker
-            status, // "online" o "offline"
+            type: "NOTIFY_STATUS",
+            status,  // "online" o "offline"
             });
         }
-        } catch (error) {
-        console.log("⚠️ No hay Service Worker activo aún");
         }
     };
 
     const handleOnline = () => {
-        setInternetStatus("online");   // ✅ Banner verde en React
-        notifySW("online");            // ✅ Notificación del navegador (PWA)
-
-        // Oculta el banner después de 3 segundos
+        setInternetStatus("online"); // Banner en React
+        notifySW("online"); // 🟢 Notificación PWA real
         setTimeout(() => setInternetStatus(null), 3000);
     };
 
     const handleOffline = () => {
-        setInternetStatus("offline");  // ✅ Banner rojo en React
-        notifySW("offline");           // ✅ Notificación del navegador (PWA)
+        setInternetStatus("offline");
+        notifySW("offline"); // 🔴 Notificación PWA real
     };
 
     window.addEventListener("online", handleOnline);
@@ -141,23 +136,17 @@ function App() {
                     </div>
                     )}
 
-                    {/* ✅ BOTÓN SOLO SI EL PERMISO NO HA SIDO ACEPTADO */}
                     {Notification.permission !== "granted" && (
+                    <div className="fixed bottom-5 right-5 z-50">
                         <button
-                        style={{
-                            backgroundColor: "#0F2B45",
-                            color: "white",
-                            padding: "10px 20px",
-                            borderRadius: "6px",
-                            border: "none",
-                            cursor: "pointer",
-                            margin: "15px"
-                        }}
+                        className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg shadow-lg transition"
                         onClick={solicitarPermisoNotificaciones}
                         >
                         🔔 Habilitar notificaciones
                         </button>
+                    </div>
                     )}
+
 
                     <div className="breadcrumbs-container">
                         <Breadcrumbs />
