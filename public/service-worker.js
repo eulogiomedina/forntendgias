@@ -1,7 +1,23 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "gias-cache-v3";
+const CACHE_NAME = "gias-cache-v4"; // sube versión cuando cambies algo
 
-// App Shell: lo mínimo para levantar la UI sin red
+// ✅ URL base DEL BACKEND (CAMBIA ESTA POR LA TUYA ⬇)
+const API_BASE = "https://backendgias.onrender.com";
+
+// ✅ Rutas que quieres cachear sin necesidad de entrar
+const BACKEND_ENDPOINTS = [
+  "/api/policies",
+  "/api/terms",
+  "/api/contact",
+  "/api/social-links",
+  "/api/legal-boundaries",
+  "/api/slogan",
+  "/api/nuevos-ahorros",
+  "/api/perfil",
+  "/api/cuenta-destino",
+];
+
+// ✅ App Shell (UI mínima para levantar la app sin red)
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -11,15 +27,31 @@ const APP_SHELL = [
   "/logo512.png",
 ];
 
-// Al instalar: precache del App Shell
+// 🟢 INSTALL → Precache App Shell + Endpoints backend
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.addAll(APP_SHELL);
+
+      // ✅ Precache de textos legales y configuración del backend
+      await Promise.all(
+        BACKEND_ENDPOINTS.map(async (endpoint) => {
+          const url = `${API_BASE}${endpoint}`;
+          try {
+            const res = await fetch(url);
+            if (res.ok) cache.put(url, res.clone());
+          } catch (err) {
+            console.warn("⚠️ No se pudo precachear:", url);
+          }
+        })
+      );
+    })()
   );
   self.skipWaiting();
 });
 
-// Al activar: limpia cachés viejas y toma control inmediato
+// 🟢 ACTIVATE → limpia versiones viejas
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -29,27 +61,20 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Politicas por tipo de request:
-// - Navegaciones (React Router): Network-first con fallback a index.html
-// - /static/* (JS/CSS/imgs generados por CRA): Cache-first con revalidación
-// - Cloudinary: Cache-first con actualización
-// - Otros GET: Cache-first y si no existe, intenta red; si falla, para HTML -> index.html
+// 🟢 FETCH → Estrategias por tipo de recurso
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-
-  // Solo GET
-  if (req.method !== "GET") return;
-
   const url = new URL(req.url);
 
-  // 1) Navegaciones (SPA)
+  // Solo cachea GET
+  if (req.method !== "GET") return;
+
+  // 1️⃣ Navegaciones (SPA) → network first + fallback index.html
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          // Cachea de paso el HTML de navegación
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put("/index.html", copy));
+          caches.open(CACHE_NAME).then((c) => c.put("/index.html", res.clone()));
           return res;
         })
         .catch(() => caches.match("/index.html"))
@@ -57,7 +82,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2) Estáticos de CRA (/static/*) — cache-first + revalidate
+  // 2️⃣ Archivos estáticos (`/static/...`)
   if (url.pathname.startsWith("/static/")) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -66,14 +91,14 @@ self.addEventListener("fetch", (event) => {
             caches.open(CACHE_NAME).then((c) => c.put(req, networkRes.clone()));
             return networkRes;
           })
-          .catch(() => cached); // si no hay red, usa cache si existe
+          .catch(() => cached);
         return cached || fetchPromise;
       })
     );
     return;
   }
 
-  // 3) Cloudinary (logo, etc.) — cache-first + revalidate
+  // 3️⃣ Cloudinary (cache-first con actualización)
   if (url.hostname.includes("res.cloudinary.com")) {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
@@ -90,29 +115,26 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 4) Otros GET — cache-first con fallback razonable
+  // 4️⃣ Otros GET → cache-first con fallback
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
+
       return fetch(req)
         .then((res) => {
-          // Evita cachear respuestas no válidas
           if (!res || res.status !== 200 || res.type === "opaque") return res;
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(req, copy));
+          caches.open(CACHE_NAME).then((c) => c.put(req, res.clone()));
           return res;
         })
         .catch(() => {
-          // si es HTML, devolver index.html (SPA)
-          if (req.headers.get("accept")?.includes("text/html")) {
+          if (req.headers.get("accept")?.includes("text/html"))
             return caches.match("/index.html");
-          }
         });
     })
   );
 });
 
-// ✅ Escuchar eventos desde React (online/offline) y mostrar notificación
+// 🟢 Notificación PWA cuando cambia el estado de red
 self.addEventListener("message", (event) => {
   if (!event.data) return;
 
@@ -124,14 +146,15 @@ self.addEventListener("message", (event) => {
       {
         body:
           status === "online"
-            ? "Tu dispositivo volvió a conectarse. Se sincronizarán los datos pendientes."
-            : "Estás sin internet. Seguiremos trabajando offline.",
+            ? "Tu dispositivo volvió a conectarse. Se sincronizarán datos pendientes."
+            : "Estás sin conexión. Seguiremos trabajando offline.",
         icon: "/logo192.png",
         vibrate: [200, 100, 200],
       }
     );
   }
 });
+
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(clients.openWindow("/"));
