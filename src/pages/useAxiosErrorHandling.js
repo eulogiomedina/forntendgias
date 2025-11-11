@@ -4,22 +4,29 @@ import axios from 'axios';
 const useAxiosErrorHandling = (navigate) => {
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
-            (response) => response, // Si la respuesta es exitosa, no hacer nada
+            (response) => response,
             (error) => {
-                const statusCode = error.response?.status || 500;
-                const currentPath = window.location.pathname;
 
+                // ✅ Si no hay conexión a internet (Network Error)
+                if (!navigator.onLine || error.message === "Network Error") {
+                    console.warn("⚠️ Sin conexión - NO redirijo a /error para evitar error 500 fake.");
+                    return Promise.reject(error);
+                }
+
+                const statusCode = error.response?.status;
+
+                // ✅ Solo manejar errores HTTP reales
                 if (statusCode >= 400 && statusCode < 600) {
-                    // Solo guardar la URL si NO estamos en /error
+                    const currentPath = window.location.pathname;
+
+                    // Solo guardar la URL si NO estamos ya en /error
                     if (currentPath !== '/error') {
-                        console.log("Guardando la página anterior en sessionStorage:", currentPath);
                         sessionStorage.setItem('previousPath', currentPath);
-                    } else {
-                        console.log("No se guarda /error en sessionStorage para evitar sobrescribir la URL anterior.");
                     }
 
                     navigate('/error', { state: { errorCode: statusCode } });
                 }
+
                 return Promise.reject(error);
             }
         );

@@ -4,7 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import API_URL from '../apiConfig';
 
-const Header = ({ toggleDarkMode, isDarkMode }) => {
+/**
+ ✅ Ahora el Header acepta extraOffset como prop.
+   extraOffset viene de App.jsx y se usa para desplazarlo hacia abajo cuando aparece el banner.
+*/
+const Header = ({ toggleDarkMode, isDarkMode, extraOffset = 0 }) => {
   const { isAuthenticated, isAdmin, isEmpleado, logout } = useContext(AuthContext);
   const [logoUrl, setLogoUrl] = useState('');
   const [slogan, setSlogan] = useState('');
@@ -41,9 +45,14 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
   }, []);
 
   return (
-    <header className="fixed top-0 w-full bg-blue-700 text-white z-50 shadow-md">
+    <header
+      className="fixed w-full bg-blue-700 text-white z-[9000] shadow-md transition-all duration-300"
+      style={{
+        top: `${extraOffset}px`, // ✅ Header baja cuando hay banner offline/online
+      }}
+    >
       <div className="container mx-auto flex flex-wrap items-center justify-between px-4 py-3">
-        
+
         {/* Logo + título + slogan */}
         <div className="flex items-center space-x-3">
           {loading ? (
@@ -62,7 +71,9 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
             {loading ? (
               <div className="w-32 h-3 bg-gray-300 animate-pulse rounded"></div>
             ) : (
-              <p className="text-xs sm:text-sm text-gray-200">{slogan || 'Tu dinero ahora más seguro'}</p>
+              <p className="text-xs sm:text-sm text-gray-200">
+                {slogan || 'Tu dinero ahora más seguro'}
+              </p>
             )}
           </div>
         </div>
@@ -75,13 +86,10 @@ const Header = ({ toggleDarkMode, isDarkMode }) => {
           ☰
         </button>
 
-        {/* Menú de navegación */}
-        <nav
-          className={`${
-            menuOpen ? 'block' : 'hidden'
-          } w-full sm:w-auto sm:block mt-4 sm:mt-0`}
-        >
+        {/* Menú navegable */}
+        <nav className={`${menuOpen ? 'block' : 'hidden'} w-full sm:w-auto sm:block mt-4 sm:mt-0`}>
           <ul className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0 text-sm font-semibold">
+
             <li><Link to="/" className="hover:text-gray-300">Inicio</Link></li>
 
             {!isAuthenticated && (
