@@ -64,57 +64,67 @@ window.onerror = function (message, source, lineno, colno, error) {
 };
 
 function App() {
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const [internetStatus, setInternetStatus] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [internetStatus, setInternetStatus] = useState(null);
 
-    const toggleDarkMode = () => {
-        setIsDarkMode((prevMode) => !prevMode);
-    };
-    // ✅ Solicitar permiso de notificaciones al cargar la app
-    // ✅ Función para solicitar permiso cuando el usuario haga clic
-    const solicitarPermisoNotificaciones = () => {
-    if ("Notification" in window) {
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  // ✅ Solicitar permiso de notificaciones AUTOMÁTICAMENTE al primer clic
+  useEffect(() => {
+    const solicitarPermisoConInteraccion = () => {
+      if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission().then((resultado) => {
-        console.log("🔔 Permiso de notificaciones:", resultado);
+          console.log("🔔 Permiso de notificaciones:", resultado);
         });
-    }
+      }
+
+      // eliminar tras el primer intento
+      document.removeEventListener("click", solicitarPermisoConInteraccion);
     };
 
+    document.addEventListener("click", solicitarPermisoConInteraccion);
 
-    // ✅ Notificaciones al perder/conectar Internet
-    useEffect(() => {
+    return () =>
+      document.removeEventListener("click", solicitarPermisoConInteraccion);
+  }, []);
+
+  // ✅ Notificaciones al perder/conectar Internet
+  useEffect(() => {
     const notifySW = async (status) => {
-        if ("serviceWorker" in navigator) {
+      if ("serviceWorker" in navigator) {
         const registration = await navigator.serviceWorker.ready;
 
         if (registration.active) {
-            registration.active.postMessage({
+          registration.active.postMessage({
             type: "NOTIFY_STATUS",
-            status,  // "online" o "offline"
-            });
+            status, // "online" o "offline"
+          });
         }
-        }
+      }
     };
 
     const handleOnline = () => {
-        setInternetStatus("online"); // Banner en React
-        notifySW("online"); // 🟢 Notificación PWA real
-        setTimeout(() => setInternetStatus(null), 3000);
+      setInternetStatus("online");
+      notifySW("online");
+      setTimeout(() => setInternetStatus(null), 3000);
     };
 
     const handleOffline = () => {
-        setInternetStatus("offline");
-        notifySW("offline"); // 🔴 Notificación PWA real
+      setInternetStatus("offline");
+      notifySW("offline");
     };
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
     return () => {
-        window.removeEventListener("online", handleOnline);
-        window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
-    }, []);
+  }, []);
+
 
 
     return (
@@ -122,18 +132,25 @@ function App() {
             <Router>
             <AxiosInterceptor>
                 <div className="App">
-                    <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
-                   {internetStatus === "offline" && (
-                    <div className="bg-red-600 text-white text-center font-semibold py-2 shadow-md z-40 fixed top-[64px] w-full">
-                        ⚠️ Sin conexión — estás trabajando offline
-                    </div>
+                    {/* ✅ Banner siempre primero */}
+                    {internetStatus === "offline" && (
+                        <div className="bg-red-600 text-white text-center font-semibold py-2 shadow-md fixed z-[9999] top-0 w-full">
+                            ⚠️ Sin conexión — estás trabajando offline
+                        </div>
                     )}
 
                     {internetStatus === "online" && (
-                    <div className="bg-green-600 text-white text-center font-semibold py-2 shadow-md z-40 fixed top-[64px] w-full animate-fade-out">
-                        ✅ Conexión restaurada — datos sincronizados
-                    </div>
+                        <div className="bg-green-600 text-white text-center font-semibold py-2 shadow-md fixed z-[9999] top-0 w-full animate-fade-out">
+                            ✅ Conexión restaurada — datos sincronizados
+                        </div>
                     )}
+
+                    {/* ✅ Header baja cuando hay banner */}
+                    <Header
+                        toggleDarkMode={toggleDarkMode}
+                        isDarkMode={isDarkMode}
+                        extraOffset={internetStatus ? 40 : 0}  // Enviamos un prop para moverlo
+                    />
 
 
                     <div className="breadcrumbs-container">
