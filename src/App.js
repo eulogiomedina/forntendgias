@@ -123,27 +123,15 @@ function App() {
             <AxiosInterceptor>
                 <div className="App">
                     <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
-                    {/* ✅ Banner de conexión (Tailwind + Animación) */}
-                    {internetStatus === "offline" && (
-                    <div className="bg-red-600 text-white text-center font-semibold py-2 animate-fade-in shadow-md z-50">
+                   {internetStatus === "offline" && (
+                    <div className="bg-red-600 text-white text-center font-semibold py-2 shadow-md z-40 fixed top-[64px] w-full">
                         ⚠️ Sin conexión — estás trabajando offline
                     </div>
                     )}
 
                     {internetStatus === "online" && (
-                    <div className="bg-green-600 text-white text-center font-semibold py-2 animate-fade-out shadow-md z-50">
+                    <div className="bg-green-600 text-white text-center font-semibold py-2 shadow-md z-40 fixed top-[64px] w-full animate-fade-out">
                         ✅ Conexión restaurada — datos sincronizados
-                    </div>
-                    )}
-
-                    {Notification.permission !== "granted" && (
-                    <div className="fixed bottom-5 right-5 z-50">
-                        <button
-                        className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg shadow-lg transition"
-                        onClick={solicitarPermisoNotificaciones}
-                        >
-                        🔔 Habilitar notificaciones
-                        </button>
                     </div>
                     )}
 
