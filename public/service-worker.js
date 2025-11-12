@@ -1,10 +1,7 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "gias-cache-v4"; // sube versión cuando cambies algo
-
-// ✅ URL base DEL BACKEND (CAMBIA ESTA POR LA TUYA ⬇)
+const CACHE_NAME = "gias-cache-v5";  // sube versión cuando cambies algo
 const API_BASE = "https://backendgias.onrender.com";
 
-// ✅ Rutas que quieres cachear sin necesidad de entrar
 const BACKEND_ENDPOINTS = [
   "/api/policies",
   "/api/terms",
@@ -17,7 +14,6 @@ const BACKEND_ENDPOINTS = [
   "/api/cuenta-destino",
 ];
 
-// ✅ App Shell (UI mínima para levantar la app sin red)
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -27,49 +23,119 @@ const APP_SHELL = [
   "/logo512.png",
 ];
 
-// 🟢 INSTALL → Precache App Shell + Endpoints backend
+/* =============================
+      🟢 INSTALL
+============================= */
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
       await cache.addAll(APP_SHELL);
 
-      // ✅ Precache de textos legales y configuración del backend
+      console.log("⏳ Precaching textos legales...");
+
+      // ✅ precache de endpoints base (listados)
       await Promise.all(
         BACKEND_ENDPOINTS.map(async (endpoint) => {
           const url = `${API_BASE}${endpoint}`;
           try {
-            const res = await fetch(url);
+            const res = await fetch(url, { mode: "cors" });
             if (res.ok) cache.put(url, res.clone());
           } catch (err) {
             console.warn("⚠️ No se pudo precachear:", url);
           }
         })
       );
+
+      // ✅ precache dinámico de policies/:id
+      await precacheDetails("/api/policies");
+
+      // ✅ precache dinámico de terms/:id
+      await precacheDetails("/api/terms");
+
+      // ✅ precache dinámico de legal-boundaries/:id
+      await precacheDetails("/api/legal-boundaries");
+
+      console.log("✅ Precaching COMPLETO ✅");
     })()
   );
   self.skipWaiting();
 });
 
-// 🟢 ACTIVATE → limpia versiones viejas
+/** 🔥 Función para cachear detalles de endpoints
+ * Ejemplo: /api/policies/:id  /api/terms/:id  /api/legal-boundaries/:id
+ */
+async function precacheDetails(endpoint) {
+  try {
+    const listRes = await fetch(`${API_BASE}${endpoint}`);
+    if (!listRes.ok) return;
+
+    const items = await listRes.json();
+    const cache = await caches.open(CACHE_NAME);
+
+    await Promise.all(
+      items.map(async (item) => {
+        const detailUrl = `${API_BASE}${endpoint}/${item._id}`;
+        try {
+          const detailRes = await fetch(detailUrl, { mode: "cors" });
+          if (detailRes.ok) cache.put(detailUrl, detailRes.clone());
+        } catch {}
+      })
+    );
+
+    console.log(`✅ Precaching detalles para ${endpoint}`);
+  } catch (err) {
+    console.warn(`⚠️ No se pudieron obtener ids de ${endpoint}`);
+  }
+}
+
+/* =============================
+      🟢 ACTIVATE → limpia versiones viejas
+============================= */
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(
+        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+      )
     )
   );
   self.clients.claim();
 });
 
-// 🟢 FETCH → Estrategias por tipo de recurso
+/* =============================
+      🟢 FETCH STRATEGY
+============================= */
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Solo cachea GET
   if (req.method !== "GET") return;
 
-  // 1️⃣ Navegaciones (SPA) → network first + fallback index.html
+  // ✅ dynamic GET for policies / terms / legal-boundaries
+  if (
+    url.pathname.startsWith("/api/policies/") ||
+    url.pathname.startsWith("/api/terms/") ||
+    url.pathname.startsWith("/api/legal-boundaries/")
+  ) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(req);
+
+        const network = fetch(req, { mode: "cors", cache: "no-store" })
+          .then((res) => {
+            if (res.status === 200) cache.put(req, res.clone());
+            return res;
+          })
+          .catch(() => cached);
+
+        return cached || network;
+      })
+    );
+    return;
+  }
+
+  // ✅ navegación SPA
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
@@ -82,7 +148,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2️⃣ Archivos estáticos (`/static/...`)
+  // ✅ estáticos /static/
   if (url.pathname.startsWith("/static/")) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -92,13 +158,14 @@ self.addEventListener("fetch", (event) => {
             return networkRes;
           })
           .catch(() => cached);
+
         return cached || fetchPromise;
       })
     );
     return;
   }
 
-  // 3️⃣ Cloudinary (cache-first con actualización)
+  // ✅ Cloudinary
   if (url.hostname.includes("res.cloudinary.com")) {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
@@ -115,7 +182,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 4️⃣ Otros GET → cache-first con fallback
+  // ✅ GET genérico con fallback
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
@@ -134,7 +201,9 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// 🟢 Notificación PWA cuando cambia el estado de red
+/* =============================
+      🟢 NOTIFICACIONES PWA
+============================= */
 self.addEventListener("message", (event) => {
   if (!event.data) return;
 
@@ -142,7 +211,9 @@ self.addEventListener("message", (event) => {
     const { status } = event.data;
 
     self.registration.showNotification(
-      status === "online" ? "✅ Conexión restaurada" : "⚠️ Sin conexión a Internet",
+      status === "online"
+        ? "✅ Conexión restaurada"
+        : "⚠️ Sin conexión a Internet",
       {
         body:
           status === "online"
