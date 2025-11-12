@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "gias-cache-v5";  // sube versión cuando cambies algo
+const CACHE_NAME = "gias-cache-v6";  // sube versión cuando cambies algo
 const API_BASE = "https://backendgias.onrender.com";
 
 const BACKEND_ENDPOINTS = [
@@ -34,43 +34,47 @@ self.addEventListener("install", (event) => {
 
       console.log("⏳ Precaching textos legales...");
 
-      // ✅ precache de endpoints base (listados)
+      // ✅ precache de endpoints base
       await Promise.all(
         BACKEND_ENDPOINTS.map(async (endpoint) => {
           const url = `${API_BASE}${endpoint}`;
           try {
             const res = await fetch(url, { mode: "cors" });
-            if (res.ok) cache.put(url, res.clone());
+            if (res.ok) {
+              cache.put(url, res.clone());
+              console.log("✅ Precache guardado:", url);
+            }
           } catch (err) {
             console.warn("⚠️ No se pudo precachear:", url);
           }
         })
       );
 
-      // ✅ precache dinámico de policies/:id
+      // ✅ precache dinámico de detalles
       await precacheDetails("/api/policies");
-
-      // ✅ precache dinámico de terms/:id
       await precacheDetails("/api/terms");
-
-      // ✅ precache dinámico de legal-boundaries/:id
       await precacheDetails("/api/legal-boundaries");
 
       console.log("✅ Precaching COMPLETO ✅");
     })()
   );
+
   self.skipWaiting();
 });
 
-/** 🔥 Función para cachear detalles de endpoints
- * Ejemplo: /api/policies/:id  /api/terms/:id  /api/legal-boundaries/:id
+/**
+ * ✅ Función que cachea todos los detalles por ID
+ * Corrección clave: clonamos el response ANTES del json()
  */
 async function precacheDetails(endpoint) {
   try {
-    const listRes = await fetch(`${API_BASE}${endpoint}`);
+    const listRes = await fetch(`${API_BASE}${endpoint}`, { mode: "cors" });
+
     if (!listRes.ok) return;
 
-    const items = await listRes.json();
+    const cloned = listRes.clone();     // ✅ clone para cache
+    const items = await cloned.json();  // ✅ json desde el clone, no desde listRes
+
     const cache = await caches.open(CACHE_NAME);
 
     await Promise.all(
@@ -78,7 +82,10 @@ async function precacheDetails(endpoint) {
         const detailUrl = `${API_BASE}${endpoint}/${item._id}`;
         try {
           const detailRes = await fetch(detailUrl, { mode: "cors" });
-          if (detailRes.ok) cache.put(detailUrl, detailRes.clone());
+
+          if (detailRes.ok) {
+            cache.put(detailUrl, detailRes.clone()); // ✅ ahora SI se puede clonar
+          }
         } catch {}
       })
     );
@@ -90,14 +97,12 @@ async function precacheDetails(endpoint) {
 }
 
 /* =============================
-      🟢 ACTIVATE → limpia versiones viejas
+      🟢 ACTIVATE
 ============================= */
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
-      )
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
@@ -112,7 +117,7 @@ self.addEventListener("fetch", (event) => {
 
   if (req.method !== "GET") return;
 
-  // ✅ dynamic GET for policies / terms / legal-boundaries
+  // ✅ Dynamic cache: /api/.../:id
   if (
     url.pathname.startsWith("/api/policies/") ||
     url.pathname.startsWith("/api/terms/") ||
@@ -148,7 +153,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // ✅ estáticos /static/
+  // ✅ /static
   if (url.pathname.startsWith("/static/")) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -182,7 +187,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // ✅ GET genérico con fallback
+  // ✅ GET genérico
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
